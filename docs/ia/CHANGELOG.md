@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-identidad-editorial-publica`
+
+- Añadidas en `globals.css` utilidades públicas acotadas para composición editorial, CTA diagonales, recursos de marca y formularios lineales.
+- Recompuestas la landing, `MarketingHeader`, `MarketingFooter`, `AuthShell`, captación, privacidad y 404 sin modificar las primitivas ni los layouts del dashboard.
+- Conservados los contratos de formularios y Server Actions; el cambio del teléfono y de `contactPreference` sigue siendo exclusivamente de presentación y composición del `FormData` existente.
+- Verificadas las superficies públicas en escritorio y móvil mediante vista previa local.
+
 ## 2026-10-13 — `2026-10-13-contacto-telefono`
 
 - Reemplazado `contactPreference` por un grupo de radios accesible que mantiene los valores `whatsapp`, `phone` y `email`.

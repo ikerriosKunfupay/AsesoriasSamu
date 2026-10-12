@@ -34,7 +34,7 @@ export function LeadForm() {
 
   if (state.status === "success") {
     return (
-      <div className="rounded-[var(--radius-lg)] bg-success-soft p-6 text-success" role="status">
+      <div className="border-l-4 border-success bg-success-soft p-6 text-success" role="status">
         <p className="text-lg font-black">Solicitud recibida</p>
         <p className="mt-2 leading-7">{state.message}</p>
       </div>
@@ -55,10 +55,10 @@ export function LeadForm() {
         </Field>
         <Field label="Teléfono" htmlFor="phoneNumber" required error={state.fieldErrors?.phone?.[0]}>
           <input type="hidden" name="phone" value={normalizedPhone} />
-          <div className="flex min-h-12 overflow-hidden rounded-[var(--radius-md)] border border-border-strong bg-surface focus-within:border-primary">
+          <div className="flex min-h-12 border-b border-border-strong focus-within:border-primary">
             <select
               aria-label="Prefijo telefónico"
-              className="min-h-12 shrink-0 border-r border-border-strong bg-surface px-3 text-sm font-bold text-foreground"
+              className="min-h-12 w-[6.5rem] shrink-0 border-0 border-r border-border-strong bg-transparent pr-3 text-sm font-black text-foreground"
               value={phonePrefix}
               onChange={(event) => setPhonePrefix(event.target.value)}
             >
@@ -76,7 +76,7 @@ export function LeadForm() {
               value={phoneNumber}
               onChange={(event) => setPhoneNumber(event.target.value)}
               placeholder="600 000 000"
-              className="min-h-12 min-w-0 flex-1 bg-transparent px-3.5 text-base text-foreground placeholder:text-muted/70"
+              className="min-h-12 min-w-0 flex-1 border-0 bg-transparent pl-4 text-base text-foreground placeholder:text-muted/70"
             />
           </div>
         </Field>
@@ -89,11 +89,11 @@ export function LeadForm() {
           ¿Cómo prefieres que contactemos?
           <span className="ml-1 text-primary" aria-hidden="true">*</span>
         </legend>
-        <div className="grid grid-cols-3 gap-2" role="radiogroup">
+        <div className="grid grid-cols-3 border-y border-foreground/30" role="radiogroup">
           {contactMethods.map((method) => (
             <label
               key={method.value}
-              className="flex min-h-12 cursor-pointer items-center justify-center rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-center text-sm font-bold transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-soft has-[:checked]:text-primary"
+              className="flex min-h-13 cursor-pointer items-center justify-center border-r border-foreground/30 px-2 text-center text-xs font-black tracking-[0.04em] uppercase transition-colors last:border-r-0 has-[:checked]:bg-primary has-[:checked]:text-white"
             >
               <input
                 className="sr-only"

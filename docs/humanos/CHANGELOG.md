@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-identidad-editorial-publica`
+
+- Rediseñada toda la experiencia pública de Team Ortega con una identidad deportiva editorial coherente en portada, formulario, acceso, privacidad y página no encontrada.
+- Sustituidas las tarjetas y cajas redondeadas repetidas por diagonales, bloques a sangre, líneas divisorias, numeración y una jerarquía tipográfica más marcada.
+- Integrados el selector de prefijo, el teléfono directo y la preferencia de contacto en el mismo lenguaje visual, también en móvil.
+- El panel interno del entrenador y de los clientes no cambia.
+
 ## 2026-10-13 — `2026-10-13-contacto-telefono`
 
 - Sustituido el desplegable nativo de contacto por opciones visibles de WhatsApp, llamada y correo.

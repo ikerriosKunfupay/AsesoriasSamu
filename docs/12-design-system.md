@@ -2,7 +2,9 @@
 
 ## Identidad
 
-Team Ortega utiliza una estética deportiva sobria: negro como base, rojo para acción, blanco para contraste y grises fríos para superficies. El emblema del casco es la marca principal y también genera los iconos de aplicación.
+Team Ortega utiliza una estética deportiva editorial: negro como base, rojo para acción, blanco y marfil para contraste y grises fríos en las superficies operativas. El emblema del casco es la marca principal y también genera los iconos de aplicación.
+
+La experiencia pública evita composiciones basadas en una sucesión de tarjetas. La identidad se construye con bloques a sangre, diagonales, separadores lineales, numeración grande y titulares condensados. Las tarjetas se reservan para el producto interno cuando ayudan a agrupar datos o acciones.
 
 ## Fuente de verdad
 
@@ -34,10 +36,13 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
 - `DashboardShell`: navegación diferenciada para entrenador y cliente.
+- `public-action`, `public-kicker`, `hero-mark` y `public-form`: lenguaje editorial compartido por landing, captación, acceso y páginas legales.
 
 ## Reglas de uso
 
 - No introducir colores, radios o sombras arbitrarios dentro de features.
+- En páginas públicas, evitar encerrar cada bloque en una tarjeta o contenedor redondeado; priorizar ritmo tipográfico, líneas, contraste y composición a sangre.
+- Los CTA públicos usan remate diagonal y las acciones secundarias se presentan como enlaces subrayados. Los controles públicos son lineales; el panel mantiene las primitivas operativas estándar.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.
 - Inputs de 16 px en móvil y objetivos táctiles de al menos 44 px.
 - Foco siempre visible, contraste legible y reducción de movimiento respetada.

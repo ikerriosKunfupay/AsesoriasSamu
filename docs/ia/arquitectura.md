@@ -1,5 +1,11 @@
 # Arquitectura técnica
 
+## Superficie pública
+
+La capa pública comparte una composición editorial definida en `globals.css` mediante `public-page`, `public-dark`, `public-action`, `public-kicker`, `hero-mark` y `public-form`. La aplican la landing, captación, autenticación, privacidad y 404. Estas clases no sustituyen las primitivas de `src/components/ui/` ni cambian los dashboards: el lenguaje lineal y diagonal queda acotado a rutas públicas, mientras que las superficies operativas pueden seguir usando `Card`.
+
+El formulario de captación y los formularios Auth conservan `Field`, `Input`, `Textarea` y `SubmitButton`; el contenedor `public-form` altera únicamente su presentación pública. Así se mantienen contratos, accesibilidad y Server Actions sin duplicar lógica.
+
 ## Render y sesiones
 
 La aplicación usa App Router. `src/proxy.ts` refresca cookies de Supabase y no toma decisiones definitivas de autorización. `src/lib/auth/current-user.ts` es la capa de acceso autenticada: obtiene `auth.getUser()`, lee el perfil y retorna un DTO mínimo cacheado por petición.
@@ -15,7 +21,7 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El control de abuso distribuido queda pendiente para una fase posterior.
 
-El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. `contactPreference` usa radios estilizados en lugar de un `select` nativo; el contrato persistido y la tabla `leads` no cambian.
+El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. `contactPreference` usa radios visibles integrados en una franja lineal en lugar de un `select` nativo; el contrato persistido y la tabla `leads` no cambian.
 
 ## Mutaciones
 

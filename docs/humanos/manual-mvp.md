@@ -1,5 +1,9 @@
 # Manual del MVP
 
+## Experiencia pública
+
+La portada, el formulario de información, el acceso, la recuperación de contraseña y la privacidad comparten una identidad deportiva editorial basada en negro, rojo y marfil. El contenido se organiza con tipografía, diagonales y separadores, sin una sucesión de tarjetas redondeadas. El panel privado mantiene una presentación más funcional para facilitar el trabajo diario.
+
 ## Acceso del entrenador
 
 La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el menú puede consultar:
