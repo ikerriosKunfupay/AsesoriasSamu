@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-selector-prefijo-interno`
+
+- Sustituido el menú gris del navegador por un selector de prefijo diseñado dentro del formulario de Team Ortega.
+- El nuevo menú mantiene el teléfono directo y funciona también con teclado y en móvil.
+
 ## 2026-10-13 — `2026-10-13-identidad-editorial-publica`
 
 - Rediseñada toda la experiencia pública de Team Ortega con una identidad deportiva editorial coherente en portada, formulario, acceso, privacidad y página no encontrada.

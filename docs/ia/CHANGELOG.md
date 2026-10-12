@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-selector-prefijo-interno`
+
+- Reemplazado el `select` nativo del prefijo por un listbox controlado en `LeadForm`, con estados ARIA, selección, foco, cierre exterior y navegación por flechas, inicio, fin y Escape.
+- Conservada la composición final del campo `phone` y el contrato de la Server Action sin cambios de base de datos.
+
 ## 2026-10-13 — `2026-10-13-identidad-editorial-publica`
 
 - Añadidas en `globals.css` utilidades públicas acotadas para composición editorial, CTA diagonales, recursos de marca y formularios lineales.

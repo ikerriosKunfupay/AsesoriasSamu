@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { createLeadAction } from "@/app/actions/leads";
 import { Field } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
@@ -22,6 +23,119 @@ const contactMethods = [
   { value: "phone", label: "Llamada" },
   { value: "email", label: "Correo" },
 ] as const;
+
+function PhonePrefixSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const selectedIndex = phonePrefixes.findIndex((prefix) => prefix.value === value);
+  const selectedPrefix = phonePrefixes[selectedIndex] ?? phonePrefixes[0];
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false);
+    };
+
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, [isOpen]);
+
+  const openMenu = (focusIndex = selectedIndex) => {
+    setIsOpen(true);
+    requestAnimationFrame(() => optionRefs.current[focusIndex]?.focus());
+  };
+
+  const selectPrefix = (nextValue: string) => {
+    onChange(nextValue);
+    setIsOpen(false);
+    requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+
+  const handleOptionKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.preventDefault();
+      const direction = event.key === "ArrowDown" ? 1 : -1;
+      const nextIndex = (index + direction + phonePrefixes.length) % phonePrefixes.length;
+      optionRefs.current[nextIndex]?.focus();
+    }
+    if (event.key === "Home" || event.key === "End") {
+      event.preventDefault();
+      optionRefs.current[event.key === "Home" ? 0 : phonePrefixes.length - 1]?.focus();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setIsOpen(false);
+      triggerRef.current?.focus();
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative w-[7.25rem] shrink-0">
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label={`Prefijo telefónico, ${selectedPrefix.label}`}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls="phone-prefix-options"
+        className="flex min-h-12 w-full items-center justify-between border-r border-border-strong pr-3 text-left text-sm font-black text-foreground"
+        onClick={() => (isOpen ? setIsOpen(false) : openMenu())}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            openMenu(event.key === "ArrowDown" ? selectedIndex : Math.max(selectedIndex - 1, 0));
+          }
+          if (event.key === "Escape") setIsOpen(false);
+        }}
+      >
+        <span>{selectedPrefix.label}</span>
+        <ChevronDown
+          aria-hidden="true"
+          className={`size-4 transition-transform ${isOpen ? "rotate-180 text-primary" : "text-muted"}`}
+        />
+      </button>
+      {isOpen ? (
+        <div
+          id="phone-prefix-options"
+          role="listbox"
+          aria-label="Prefijos telefónicos"
+          className="absolute top-[calc(100%+0.5rem)] left-0 z-30 w-40 border-t-4 border-primary bg-surface-inverse py-1 text-white shadow-2xl [clip-path:polygon(0_0,calc(100%_-_12px)_0,100%_12px,100%_100%,0_100%)]"
+        >
+          {phonePrefixes.map((prefix, index) => {
+            const isSelected = prefix.value === value;
+            return (
+              <button
+                key={prefix.value}
+                ref={(element) => { optionRefs.current[index] = element; }}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                className={`flex min-h-11 w-full items-center justify-between px-4 text-left text-sm font-black transition-colors hover:bg-white/10 focus:bg-white/10 focus:outline-none ${isSelected ? "text-primary" : "text-white"}`}
+                onClick={() => selectPrefix(prefix.value)}
+                onKeyDown={(event) => handleOptionKeyDown(event, index)}
+              >
+                <span>{prefix.label}</span>
+                {isSelected ? <Check aria-hidden="true" className="size-4" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
+  );
+}
 
 export function LeadForm() {
   const [state, action] = useActionState(createLeadAction, initialActionState);
@@ -56,16 +170,10 @@ export function LeadForm() {
         <Field label="Teléfono" htmlFor="phoneNumber" required error={state.fieldErrors?.phone?.[0]}>
           <input type="hidden" name="phone" value={normalizedPhone} />
           <div className="flex min-h-12 border-b border-border-strong focus-within:border-primary">
-            <select
-              aria-label="Prefijo telefónico"
-              className="min-h-12 w-[6.5rem] shrink-0 border-0 border-r border-border-strong bg-transparent pr-3 text-sm font-black text-foreground"
+            <PhonePrefixSelect
               value={phonePrefix}
-              onChange={(event) => setPhonePrefix(event.target.value)}
-            >
-              {phonePrefixes.map((prefix) => (
-                <option key={prefix.value} value={prefix.value}>{prefix.label}</option>
-              ))}
-            </select>
+              onChange={setPhonePrefix}
+            />
             <input
               id="phoneNumber"
               name="phoneNumber"

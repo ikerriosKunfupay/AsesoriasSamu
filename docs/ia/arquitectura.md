@@ -21,7 +21,7 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El control de abuso distribuido queda pendiente para una fase posterior.
 
-El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. `contactPreference` usa radios visibles integrados en una franja lineal en lugar de un `select` nativo; el contrato persistido y la tabla `leads` no cambian.
+El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. El prefijo usa un listbox propio con cierre exterior y navegación por teclado, sin depender del desplegable nativo. `contactPreference` usa radios visibles integrados en una franja lineal; el contrato persistido y la tabla `leads` no cambian.
 
 ## Mutaciones
 
