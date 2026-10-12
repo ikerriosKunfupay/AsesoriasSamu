@@ -1,5 +1,17 @@
 # Runbook de Supabase
 
+## Entorno desplegado
+
+- Organización: `Team Ortega`.
+- Proyecto: `team-ortega` (`grlntqiviyehnpibaijk`).
+- Región: `eu-west-1` (Irlanda).
+- Aplicación: `https://team-ortega.vercel.app`.
+- Migración inicial aplicada y 11 tablas verificadas.
+- Site URL: `https://team-ortega.vercel.app`.
+- Redirect URLs: producción y desarrollo local configuradas según la sección siguiente.
+
+No documentar aquí ni en Git las claves publishable, secret o service role.
+
 ## Crear y migrar
 
 1. Usa una organización y un proyecto nuevos que no compartan recursos con otros productos.
@@ -33,6 +45,8 @@ where id = '<UUID_VERIFICADO>';
 - Redirect URLs: añade `/auth/callback` para producción y `http://localhost:3000/auth/callback` en desarrollo.
 - Desactiva el registro público desde la configuración de proveedores.
 - Mantén correo + contraseña activo.
+
+En el entorno desplegado, correo + contraseña está activo y la confirmación de correo está habilitada. El registro público continúa pendiente de desactivación hasta confirmar el cambio de acceso con el propietario.
 
 ## SMTP
 

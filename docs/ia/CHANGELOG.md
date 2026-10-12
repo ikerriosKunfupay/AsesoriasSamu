@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-despliegue-inicial`
+
+- Creada la organización `Team Ortega` y el proyecto Supabase `team-ortega` en `eu-west-1`; aplicada y verificada la migración de 11 tablas.
+- Creado el proyecto Vercel `team-ortega` en Hobby desde `ikerriosKunfupay/AsesoriasSamu`, rama `main` y commit `9ca113f`.
+- Cargadas como sensibles las cuatro variables de entorno necesarias para Production y Preview, sin incorporar secretos a Git.
+- Verificado el despliegue `Ready` en `https://team-ortega.vercel.app` y la carga de la landing Next.js.
+- Configurados en Supabase Auth el Site URL de producción y los callbacks de producción y desarrollo local.
+- Documentados como pendientes el alta/promoción del primer administrador, la desactivación del registro público, el SMTP propio y las pruebas Auth extremo a extremo.
+
 ## 2026-10-12 — `2026-10-12-mvp-inicial`
 
 - Inicializado Next.js 16, React 19, TypeScript, Tailwind CSS 4, Vitest y Supabase SSR.

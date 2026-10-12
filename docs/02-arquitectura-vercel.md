@@ -28,11 +28,16 @@ Proveedor SMTP → correos de Auth de Supabase
 - Los planes se almacenan como texto con versión, estado y fecha de inicio.
 - Las cuotas son apuntes manuales; no existe flujo de pago.
 
-## Restricción de Vercel Hobby
+## Despliegue actual y restricción de Vercel Hobby
 
-El código está preparado para Vercel, pero el nivel Hobby está limitado por Vercel a uso personal no comercial. Team Ortega apoya una actividad profesional y la landing presenta un servicio, aunque la aplicación no cobre. Por ello, un despliegue de producción conforme requiere Vercel Pro o una autorización expresa de Vercel. No debe publicarse este proyecto comercial en Hobby. Referencias: [Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines) y [Hobby Plan](https://vercel.com/docs/plans/hobby).
+El proyecto está desplegado desde la rama `main` del repositorio `ikerriosKunfupay/AsesoriasSamu` en el proyecto Vercel `team-ortega`:
 
-Si el requisito absoluto es coste cero, hay que aprobar otro alojamiento que admita uso comercial gratuito antes de publicar. Este cambio no afecta a Supabase ni a la arquitectura de datos.
+- URL pública: `https://team-ortega.vercel.app`.
+- Plan: Hobby de la cuenta personal.
+- Framework detectado: Next.js.
+- Variables: las cuatro variables de Supabase están configuradas como sensibles para Production y Preview.
+
+Vercel limita Hobby a uso personal no comercial. Team Ortega apoya una actividad profesional y la landing presenta un servicio, aunque la aplicación no cobre. El propietario decidió realizar este primer despliegue gratuito conociendo esa restricción; no debe interpretarse como validación de cumplimiento comercial. Antes de explotar el portal comercialmente hay que migrar a Vercel Pro, obtener autorización expresa de Vercel o elegir otro alojamiento compatible. Referencias: [Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines) y [Hobby Plan](https://vercel.com/docs/plans/hobby).
 
 ## Correo
 
