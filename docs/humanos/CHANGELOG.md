@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-smtp-brevo`
+
+- Activado Brevo Free como proveedor de los correos de invitación y recuperación de Team Ortega.
+- Creada una credencial separada para este proyecto sin modificar las configuraciones existentes de otros proyectos.
+- Registrado que el plan gratuito comparte el límite de 300 correos diarios con los demás usos de la misma cuenta de Brevo.
+
 ## 2026-10-13 — `2026-10-13-css-produccion`
 
 - Corregida la carga del sistema de diseño en Vercel para que la landing, el acceso y los paneles conserven sus colores, tamaños, espaciados y adaptación móvil.

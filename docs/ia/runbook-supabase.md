@@ -52,6 +52,10 @@ En el entorno desplegado, correo + contraseña está activo y la confirmación d
 
 Configura el SMTP propio en Authentication > Emails > SMTP Settings. Verifica dominio/remitente y desactiva el seguimiento de enlaces del proveedor para no modificar los enlaces de Auth. Prueba invitación y recuperación con una cuenta de prueba antes de usar correos de clientes.
 
+El entorno desplegado usa Brevo Free mediante una clave SMTP exclusiva llamada `Team Ortega - Supabase`. Supabase guarda cifrada la credencial; no está en Git ni en Vercel. El remitente configurado ya estaba verificado en Brevo y el nombre visible es `Team Ortega`.
+
+La clave está aislada de las credenciales de otros proyectos, pero el plan, el límite diario y la reputación de envío pertenecen a la cuenta compartida de Brevo. No edites ni reutilices los demás remitentes o claves de esa cuenta.
+
 ## Secretos
 
-Solo `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` son públicas. `SUPABASE_SERVICE_ROLE_KEY` debe existir únicamente como variable cifrada del alojamiento y en `.env.local` ignorado durante desarrollo.
+Solo `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` son públicas. `SUPABASE_SERVICE_ROLE_KEY` debe existir únicamente como variable cifrada del alojamiento y en `.env.local` ignorado durante desarrollo. La contraseña SMTP solo debe existir cifrada en Supabase y gestionarse desde Brevo; nunca debe copiarse al repositorio.
