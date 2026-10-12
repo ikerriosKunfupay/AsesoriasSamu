@@ -37,7 +37,7 @@ El cliente ve únicamente sus datos. Puede:
 
 ## Interesados
 
-`/solicitar-informacion` es una URL no indexable con un formulario breve. El teléfono se escribe directamente junto a un selector interno de prefijo internacional, diseñado como parte de la propia web, y la vía de contacto se elige mediante opciones visibles de WhatsApp, llamada o correo. No pide lesiones, alergias ni otra información de salud. La solicitud aparece en **Interesados**.
+`/solicitar-informacion` es una URL no indexable con un formulario breve. El teléfono se escribe directamente junto a un selector interno de prefijo internacional, diseñado como parte de la propia web, y la vía de contacto se elige mediante opciones visibles de WhatsApp o llamada. No pide lesiones, alergias ni otra información de salud. La solicitud aparece en **Interesados**.
 
 ## Cuotas
 

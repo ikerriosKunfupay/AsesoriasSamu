@@ -21,7 +21,6 @@ const phonePrefixes = [
 const contactMethods = [
   { value: "whatsapp", label: "WhatsApp" },
   { value: "phone", label: "Llamada" },
-  { value: "email", label: "Correo" },
 ] as const;
 
 function PhonePrefixSelect({
@@ -197,7 +196,7 @@ export function LeadForm() {
           ¿Cómo prefieres que contactemos?
           <span className="ml-1 text-primary" aria-hidden="true">*</span>
         </legend>
-        <div className="grid grid-cols-3 border-y border-foreground/30" role="radiogroup">
+        <div className="grid grid-cols-2 border-y border-foreground/30" role="radiogroup">
           {contactMethods.map((method) => (
             <label
               key={method.value}

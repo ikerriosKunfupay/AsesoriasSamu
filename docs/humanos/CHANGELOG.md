@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-contacto-sin-correo`
+
+- Retirada la opción de correo del formulario de información.
+- Las nuevas solicitudes permiten elegir únicamente WhatsApp o llamada.
+
 ## 2026-10-13 — `2026-10-13-selector-prefijo-interno`
 
 - Sustituido el menú gris del navegador por un selector de prefijo diseñado dentro del formulario de Team Ortega.

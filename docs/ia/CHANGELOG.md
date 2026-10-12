@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-contacto-sin-correo`
+
+- Eliminada la opción `email` del grupo de radios visible en `LeadForm` y ajustada su composición a dos columnas.
+- Conservado el valor en el esquema de validación para compatibilidad con registros históricos; no se modifica la base de datos.
+
 ## 2026-10-13 — `2026-10-13-selector-prefijo-interno`
 
 - Reemplazado el `select` nativo del prefijo por un listbox controlado en `LeadForm`, con estados ARIA, selección, foco, cierre exterior y navegación por flechas, inicio, fin y Escape.
