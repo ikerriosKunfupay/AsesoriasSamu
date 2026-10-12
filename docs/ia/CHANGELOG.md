@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-tipografia-archivo-dm-sans`
+
+- Integradas Archivo variable y DM Sans variable mediante `next/font/google` en el layout raíz.
+- Expuestas como variables CSS del sistema de diseño y aplicadas globalmente a texto, controles y titulares, con autoalojamiento en el artefacto de Next.js.
+- Ajustada la firma compacta de marca para conservar `Team Ortega` en una sola línea en cabeceras móviles con las nuevas métricas.
+- Reducido el breakpoint de escritorio del `h1` de captación para evitar clipping en su columna lateral.
+- La primera compilación local no pudo resolver Google Fonts por la red restringida del entorno; repetida con acceso permitido, terminó correctamente.
+
 ## 2026-10-13 — `2026-10-13-contacto-sin-correo`
 
 - Eliminada la opción `email` del grupo de radios visible en `LeadForm` y ajustada su composición a dos columnas.

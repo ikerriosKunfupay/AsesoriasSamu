@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Archivo, DM_Sans } from "next/font/google";
 import "./globals.css";
 
 const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+const bodyFont = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-team-body",
+  display: "swap",
+});
+
+const displayFont = Archivo({
+  subsets: ["latin"],
+  variable: "--font-team-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -27,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className="h-full antialiased">
+    <html lang="es" className={`${bodyFont.variable} ${displayFont.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -19,7 +19,7 @@ export default function LeadPage() {
           <BrandLogo className="text-white" />
           <div className="my-auto py-18 lg:py-24">
             <p className="public-kicker text-white/60">Primer contacto</p>
-            <h1 className="font-display mt-7 text-5xl leading-[0.88] font-black uppercase sm:text-6xl lg:text-7xl">
+            <h1 className="font-display mt-7 text-5xl leading-[0.88] font-black uppercase sm:text-6xl">
               Cuéntanos<br /><span className="text-primary">qué buscas.</span>
             </h1>
             <p className="mt-7 max-w-md border-l-4 border-primary pl-5 leading-7 text-white/65">

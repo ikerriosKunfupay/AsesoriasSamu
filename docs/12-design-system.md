@@ -13,6 +13,12 @@ La experiencia pública evita composiciones basadas en una sucesión de tarjetas
 - Composición de navegación: `src/components/layout/`.
 - Marca: `src/components/brand/logo.tsx` y `public/brand/team-ortega-mark.png`.
 
+## Tipografía
+
+- **Archivo:** titulares, cifras y elementos de marca. Se usa en pesos altos para dar contundencia sin recurrir a una fuente extremadamente estrecha.
+- **DM Sans:** texto, navegación, formularios y superficies operativas. Prioriza lectura clara tanto en móvil como en escritorio.
+- Ambas se cargan con `next/font`, quedan alojadas por la propia aplicación y no generan peticiones del navegador a proveedores externos.
+
 ## Tokens principales
 
 | Uso | Token | Valor inicial |

@@ -34,3 +34,5 @@ Todas las mutaciones reciben `FormData`, validan con Zod y devuelven `ActionStat
 ## Build
 
 La compilación usa `next build --webpack`. Turbopack necesita abrir procesos/puertos auxiliares en algunos entornos restringidos; Webpack produce el mismo artefacto Next.js y permite una validación reproducible. Las rutas privadas requieren variables únicamente en tiempo de ejecución y se marcan `force-dynamic`.
+
+`src/app/layout.tsx` registra Archivo y DM Sans mediante `next/font/google` y expone `--font-team-display` y `--font-team-body`. Next descarga y autoaloja los archivos durante el build; `globals.css` consume esas variables con fallbacks de sistema para todas las rutas públicas y privadas.

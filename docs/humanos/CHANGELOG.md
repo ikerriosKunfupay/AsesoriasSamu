@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-tipografia-archivo-dm-sans`
+
+- Renovada la tipografía de toda la web con titulares Archivo y textos DM Sans.
+- La nueva combinación mantiene el carácter deportivo, mejora la lectura y elimina el aspecto excesivamente estrecho anterior.
+- Ajustado el logotipo textual para mantenerse en una sola línea en móvil.
+- Reequilibrado el titular del formulario para evitar cortes con las nuevas proporciones.
+- La primera comprobación de compilación no pudo descargar las fuentes por la red restringida del entorno; se repitió con acceso permitido y finalizó correctamente.
+
 ## 2026-10-13 — `2026-10-13-contacto-sin-correo`
 
 - Retirada la opción de correo del formulario de información.
