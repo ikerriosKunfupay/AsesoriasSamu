@@ -22,6 +22,7 @@ Proveedor SMTP → correos de Auth de Supabase
 ## Decisiones
 
 - Next.js App Router y TypeScript para compartir tipos y validaciones.
+- Tailwind CSS 4 se procesa mediante `@tailwindcss/postcss`; `postcss.config.mjs` es obligatorio también cuando el build de producción usa Webpack.
 - Supabase Auth sin registro público. Solo un administrador autenticado invita clientes.
 - `SUPABASE_SERVICE_ROLE_KEY` se usa únicamente en el servidor y solo después de verificar el rol administrador.
 - PostgreSQL aplica RLS; las redirecciones de la interfaz no se consideran autorización.

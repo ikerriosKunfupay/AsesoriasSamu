@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-css-produccion`
+
+- Añadido `@tailwindcss/postcss` y el `postcss.config.mjs` oficial requerido por Tailwind CSS 4 con el build Webpack de Next.js.
+- Verificada la generación de utilidades Tailwind en el CSS de producción y ejecutado `pnpm check` completo con resultado correcto.
+
 ## 2026-10-13 — `2026-10-13-despliegue-inicial`
 
 - Creada la organización `Team Ortega` y el proyecto Supabase `team-ortega` en `eu-west-1`; aplicada y verificada la migración de 11 tablas.

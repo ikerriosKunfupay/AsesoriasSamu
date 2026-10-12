@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-css-produccion`
+
+- Corregida la carga del sistema de diseño en Vercel para que la landing, el acceso y los paneles conserven sus colores, tamaños, espaciados y adaptación móvil.
+- Repetidas las comprobaciones de calidad y compilación antes de volver a publicar.
+
 ## 2026-10-13 — `2026-10-13-despliegue-inicial`
 
 - Creada la organización y la base de datos independientes de Team Ortega en Supabase Free, en región europea.
