@@ -30,6 +30,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
+- Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; las elecciones cortas y excluyentes se presentan como radios visibles, no como desplegables nativos.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
 - `DashboardShell`: navegación diferenciada para entrenador y cliente.

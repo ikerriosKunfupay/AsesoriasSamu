@@ -15,6 +15,8 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El control de abuso distribuido queda pendiente para una fase posterior.
 
+El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. `contactPreference` usa radios estilizados en lugar de un `select` nativo; el contrato persistido y la tabla `leads` no cambian.
+
 ## Mutaciones
 
 Todas las mutaciones reciben `FormData`, validan con Zod y devuelven `ActionState`. Las acciones administrativas llaman a `requireAdmin()` antes de crear el cliente service role. La finalización del onboarding usa la función SQL `complete_onboarding()` para impedir que un cliente actualice columnas de rol o estado de otro modo.

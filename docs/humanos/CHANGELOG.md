@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-contacto-telefono`
+
+- Sustituido el desplegable nativo de contacto por opciones visibles de WhatsApp, llamada y correo.
+- Añadido un campo de teléfono con prefijo internacional integrado para escribir el número directamente.
+
 ## 2026-10-13 — `2026-10-13-smtp-brevo`
 
 - Activado Brevo Free como proveedor de los correos de invitación y recuperación de Team Ortega.

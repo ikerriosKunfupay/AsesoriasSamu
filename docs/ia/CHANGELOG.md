@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-contacto-telefono`
+
+- Reemplazado `contactPreference` por un grupo de radios accesible que mantiene los valores `whatsapp`, `phone` y `email`.
+- Añadido al formulario de leads un teléfono compuesto que envía a la Server Action el prefijo y el número como el campo `phone` existente, sin migración de base de datos.
+- Actualizadas las reglas del sistema de diseño para controles telefónicos y elecciones cortas.
+
 ## 2026-10-13 — `2026-10-13-smtp-brevo`
 
 - Generada en Brevo la clave SMTP exclusiva `Team Ortega - Supabase`, sin reutilizar ni modificar credenciales existentes.
