@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-inicio-login-izquierda`
+
+- Movido el acceso «Inicio» al lado izquierdo del formulario en las pantallas privadas de escritorio.
+- En móvil, Team Ortega aparece arriba y el formulario comienza justo debajo, sin el gran espacio vacío anterior.
+
 ## 2026-10-13 — `2026-10-13-logo-hero-movil`
 
 - Recuperado el emblema de Team Ortega en la portada móvil con un tamaño compacto que no vuelve a recargar la entrada.

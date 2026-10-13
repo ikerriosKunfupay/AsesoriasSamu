@@ -19,9 +19,9 @@ export function AuthShell({ title, description, children }: {
         </div>
         <div className="absolute -right-24 -bottom-24 size-64 -skew-x-12 bg-primary/80" />
       </aside>
-      <section className="grid min-h-screen place-items-center px-5 py-10 sm:px-10">
+      <section className="flex min-h-screen justify-center px-5 pt-6 pb-10 sm:px-10 sm:pt-8 lg:grid lg:place-items-center lg:py-10">
         <div className="w-full max-w-lg">
-          <div className="mb-12 flex items-center justify-between lg:justify-end">
+          <div className="mb-12 flex items-center justify-between lg:justify-start">
             <BrandLogo className="lg:hidden" />
             <Link href="/" className="inline-flex min-h-11 items-center gap-2 border-b-2 border-foreground/35 text-sm font-black uppercase hover:border-primary">
               <ArrowLeft size={16} aria-hidden="true" /> Inicio

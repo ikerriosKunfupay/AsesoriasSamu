@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-inicio-login-izquierda`
+
+- `AuthShell` alinea el enlace de retorno con `lg:justify-start`; el encabezado móvil mantiene la marca y el acceso separados con `justify-between`.
+- La sección de autenticación usa `flex` con alineación superior en móvil y recupera el centrado mediante `lg:grid lg:place-items-center` en escritorio.
+
 ## 2026-10-13 — `2026-10-13-logo-hero-movil`
 
 - Añadida una variante móvil absoluta y de carga prioritaria de `team-ortega-mark.png` en el hero, decorativa para lectores de pantalla y oculta desde `lg`.
