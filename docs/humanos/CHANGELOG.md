@@ -6,7 +6,7 @@
 - Sustituido el selector gris del navegador para el sexo por un desplegable propio de Team Ortega, compatible con teclado.
 - Reordenado todo el cuestionario en una cuadrícula regular, con campos emparejados del mismo tamaño.
 - En móvil, el menú privado aparece a la izquierda y el logo a la derecha.
-- Las comprobaciones finales terminaron correctamente. Las primeras pruebas del selector detectaron dos detalles de foco y etiquetado accesible, corregidos antes de la entrega; la vista privada local no pudo abrirse sin las variables de Supabase del entorno temporal y se verificará sobre el despliegue conectado.
+- Las comprobaciones finales terminaron correctamente. Las primeras pruebas del selector detectaron dos detalles de foco y etiquetado accesible, corregidos antes de la entrega; la vista privada local no pudo abrirse sin las variables de Supabase del entorno temporal, pero la versión conectada se verificó después en producción sin enviar el formulario.
 
 ## 2026-10-13 — `2026-10-13-bloqueo-navegacion-cuestionario`
 

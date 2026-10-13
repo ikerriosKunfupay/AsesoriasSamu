@@ -6,7 +6,7 @@
 - Endurecido `onboardingSchema`: rechaza signos, exponentes, texto, edades decimales y separadores repetidos, conservando los rangos físicos y las columnas PostgreSQL `numeric(5,2)` existentes.
 - Añadido `InternalSelect`, combobox/listbox accesible con foco, teclado, cierre exterior y valor oculto compatible con `FormData`; aplicado a `sex`.
 - Recompuesto `OnboardingForm` en pares responsivos de textareas con alturas equivalentes y ajustada la cabecera móvil de `DashboardShell` a menú izquierdo y marca derecha.
-- Incorporadas pruebas de saneamiento, normalización, rechazo del esquema y accesibilidad básica del selector. La primera ejecución reveló esperas de foco y ausencia de nombre accesible en el combobox; ambos puntos se corrigieron y la suite final pasó. La previsualización privada local quedó bloqueada por ausencia de variables públicas de Supabase en el checkout temporal y se reserva la comprobación visual para el despliegue conectado.
+- Incorporadas pruebas de saneamiento, normalización, rechazo del esquema y accesibilidad básica del selector. La primera ejecución reveló esperas de foco y ausencia de nombre accesible en el combobox; ambos puntos se corrigieron y la suite final pasó. La previsualización privada local quedó bloqueada por ausencia de variables públicas de Supabase en el checkout temporal; después se verificaron en producción el layout móvil, el listbox y los filtros numéricos sin enviar el formulario.
 
 ## 2026-10-13 — `2026-10-13-bloqueo-navegacion-cuestionario`
 
