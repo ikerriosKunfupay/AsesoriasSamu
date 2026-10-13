@@ -1,5 +1,9 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-logo-hero-movil`
+
+- Añadida una variante móvil absoluta de `team-ortega-mark.png` en el hero, decorativa para lectores de pantalla y oculta desde `lg`.
+
 ## 2026-10-13 — `2026-10-13-hero-mas-compacto`
 
 - Reducido el `clamp()` tipográfico del `h1`, la altura mínima y los espaciados verticales del hero de la landing.

@@ -67,6 +67,15 @@ export default function Home() {
                 </ButtonLink>
               </div>
             </div>
+            <div className="hero-mark pointer-events-none !absolute right-4 bottom-5 w-24 sm:right-6 sm:w-28 lg:hidden">
+              <Image
+                src="/brand/team-ortega-mark.png"
+                alt=""
+                width={224}
+                height={224}
+                className="h-auto w-full drop-shadow-[0_22px_24px_rgba(0,0,0,0.48)]"
+              />
+            </div>
             <div className="hero-mark relative mx-auto hidden w-full max-w-[20rem] lg:block">
               <Image
                 src="/brand/team-ortega-mark.png"

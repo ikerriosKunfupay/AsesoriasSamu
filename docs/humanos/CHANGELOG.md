@@ -1,5 +1,9 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-logo-hero-movil`
+
+- Recuperado el emblema de Team Ortega en la portada móvil con un tamaño compacto que no vuelve a recargar la entrada.
+
 ## 2026-10-13 — `2026-10-13-hero-mas-compacto`
 
 - Reducidos el titular, el casco y la altura de la primera sección de la portada.

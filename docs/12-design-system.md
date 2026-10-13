@@ -49,6 +49,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - No introducir colores, radios o sombras arbitrarios dentro de features.
 - En páginas públicas, evitar encerrar cada bloque en una tarjeta o contenedor redondeado; priorizar ritmo tipográfico, líneas, contraste y composición a sangre.
 - El hero de entrada debe dejar visibles la propuesta, la explicación y las acciones principales sin ocupar de forma agobiante toda la primera pantalla; reservar los tamaños extremos para acentos puntuales.
+- El emblema de marca debe seguir visible en el hero móvil como un recurso compacto y secundario, sin desplazar el contenido principal ni competir con los CTA.
 - Los CTA públicos usan remate diagonal y las acciones secundarias se presentan como enlaces subrayados. Los controles públicos son lineales; el panel mantiene las primitivas operativas estándar.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.
 - Inputs de 16 px en móvil y objetivos táctiles de al menos 44 px.
