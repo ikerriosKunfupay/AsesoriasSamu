@@ -12,6 +12,7 @@ import {
 } from "@/lib/forms/numeric-values";
 import { FormMessage } from "./form-message";
 import { SubmitButton } from "./submit-button";
+import { SocialNetworksField } from "./social-networks-field";
 
 const sexOptions = [
   { value: "mujer", label: "Mujer" },
@@ -177,9 +178,10 @@ export function OnboardingForm({ initial }: { initial?: Record<string, string | 
           <Textarea id="allergiesIntolerances" name="allergiesIntolerances" rows={5} defaultValue={String(initial?.allergies_intolerances ?? "")} />
         </Field>
       </div>
-      <Field label="Redes sociales (opcional)" htmlFor="socialNetworks" error={state.fieldErrors?.socialNetworks?.[0]}>
-        <Input id="socialNetworks" name="socialNetworks" defaultValue={String(initial?.social_networks ?? "")} />
-      </Field>
+      <SocialNetworksField
+        initialValue={String(initial?.social_networks ?? "")}
+        error={state.fieldErrors?.socialNetworks?.[0]}
+      />
       <label className="flex gap-3 rounded-[var(--radius-md)] border border-border bg-surface-muted p-4 text-sm leading-6">
         <input name="healthConsent" type="checkbox" className="mt-1 size-4 accent-primary" required />
         <span>Acepto que Team Ortega trate estos datos, incluidos los relativos a salud, únicamente para preparar y hacer seguimiento de mi plan.</span>

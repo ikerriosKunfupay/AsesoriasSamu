@@ -1,11 +1,12 @@
 "use client";
 
 import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 type InternalSelectOption = {
   value: string;
   label: string;
+  icon?: ReactNode;
 };
 
 export function InternalSelect({
@@ -13,25 +14,30 @@ export function InternalSelect({
   name,
   options,
   defaultValue = "",
+  value: controlledValue,
+  onValueChange,
   placeholder = "Selecciona",
   ariaLabel,
   required,
   invalid,
 }: {
   id: string;
-  name: string;
+  name?: string;
   options: readonly InternalSelectOption[];
   defaultValue?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   placeholder?: string;
   ariaLabel: string;
   required?: boolean;
   invalid?: boolean;
 }) {
-  const [value, setValue] = useState(defaultValue);
+  const [internalValue, setInternalValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const value = controlledValue ?? internalValue;
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selectedOption = options[selectedIndex];
   const listboxId = `${id}-options`;
@@ -53,7 +59,8 @@ export function InternalSelect({
   };
 
   const selectOption = (nextValue: string) => {
-    setValue(nextValue);
+    if (controlledValue === undefined) setInternalValue(nextValue);
+    onValueChange?.(nextValue);
     setIsOpen(false);
     requestAnimationFrame(() => triggerRef.current?.focus());
   };
@@ -81,7 +88,7 @@ export function InternalSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <input type="hidden" name={name} value={value} />
+      {name ? <input type="hidden" name={name} value={value} /> : null}
       <button
         ref={triggerRef}
         id={id}
@@ -105,8 +112,9 @@ export function InternalSelect({
           if (event.key === "Escape") setIsOpen(false);
         }}
       >
-        <span className={selectedOption ? undefined : "text-muted"}>
-          {selectedOption?.label ?? placeholder}
+        <span className={`flex min-w-0 items-center gap-2 ${selectedOption ? "" : "text-muted"}`}>
+          {selectedOption?.icon ? <span className="shrink-0" aria-hidden="true">{selectedOption.icon}</span> : null}
+          <span className="truncate">{selectedOption?.label ?? placeholder}</span>
         </span>
         <ChevronDown
           aria-hidden="true"
@@ -133,7 +141,10 @@ export function InternalSelect({
                 onClick={() => selectOption(option.value)}
                 onKeyDown={(event) => handleOptionKeyDown(event, index)}
               >
-                <span>{option.label}</span>
+                <span className="flex min-w-0 items-center gap-2">
+                  {option.icon ? <span className="shrink-0" aria-hidden="true">{option.icon}</span> : null}
+                  <span className="truncate">{option.label}</span>
+                </span>
                 {isSelected ? <Check aria-hidden="true" className="size-4" /> : null}
               </button>
             );

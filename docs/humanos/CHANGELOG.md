@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-selector-redes-sociales`
+
+- Sustituido el campo libre de redes sociales por un apartado desplegable que no ocupa espacio mientras está cerrado.
+- Incluidas Instagram, X, Snapchat, TikTok, YouTube, Facebook, LinkedIn y Twitch con iconos y URL predefinida; solo hay que escribir el usuario.
+- Se pueden añadir y eliminar perfiles, y el entrenador dispone de enlaces directos desde la ficha del cliente.
+
 ## 2026-10-13 — `2026-10-13-ayudas-contextuales-cuestionario`
 
 - Añadido un botón `?` junto a cada campo de respuesta desarrollada del cuestionario.

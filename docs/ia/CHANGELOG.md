@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-selector-redes-sociales`
+
+- Añadidos `SocialNetworksField` y `social-networks.ts` para editar, sanear, serializar y reconstruir hasta ocho perfiles permitidos.
+- `InternalSelect` admite ahora modo controlado e iconos sin alterar su uso previo con campo oculto.
+- El onboarding valida JSON canónico y continúa usando `social_networks text`, sin migración; la ficha administrativa genera los enlaces desde prefijos internos permitidos.
+- Incorporadas pruebas de interacción, serialización, saneamiento, URLs y rechazo de valores manipulados.
+
 ## 2026-10-13 — `2026-10-13-ayudas-contextuales-cuestionario`
 
 - Añadidos `FieldHelp` y `FieldHelpContent`; `Field` puede renderizar un disparador `?` junto a la etiqueta sin alterar el control ni su contrato de datos.

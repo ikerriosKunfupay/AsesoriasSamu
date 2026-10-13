@@ -41,6 +41,8 @@ El sexo usa la primitiva cliente `InternalSelect`: un combobox/listbox con campo
 
 `Field` acepta opcionalmente un contrato `FieldHelpContent` y delega su interacción en `FieldHelp`. Esta primitiva cliente abre un diálogo modal etiquetado, cerrable mediante botón, fondo o Escape, y restaura el foco al disparador. `OnboardingForm` aporta contenido específico para rutina, entrenamiento, comidas, objetivos, limitaciones y alergias. La ayuda es puramente informativa: no modifica el `FormData`, la validación ni el esquema persistido, y en campos sanitarios refuerza la minimización de datos.
 
+`SocialNetworksField` sustituye el texto libre de redes sociales por un bloque desplegable. Cada fila combina un `InternalSelect` controlado con icono, el prefijo canónico de la plataforma y un input limitado al nombre de usuario; admite añadir, eliminar y un máximo de ocho perfiles. `social-networks.ts` centraliza plataformas, saneamiento, serialización, validación y construcción de URLs. El valor se persiste como JSON mínimo `{ platform, username }[]` en la columna `social_networks text` ya existente, sin migración, y el administrador reconstruye enlaces únicamente desde la lista de plataformas permitidas.
+
 ## Planes
 
 `workout_assignments` y `nutrition_assignments` comparten contrato: cliente, título, contenido, estado, versión, fecha de inicio y autor. El cliente solo puede leer filas propias con estado `published`. En el MVP se crea una fila nueva por revisión, preservando histórico.

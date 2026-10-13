@@ -108,6 +108,29 @@ describe("validación de formularios", () => {
     }
   });
 
+  it("acepta perfiles sociales estructurados y rechaza texto libre", () => {
+    const base = {
+      age: "30",
+      sex: "mujer",
+      weightKg: "60",
+      heightCm: "165",
+      occupationSchedule: "Trabajo de mañana de lunes a viernes.",
+      trainingPriority: "Entrenar fuerza cuatro días por semana.",
+      mealAvailability: "Cuatro comidas con pausa al mediodía.",
+      conditionsInjuries: "",
+      allergiesIntolerances: "",
+      goals: "Mejorar fuerza y composición corporal.",
+      healthConsent: "on",
+    };
+
+    expect(onboardingSchema.safeParse({
+      ...base,
+      socialNetworks: '[{"platform":"instagram","username":"team.ortega"}]',
+    }).success).toBe(true);
+    expect(onboardingSchema.safeParse({ ...base, socialNetworks: "Instagram: @team.ortega" }).success)
+      .toBe(false);
+  });
+
   it.each(["-34", "34.5", "34e2", "edad"])(
     "rechaza una edad que no sea un entero positivo: %s",
     (age) => {

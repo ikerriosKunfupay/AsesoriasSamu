@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidSocialProfilesValue } from "./social-networks";
 import { parseUnsignedDecimal, parseUnsignedInteger } from "./numeric-values";
 
 const requiredText = (label: string, min = 2) =>
@@ -70,7 +71,12 @@ export const onboardingSchema = z.object({
   conditionsInjuries: z.string().trim().max(2000).optional(),
   allergiesIntolerances: z.string().trim().max(2000).optional(),
   goals: requiredText("Los objetivos", 10),
-  socialNetworks: z.string().trim().max(300).optional(),
+  socialNetworks: z
+    .string()
+    .trim()
+    .max(2000)
+    .refine(isValidSocialProfilesValue, "Revisa los perfiles sociales indicados.")
+    .optional(),
   healthConsent: z.literal("on", { message: "Debes aceptar el tratamiento de datos de salud." }),
 });
 
