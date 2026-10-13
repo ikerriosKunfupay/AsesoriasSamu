@@ -39,7 +39,7 @@ El cuestionario se presenta en una cuadrícula regular: los campos de una misma 
 
 Los campos que requieren una respuesta desarrollada muestran un `?` junto a su título. Al pulsarlo aparece una explicación específica, ejemplos de información útil y el recordatorio de que una respuesta más concreta permite adaptar mejor el plan. Las ayudas de lesiones y alergias solicitan solo información práctica y recuerdan que no se deben copiar diagnósticos, historiales ni informes médicos completos.
 
-Las redes sociales son opcionales y permanecen dentro de un bloque desplegable para no alargar el cuestionario. El cliente puede elegir Instagram, X, Snapchat, TikTok, YouTube, Facebook, LinkedIn o Twitch, escribir únicamente su usuario y dejar que la web complete la URL. Puede añadir varios perfiles o eliminar cualquiera antes de guardar. En la ficha del cliente, el entrenador los ve como enlaces directos.
+Las redes sociales son opcionales y permanecen dentro de un bloque desplegable de bordes redondeados para no alargar el cuestionario. El cliente puede elegir Instagram, X, Snapchat, TikTok, YouTube, Facebook, LinkedIn o Twitch, escribir únicamente su usuario y dejar que la web complete la URL. Puede añadir varios perfiles o eliminar cualquiera antes de guardar. En la ficha del cliente, el entrenador los ve como enlaces directos.
 
 En móvil, el botón de navegación queda a la izquierda de la cabecera privada y el emblema de Team Ortega a la derecha.
 

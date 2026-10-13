@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-refinado-redes-sociales`
+
+- Retirado el párrafo descriptivo y su referencia ARIA de `SocialNetworksField`.
+- Aplicado `--radius-lg` al contenedor, resumen y panel abierto sin alterar controles ni persistencia.
+
 ## 2026-10-13 — `2026-10-13-selector-redes-sociales`
 
 - Añadidos `SocialNetworksField` y `social-networks.ts` para editar, sanear, serializar y reconstruir hasta ocho perfiles permitidos.

@@ -103,13 +103,13 @@ export function SocialNetworksField({
           const nextOpen = event.currentTarget.open;
           setIsOpen(nextOpen);
         }}
-        className="border border-border-strong bg-surface"
+        className="group rounded-[var(--radius-lg)] border border-border-strong bg-surface"
       >
         <summary
           id={`${fieldId}-label`}
-          aria-describedby={error ? "socialNetworks-error" : `${fieldId}-description`}
+          aria-describedby={error ? "socialNetworks-error" : undefined}
           aria-invalid={Boolean(error) || undefined}
-          className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 font-bold [&::-webkit-details-marker]:hidden"
+          className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-[var(--radius-lg)] px-4 font-bold group-open:rounded-b-none [&::-webkit-details-marker]:hidden"
         >
           <span>
             Redes sociales <span className="font-normal text-muted">(opcional)</span>
@@ -125,11 +125,7 @@ export function SocialNetworksField({
           />
         </summary>
 
-        <div className="grid gap-4 border-t border-border p-4">
-          <p id={`${fieldId}-description`} className="text-sm leading-6 text-muted">
-            Elige una red y escribe únicamente tu usuario. La dirección se completa automáticamente.
-          </p>
-
+        <div className="grid gap-4 rounded-b-[var(--radius-lg)] border-t border-border p-4">
           {profiles.map((profile, index) => {
             const platform = SOCIAL_NETWORK_PLATFORMS.find(
               (candidate) => candidate.value === profile.platform,

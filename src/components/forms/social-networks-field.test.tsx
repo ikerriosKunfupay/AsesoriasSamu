@@ -13,6 +13,7 @@ describe("SocialNetworksField", () => {
     expect(screen.getByRole("combobox", { name: "Red social 1" })).not.toBeVisible();
     fireEvent.click(summary!);
 
+    expect(screen.queryByText(/la dirección se completa automáticamente/i)).not.toBeInTheDocument();
     const platform = screen.getByRole("combobox", { name: "Red social 1" });
     expect(platform).toHaveTextContent("Instagram");
     expect(screen.getByText("https://www.instagram.com/")).toBeInTheDocument();

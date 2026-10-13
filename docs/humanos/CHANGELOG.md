@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-refinado-redes-sociales`
+
+- Eliminado el texto explicativo redundante del interior del desplegable de redes sociales.
+- Redondeados los bordes del bloque tanto cerrado como abierto.
+
 ## 2026-10-13 — `2026-10-13-selector-redes-sociales`
 
 - Sustituido el campo libre de redes sociales por un apartado desplegable que no ocupa espacio mientras está cerrado.

@@ -40,7 +40,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
 - `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente.
-- `SocialNetworksField`: bloque desplegable y compacto que compone `InternalSelect` con icono, prefijo de URL, usuario y acciones de añadir o eliminar. Los perfiles opcionales no deben ocupar altura cuando no se editan.
+- `SocialNetworksField`: bloque desplegable, compacto y redondeado que compone `InternalSelect` con icono, prefijo de URL, usuario y acciones de añadir o eliminar. Los perfiles opcionales no deben ocupar altura cuando no se editan ni repetir instrucciones dentro del panel.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
