@@ -4,7 +4,7 @@
 
 - El cierre de sesión permanece visible al pie del menú privado en páginas largas y sigue disponible en el menú móvil.
 - Añadida al login la opción de mostrar u ocultar la contraseña.
-- Personalizado el correo de confirmación de cuenta con la identidad visual y el emblema de Team Ortega.
+- Personalizado el correo de confirmación de cuenta con la identidad visual y una versión ligera del emblema de Team Ortega compatible con correo.
 
 ## 2026-10-13 — `2026-10-13-cerrar-toast-registro`
 
