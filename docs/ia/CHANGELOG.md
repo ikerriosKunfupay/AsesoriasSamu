@@ -24,6 +24,12 @@
 - La landing renderiza el carrusel bajo `md` y conserva el listado estático desde `md`.
 - El `h2` de la sección usa `2.625rem` por defecto y recupera `text-6xl` desde `sm` para evitar clipping a 390 px.
 
+## 2026-10-13 — `2026-10-13-registro-sin-scroll`
+
+- Añadido a `AuthShell` el modo opcional `fitViewport`, basado en `h-dvh`, contención de overflow y espaciado compacto; solo `/registro` lo activa.
+- `RegisterForm` acepta el modo `compact` para reducir gaps sin cambiar controles, validación ni contratos de la Server Action.
+- Bajo 640 px de ancho y 721 px de alto, el layout reduce espaciados y saca los mensajes `.field-error` del flujo visual sin retirarlos del árbol accesible; el toast y `aria-invalid` siguen visibles.
+
 ## 2026-10-13 — `2026-10-13-volver-inicio-formulario-izquierda`
 
 - El contenedor del enlace de retorno en `/solicitar-informacion` cambia de `justify-end` a `justify-start`.

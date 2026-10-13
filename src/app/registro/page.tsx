@@ -16,8 +16,9 @@ export default async function RegisterPage() {
     <AuthShell
       title="Crea tu cuenta"
       description="Regístrate como cliente. Te enviaremos un correo para confirmar tu cuenta antes de comenzar."
+      fitViewport
     >
-      <RegisterForm />
+      <RegisterForm compact />
     </AuthShell>
   );
 }

@@ -104,16 +104,16 @@ export function LoginForm() {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({ compact = false }: { compact?: boolean }) {
   const [state, action] = useActionState(registerAction, initialActionState);
   return (
-    <form action={action} className="grid gap-5" noValidate>
+    <form action={action} className={compact ? "auth-register-compact grid gap-3 sm:gap-4" : "grid gap-5"} noValidate>
       <FormErrorToast
         message={state.status === "error" ? state.message : undefined}
         messageId={state.status === "error" ? state.messageId : undefined}
       />
       {state.status === "success" ? <FormMessage state={state} /> : null}
-      <div className="grid items-start gap-5 sm:grid-cols-2">
+      <div className={compact ? "auth-register-fields grid items-start gap-x-5 gap-y-3 sm:grid-cols-2" : "grid items-start gap-5 sm:grid-cols-2"}>
         <Field label="Nombre y apellidos" htmlFor="fullName" required error={state.fieldErrors?.fullName?.[0]}>
           <Input id="fullName" name="fullName" type="text" autoComplete="name" required aria-invalid={Boolean(state.fieldErrors?.fullName?.[0])} />
         </Field>

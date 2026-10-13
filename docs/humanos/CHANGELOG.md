@@ -37,6 +37,11 @@
 
 - Retirado el botón «Acceder» del bloque principal de la portada; el acceso continúa disponible en la cabecera.
 
+## 2026-10-13 — `2026-10-13-registro-sin-scroll`
+
+- Ajustada la pantalla de creación de cuenta para mostrar todo su contenido dentro de la altura disponible, sin desplazamiento vertical.
+- Se mantienen el tamaño cómodo de los campos y la adaptación específica para móvil y escritorio.
+
 ## 2026-10-13 — `2026-10-13-padding-lateral-publico`
 
 - Añadido más espacio lateral uniforme en toda la portada, su cabecera, sus secciones y el pie, también en móvil.
