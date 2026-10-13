@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-visibilidad-cuestionarios-admin`
+
+- Los logs de producción mostraron un `POST /app/cuestionario` y ningún `POST /solicitar-informacion`: el envío actual era onboarding, mientras el resumen solo consultaba `leads`.
+- `AdminDashboardPage` separa conteos y listados de `profiles`, `onboarding_submissions` y `leads`; los cuestionarios recientes solo muestran nombre, fecha y estado, sin duplicar respuestas sanitarias en el resumen.
+- `parseHeightCentimeters()` normaliza alturas en metros o centímetros a la columna canónica `height_cm`, manteniendo el rango persistido 120–230.
+- `saveOnboardingAction` comprueba y diferencia fallos de formulario, consentimiento y activación, emite observabilidad sin PII y revalida `/app`, `/admin` y `/admin/clientes` tras el éxito.
+- `pnpm check` superó lint, tipos, 65 pruebas y build Webpack.
+
 ## 2026-10-13 — `2026-10-13-recuperacion-login-despliegue`
 
 - Los logs de Vercel localizaron un `POST /login` con estado `409` y `Failed to find Server Action`, originado por un cliente de un despliegue anterior; no fue un rechazo de Supabase ni un error del perfil.

@@ -143,6 +143,30 @@ describe("validación de formularios", () => {
     }
   });
 
+  it.each([
+    ["1,69", 169],
+    ["1.725", 172.5],
+    ["169", 169],
+  ])("acepta la altura %s y la guarda en centímetros", (heightCm, expected) => {
+    const result = onboardingSchema.safeParse({
+      age: "30",
+      sex: "hombre",
+      weightKg: "80",
+      heightCm,
+      occupationSchedule: "Trabajo de mañana de lunes a viernes.",
+      trainingPriority: "Entrenar fuerza cuatro días por semana.",
+      mealAvailability: "Cuatro comidas con pausa al mediodía.",
+      conditionsInjuries: "",
+      allergiesIntolerances: "",
+      goals: "Mejorar fuerza y composición corporal.",
+      socialNetworks: "",
+      healthConsent: "on",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.heightCm).toBe(expected);
+  });
+
   it("acepta perfiles sociales estructurados y rechaza texto libre", () => {
     const base = {
       age: "30",

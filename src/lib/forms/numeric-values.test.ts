@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  parseHeightCentimeters,
   parseUnsignedDecimal,
   sanitizeUnsignedDecimalInput,
   sanitizeUnsignedIntegerInput,
@@ -18,5 +19,11 @@ describe("campos numéricos localizados", () => {
   it("convierte la coma decimal a un número canónico", () => {
     expect(parseUnsignedDecimal("80,25")).toBe(80.25);
     expect(parseUnsignedDecimal("80.25")).toBe(80.25);
+  });
+
+  it("normaliza la altura escrita en metros a centímetros", () => {
+    expect(parseHeightCentimeters("1,69")).toBe(169);
+    expect(parseHeightCentimeters("1.725")).toBe(172.5);
+    expect(parseHeightCentimeters("169.5")).toBe(169.5);
   });
 });

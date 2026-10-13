@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-visibilidad-cuestionarios-admin`
+
+- El resumen del entrenador distingue ahora los cuestionarios enviados por clientes de las solicitudes de información de la landing.
+- Añadidos el total de clientes registrados, el total de cuestionarios y una lista de los últimos formularios con acceso directo a cada ficha.
+- La altura del cuestionario acepta tanto `1,69` metros como `169` centímetros y siempre se almacena en centímetros.
+- El formulario ya no puede confirmar el envío si falla el consentimiento o la activación final del perfil; en ese caso explica que hay que reintentarlo.
+- El análisis de código, los tipos, las 65 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-recuperacion-login-despliegue`
 
 - Corregida la causa de la pantalla «This page couldn’t load» que podía aparecer al iniciar sesión desde una pestaña abierta antes de una publicación nueva.

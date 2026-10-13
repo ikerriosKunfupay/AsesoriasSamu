@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { isValidSocialProfilesValue } from "./social-networks";
-import { parseUnsignedDecimal, parseUnsignedInteger } from "./numeric-values";
+import {
+  parseHeightCentimeters,
+  parseUnsignedDecimal,
+  parseUnsignedInteger,
+} from "./numeric-values";
 import { PASSWORD_MIN_LENGTH } from "./password-policy";
 
 const requiredText = (label: string, min = 2) =>
@@ -72,7 +76,7 @@ export const onboardingSchema = z.object({
     z.number({ error: "Introduce un peso válido." }).min(35).max(300),
   ),
   heightCm: z.preprocess(
-    parseUnsignedDecimal,
+    parseHeightCentimeters,
     z.number({ error: "Introduce una altura válida." }).min(120).max(230),
   ),
   occupationSchedule: requiredText("El horario", 5),

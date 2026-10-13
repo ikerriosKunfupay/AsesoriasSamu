@@ -35,3 +35,12 @@ export function parseUnsignedDecimal(value: unknown) {
     ? Number(trimmedValue.replace(",", "."))
     : Number.NaN;
 }
+
+export function parseHeightCentimeters(value: unknown) {
+  const parsedValue = parseUnsignedDecimal(value);
+  if (!Number.isFinite(parsedValue)) return parsedValue;
+
+  return parsedValue >= 1.2 && parsedValue <= 2.3
+    ? Math.round(parsedValue * 10_000) / 100
+    : parsedValue;
+}

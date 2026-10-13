@@ -146,7 +146,13 @@ export function OnboardingForm({ initial }: { initial?: Record<string, string | 
             required
           />
         </Field>
-        <Field label="Altura (cm)" htmlFor="heightCm" required error={state.fieldErrors?.heightCm?.[0]}>
+        <Field
+          label="Altura (cm o m)"
+          htmlFor="heightCm"
+          required
+          error={state.fieldErrors?.heightCm?.[0]}
+          hint="Puedes escribir 169 o 1,69. Se guardará siempre en centímetros."
+        >
           <Input
             id="heightCm"
             name="heightCm"
