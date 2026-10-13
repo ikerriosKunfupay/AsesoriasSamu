@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-notas-sin-aviso-administrativo`
+
+- `ClientAdminNotesForm` elimina el párrafo auxiliar de privacidad en su variante completa y simplifica `aria-describedby` para apuntar solo a la región viva de autoguardado.
+- La persistencia, el debounce y el estado textual de guardado permanecen sin cambios; una prueba cubre la ausencia del aviso y la asociación accesible restante.
+- La primera ejecución dirigida falló al fijar un `useId()` concreto; la prueba se corrigió para comparar el `aria-describedby` con el ID generado por la región de estado.
+- `pnpm lint`, `pnpm typecheck`, 104 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-migracion-detalles-tarifas`
 
 - `supabase db push --linked` aplicó `202610140001_pricing_plan_service_details.sql` al proyecto enlazado de Team Ortega.

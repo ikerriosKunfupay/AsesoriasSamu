@@ -130,7 +130,7 @@ export function ClientAdminNotesForm({
     value: notes,
     maxLength: 5000,
     placeholder: "Escribe un recordatorio privado…",
-    "aria-describedby": compact ? `${fieldId}-status` : `${fieldId}-hint ${fieldId}-status`,
+    "aria-describedby": `${fieldId}-status`,
     onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setNotes(event.target.value);
       queueSave(event.target.value);
@@ -149,11 +149,6 @@ export function ClientAdminNotesForm({
       ) : (
         <Textarea {...noteFieldProps} rows={5} />
       )}
-      {!compact ? (
-        <p id={`${fieldId}-hint`} className="text-sm text-muted">
-          Solo lo verá la administración. Se guarda automáticamente; anota información práctica y evita copiar informes médicos completos.
-        </p>
-      ) : null}
       <div id={`${fieldId}-status`} className={cn(compact ? "sr-only" : "min-h-4 text-xs", state.status === "error" ? "text-danger" : "text-muted")} aria-live="polite">
         {pending
           ? "Guardando…"

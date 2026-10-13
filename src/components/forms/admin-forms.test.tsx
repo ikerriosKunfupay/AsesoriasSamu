@@ -33,4 +33,13 @@ describe("ClientStatusSwitch", () => {
     expect(screen.queryByText("Guardado automático")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /guardar nota/i })).not.toBeInTheDocument();
   });
+
+  it("omite la explicación administrativa en la ficha y conserva el estado de autoguardado", () => {
+    render(<ClientAdminNotesForm clientId="client-1" initialNotes="Llamar el viernes" />);
+
+    const status = screen.getByText("Los cambios se guardan automáticamente.");
+
+    expect(screen.queryByText(/solo lo verá la administración/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Notas internas" })).toHaveAttribute("aria-describedby", status.id);
+  });
 });

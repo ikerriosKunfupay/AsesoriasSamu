@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-notas-sin-aviso-administrativo`
+
+- Retirado de la ficha del cliente el texto explicativo situado bajo **Notas internas** que indicaba que solo podía verlo la administración.
+- La nota continúa guardándose automáticamente y mantiene visible el estado de guardado.
+- La primera prueba fijaba por error un identificador interno de React; se corrigió para comprobar la asociación accesible generada realmente.
+- La validación final completó análisis de código, tipos, 104 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-migracion-detalles-tarifas`
 
 - Aplicada en la base de datos de Team Ortega la estructura que distingue las tarifas por modalidad y días semanales.
