@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-hero-mas-compacto`
+
+- Reducidos el titular, el casco y la altura de la primera sección de la portada.
+- Al entrar se ven antes la explicación y los accesos principales, con una presentación menos abrumadora.
+
 ## 2026-10-13 — `2026-10-13-tipografia-archivo-dm-sans`
 
 - Renovada la tipografía de toda la web con titulares Archivo y textos DM Sans.

@@ -44,21 +44,21 @@ export default function Home() {
         <section className="public-dark relative overflow-hidden border-b-[6px] border-primary">
           <div className="absolute -right-24 top-0 h-full w-[42%] -skew-x-12 bg-white/[0.025]" />
           <div className="absolute right-[9%] top-0 h-40 w-6 -skew-x-12 bg-primary" />
-          <div className="page-shell relative grid min-h-[680px] items-center gap-16 py-18 lg:grid-cols-[1.12fr_0.88fr] lg:py-24">
+          <div className="page-shell relative grid min-h-[580px] items-center gap-12 py-14 lg:grid-cols-[1.08fr_0.92fr] lg:py-16">
             <div className="max-w-3xl">
-              <p className="public-kicker mb-8 text-white/65">
+              <p className="public-kicker mb-6 text-white/65">
                 Entrenamiento online personalizado
               </p>
-              <h1 className="font-display text-[clamp(4rem,9vw,7.8rem)] leading-[0.79] font-black tracking-[-0.065em] uppercase">
+              <h1 className="font-display text-[clamp(3.25rem,6.6vw,5.8rem)] leading-[0.84] font-black tracking-[-0.06em] uppercase">
                 Tu objetivo
-                <span className="mt-5 block text-primary">exige un plan</span>
-                <span className="mt-5 block">de verdad.</span>
+                <span className="mt-3 block text-primary">exige un plan</span>
+                <span className="mt-3 block">de verdad.</span>
               </h1>
-              <p className="mt-10 max-w-xl border-l-4 border-primary pl-5 text-lg leading-8 text-white/70 sm:text-xl">
+              <p className="mt-7 max-w-xl border-l-4 border-primary pl-5 text-base leading-7 text-white/70 sm:text-lg">
                 Entrenamiento, nutrición y seguimiento en un mismo sitio. Sin
                 plantillas genéricas y con un plan que evoluciona contigo.
               </p>
-              <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+              <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
                 <ButtonLink href="/solicitar-informacion" size="lg" className="public-action">
                   Quiero más información <ArrowRight aria-hidden="true" size={18} />
                 </ButtonLink>
@@ -67,12 +67,12 @@ export default function Home() {
                 </ButtonLink>
               </div>
             </div>
-            <div className="hero-mark relative mx-auto hidden w-full max-w-[31rem] lg:block">
+            <div className="hero-mark relative mx-auto hidden w-full max-w-[25rem] lg:block">
               <Image
                 src="/brand/team-ortega-mark.png"
                 alt="Team Ortega"
-                width={560}
-                height={560}
+                width={480}
+                height={480}
                 className="relative h-auto w-full drop-shadow-[0_34px_32px_rgba(0,0,0,0.52)]"
                 priority
               />

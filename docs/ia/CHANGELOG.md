@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-hero-mas-compacto`
+
+- Reducido el `clamp()` tipográfico del `h1`, la altura mínima y los espaciados verticales del hero de la landing.
+- Reducido el ancho máximo del recurso de marca y reajustada la proporción de columnas sin alterar el contenido ni los CTA.
+
 ## 2026-10-13 — `2026-10-13-tipografia-archivo-dm-sans`
 
 - Integradas Archivo variable y DM Sans variable mediante `next/font/google` en el layout raíz.
