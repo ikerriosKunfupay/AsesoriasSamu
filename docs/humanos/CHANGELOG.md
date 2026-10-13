@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-mejorar-password-registro`
+
+- Alineados los dos campos de contraseña del registro para que sus etiquetas y líneas tengan el mismo tamaño y comiencen a la misma altura.
+- Sustituido el aviso nativo por un toast con el error y el marcado rojo de los campos incorrectos.
+- Añadida la opción de mostrar u ocultar cada contraseña.
+- La primera comprobación detectó un problema interno en el cierre automático del aviso; se simplificó para mantenerlo visible y la validación final terminó correctamente.
+
 ## 2026-10-13 — `2026-10-13-registro-publico-clientes`
 
 - Añadida una opción visible para registrarse desde la pantalla de acceso cuando la persona todavía no tiene cuenta.

@@ -55,7 +55,11 @@ export async function registerAction(
 ): Promise<ActionState> {
   const parsed = registerSchema.safeParse(formValues(formData));
   if (!parsed.success) {
-    return { status: "error", message: "Revisa los datos.", fieldErrors: fieldErrors(parsed.error) };
+    return {
+      status: "error",
+      message: parsed.error.issues[0]?.message ?? "Revisa los campos marcados en rojo.",
+      fieldErrors: fieldErrors(parsed.error),
+    };
   }
 
   const supabase = await createClient();

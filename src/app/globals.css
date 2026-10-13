@@ -178,6 +178,11 @@ textarea {
   outline: 0;
 }
 
+.public-form input[aria-invalid="true"],
+.public-form input[aria-invalid="true"]:focus {
+  border-color: var(--danger);
+}
+
 .public-form button[type="submit"] {
   border-radius: 0;
   clip-path: polygon(0 0, calc(100% - 0.9rem) 0, 100% 50%, calc(100% - 0.9rem) 100%, 0 100%);

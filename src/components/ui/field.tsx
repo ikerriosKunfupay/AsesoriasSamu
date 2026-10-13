@@ -22,8 +22,8 @@ export function Field({
         {required ? <span className="ml-1 text-primary" aria-hidden="true">*</span> : null}
       </label>
       {children}
-      {hint && !error ? <p className="text-sm text-muted">{hint}</p> : null}
-      {error ? <p className="text-sm font-medium text-danger" role="alert">{error}</p> : null}
+      {hint && !error ? <p id={`${htmlFor}-hint`} className="text-sm text-muted">{hint}</p> : null}
+      {error ? <p id={`${htmlFor}-error`} className="text-sm font-medium text-danger" role="alert">{error}</p> : null}
     </div>
   );
 }

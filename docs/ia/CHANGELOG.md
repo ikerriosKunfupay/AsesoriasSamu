@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-mejorar-password-registro`
+
+- Añadido `items-start` a la cuadrícula responsive de `RegisterForm` para impedir que el texto de ayuda de la contraseña estire y desplace el campo de confirmación.
+- `RegisterForm` usa `noValidate`, un toast de error persistente y `aria-invalid`; `globals.css` mantiene rojo el borde inválido incluso durante el foco.
+- Los dos campos emplean un control de visibilidad independiente con `Eye`/`EyeOff`, y los mensajes de ayuda y error quedan asociados mediante `aria-describedby`.
+- El primer `pnpm check` señaló `react-hooks/set-state-in-effect` en el cierre temporizado del toast; se retiró ese efecto y la ejecución final superó lint, tipos, 8 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-registro-publico-clientes`
 
 - Añadidos `/registro`, `RegisterForm`, `registerSchema` y `registerAction` sobre `supabase.auth.signUp()`.

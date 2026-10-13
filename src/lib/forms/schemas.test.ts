@@ -53,6 +53,20 @@ describe("validación de formularios", () => {
     expect(result.success).toBe(false);
   });
 
+  it("rechaza ambas contraseñas cuando no llegan a 10 caracteres", () => {
+    const result = registerSchema.safeParse({
+      fullName: "María López",
+      email: "maria@example.com",
+      password: "123456789",
+      confirmation: "123456789",
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.password).toBeDefined();
+      expect(result.error.flatten().fieldErrors.confirmation).toBeDefined();
+    }
+  });
+
   it("valida los límites físicos del cuestionario", () => {
     const result = onboardingSchema.safeParse({
       age: "30",

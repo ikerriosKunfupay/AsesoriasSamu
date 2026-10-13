@@ -13,7 +13,7 @@ export const registerSchema = z
     fullName: requiredText("El nombre").max(120),
     email: z.string().trim().email("Introduce un correo válido."),
     password: z.string().min(10, "Usa al menos 10 caracteres."),
-    confirmation: z.string(),
+    confirmation: z.string().min(10, "Usa al menos 10 caracteres."),
   })
   .refine((value) => value.password === value.confirmation, {
     message: "Las contraseñas no coinciden.",

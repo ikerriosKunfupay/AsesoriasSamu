@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { useActionState, useState } from "react";
 import {
   loginAction,
   registerAction,
@@ -13,6 +14,60 @@ import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
 import { SubmitButton } from "./submit-button";
+
+function FormErrorToast({ message }: { message?: string }) {
+  if (!message) return null;
+
+  return (
+    <div
+      role="alert"
+      aria-live="assertive"
+      className="fixed top-4 left-1/2 z-50 flex w-[min(calc(100%-2rem),32rem)] -translate-x-1/2 items-start gap-3 border-l-4 border-white bg-danger px-4 py-3 text-sm font-bold text-white shadow-xl"
+    >
+      <AlertCircle className="mt-0.5 shrink-0" size={20} aria-hidden="true" />
+      <p className="min-w-0 flex-1">{message}</p>
+    </div>
+  );
+}
+
+function PasswordInput({
+  id,
+  name,
+  error,
+  describedBy,
+}: {
+  id: string;
+  name: string;
+  error?: string;
+  describedBy?: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        name={name}
+        type={visible ? "text" : "password"}
+        autoComplete="new-password"
+        required
+        minLength={10}
+        aria-invalid={Boolean(error)}
+        aria-describedby={describedBy}
+        className="pr-12!"
+      />
+      <button
+        type="button"
+        className="absolute top-1/2 right-0 grid size-11 -translate-y-1/2 place-items-center text-muted transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        onClick={() => setVisible((current) => !current)}
+        aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
+        aria-pressed={visible}
+      >
+        {visible ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
+      </button>
+    </div>
+  );
+}
 
 export function LoginForm() {
   const [state, action] = useActionState(loginAction, initialActionState);
@@ -42,20 +97,31 @@ export function LoginForm() {
 export function RegisterForm() {
   const [state, action] = useActionState(registerAction, initialActionState);
   return (
-    <form action={action} className="grid gap-5">
-      <FormMessage state={state} />
-      <div className="grid gap-5 sm:grid-cols-2">
+    <form action={action} className="grid gap-5" noValidate>
+      <FormErrorToast message={state.status === "error" ? state.message : undefined} />
+      {state.status === "success" ? <FormMessage state={state} /> : null}
+      <div className="grid items-start gap-5 sm:grid-cols-2">
         <Field label="Nombre y apellidos" htmlFor="fullName" required error={state.fieldErrors?.fullName?.[0]}>
-          <Input id="fullName" name="fullName" type="text" autoComplete="name" required />
+          <Input id="fullName" name="fullName" type="text" autoComplete="name" required aria-invalid={Boolean(state.fieldErrors?.fullName?.[0])} />
         </Field>
         <Field label="Correo electrónico" htmlFor="email" required error={state.fieldErrors?.email?.[0]}>
-          <Input id="email" name="email" type="email" autoComplete="email" required />
+          <Input id="email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(state.fieldErrors?.email?.[0])} />
         </Field>
         <Field label="Contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]} hint="Mínimo 10 caracteres.">
-          <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={10} />
+          <PasswordInput
+            id="password"
+            name="password"
+            error={state.fieldErrors?.password?.[0]}
+            describedBy={state.fieldErrors?.password?.[0] ? "password-error" : "password-hint"}
+          />
         </Field>
         <Field label="Repite la contraseña" htmlFor="confirmation" required error={state.fieldErrors?.confirmation?.[0]}>
-          <Input id="confirmation" name="confirmation" type="password" autoComplete="new-password" required minLength={10} />
+          <PasswordInput
+            id="confirmation"
+            name="confirmation"
+            error={state.fieldErrors?.confirmation?.[0]}
+            describedBy={state.fieldErrors?.confirmation?.[0] ? "confirmation-error" : undefined}
+          />
         </Field>
       </div>
       <p className="text-xs leading-5 text-muted">
