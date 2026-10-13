@@ -9,6 +9,7 @@ export type CurrentUser = {
   id: string;
   email: string;
   fullName: string;
+  avatarPath: string | null;
   role: UserRole;
   status: ProfileStatus;
   onboardingComplete: boolean;
@@ -21,7 +22,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, full_name, role, status, onboarding_complete")
+    .select("id, full_name, avatar_path, role, status, onboarding_complete")
     .eq("id", authData.user.id)
     .single();
 
@@ -31,6 +32,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     id: profile.id,
     email: authData.user.email ?? "",
     fullName: profile.full_name || authData.user.email || "Usuario",
+    avatarPath: profile.avatar_path,
     role: profile.role,
     status: profile.status,
     onboardingComplete: profile.onboarding_complete,

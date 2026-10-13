@@ -1,5 +1,19 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-ajustes-perfil-cliente`
+
+- Añadidos `/app/ajustes`, `ProfileSettingsForm`, `updateProfileAction`, la entrada de navegación y la visualización de datos básicos en la ficha administrativa.
+- Incorporada la migración `202610130002_profile_settings.sql`: `profiles.avatar_path`, edición propia limitada por columnas y bucket privado `profile-avatars` con políticas por propietario.
+- Los avatares se validan a 2 MB y MIME JPG/PNG/WebP, se sirven con URL firmada de una hora y reutilizan `ProfileAvatar` con iniciales de respaldo.
+- Ampliadas las pruebas de esquemas y presentación del avatar; 43 pruebas, lint, tipos y build terminaron correctamente.
+- Aplicada la migración en `team-ortega` y verificados `avatar_path`, el bucket privado de 2 MB y sus cuatro políticas de objetos.
+
+## 2026-10-13 — `2026-10-13-consentimiento-cuestionario-toast`
+
+- Extraído `FormErrorToast` como componente reutilizable y aplicado al onboarding con `noValidate` y un `messageId` nuevo por error de la Server Action.
+- Añadidos `HealthConsentField` con asociación ARIA y estado visual rojo, y `DismissibleNotice` para cerrar localmente el recordatorio sanitario.
+- Incorporadas pruebas de cierre y reaparición del toast, estado inválido del consentimiento y cierre del aviso; `pnpm check` superó lint, tipos, 39 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-refinado-redes-sociales`
 
 - Retirado el párrafo descriptivo y su referencia ARIA de `SocialNetworksField`.

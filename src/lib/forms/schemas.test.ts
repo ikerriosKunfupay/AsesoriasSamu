@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { leadSchema, onboardingSchema, registerSchema, updatePasswordSchema } from "./schemas";
+import {
+  leadSchema,
+  onboardingSchema,
+  profileSettingsSchema,
+  registerSchema,
+  updatePasswordSchema,
+} from "./schemas";
 
 describe("validación de formularios", () => {
   it("acepta una solicitud pública válida", () => {
@@ -65,6 +71,24 @@ describe("validación de formularios", () => {
       expect(result.error.flatten().fieldErrors.password).toBeDefined();
       expect(result.error.flatten().fieldErrors.confirmation).toBeDefined();
     }
+  });
+
+  it("valida los datos básicos editables del cliente", () => {
+    const result = profileSettingsSchema.safeParse({
+      fullName: "María Ortega",
+      phone: "+34 600 000 000",
+      email: "maria@example.com",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rechaza un correo inválido en los ajustes del perfil", () => {
+    const result = profileSettingsSchema.safeParse({
+      fullName: "María Ortega",
+      phone: "",
+      email: "correo-invalido",
+    });
+    expect(result.success).toBe(false);
   });
 
   it("valida los límites físicos del cuestionario", () => {

@@ -10,7 +10,9 @@ import {
   sanitizeUnsignedDecimalInput,
   sanitizeUnsignedIntegerInput,
 } from "@/lib/forms/numeric-values";
+import { FormErrorToast } from "./form-error-toast";
 import { FormMessage } from "./form-message";
+import { HealthConsentField } from "./health-consent-field";
 import { SubmitButton } from "./submit-button";
 import { SocialNetworksField } from "./social-networks-field";
 
@@ -92,9 +94,15 @@ function sanitizeInput(
 
 export function OnboardingForm({ initial }: { initial?: Record<string, string | number | null> }) {
   const [state, action] = useActionState(saveOnboardingAction, initialActionState);
+  const healthConsentError = state.fieldErrors?.healthConsent?.[0];
+
   return (
-    <form action={action} className="grid gap-6">
-      <FormMessage state={state} />
+    <form action={action} className="grid gap-6" noValidate>
+      <FormErrorToast
+        message={state.status === "error" ? healthConsentError ?? state.message : undefined}
+        messageId={state.status === "error" ? state.messageId : undefined}
+      />
+      {state.status === "success" ? <FormMessage state={state} /> : null}
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <Field label="Edad" htmlFor="age" required error={state.fieldErrors?.age?.[0]}>
           <Input
@@ -182,11 +190,7 @@ export function OnboardingForm({ initial }: { initial?: Record<string, string | 
         initialValue={String(initial?.social_networks ?? "")}
         error={state.fieldErrors?.socialNetworks?.[0]}
       />
-      <label className="flex gap-3 rounded-[var(--radius-md)] border border-border bg-surface-muted p-4 text-sm leading-6">
-        <input name="healthConsent" type="checkbox" className="mt-1 size-4 accent-primary" required />
-        <span>Acepto que Team Ortega trate estos datos, incluidos los relativos a salud, únicamente para preparar y hacer seguimiento de mi plan.</span>
-      </label>
-      {state.fieldErrors?.healthConsent?.[0] ? <p className="text-sm text-danger">{state.fieldErrors.healthConsent[0]}</p> : null}
+      <HealthConsentField error={healthConsentError} />
       <SubmitButton pendingLabel="Guardando…">Guardar cuestionario</SubmitButton>
     </form>
   );

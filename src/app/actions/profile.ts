@@ -1,0 +1,108 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import type { ActionState } from "@/lib/forms/action-state";
+import { fieldErrors, profileSettingsSchema } from "@/lib/forms/schemas";
+import { requireCompletedClient } from "@/lib/auth/current-user";
+import { createClient } from "@/lib/supabase/server";
+
+const AVATAR_BUCKET = "profile-avatars";
+const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
+const AVATAR_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+
+export async function updateProfileAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const user = await requireCompletedClient();
+  const parsed = profileSettingsSchema.safeParse({
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone"),
+    email: formData.get("email"),
+  });
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "Revisa los datos del perfil.",
+      fieldErrors: fieldErrors(parsed.error),
+    };
+  }
+
+  const avatar = formData.get("avatar");
+  if (avatar instanceof File && avatar.size > 0) {
+    if (!AVATAR_TYPES.has(avatar.type)) {
+      return {
+        status: "error",
+        message: "La foto debe ser JPG, PNG o WebP.",
+        fieldErrors: { avatar: ["Selecciona una imagen JPG, PNG o WebP."] },
+      };
+    }
+    if (avatar.size > MAX_AVATAR_SIZE) {
+      return {
+        status: "error",
+        message: "La foto supera el límite de 2 MB.",
+        fieldErrors: { avatar: ["La imagen debe ocupar como máximo 2 MB."] },
+      };
+    }
+  }
+
+  const supabase = await createClient();
+  let avatarPath: string | undefined;
+
+  if (avatar instanceof File && avatar.size > 0) {
+    avatarPath = `${user.id}/avatar`;
+    const { error: uploadError } = await supabase.storage
+      .from(AVATAR_BUCKET)
+      .upload(avatarPath, avatar, {
+        cacheControl: "3600",
+        contentType: avatar.type,
+        upsert: true,
+      });
+
+    if (uploadError) {
+      return {
+        status: "error",
+        message: "No se pudo guardar la foto de perfil.",
+        fieldErrors: { avatar: ["Prueba con otra imagen o inténtalo de nuevo."] },
+      };
+    }
+  }
+
+  const profileUpdate = {
+    full_name: parsed.data.fullName,
+    phone: parsed.data.phone || null,
+    ...(avatarPath ? { avatar_path: avatarPath } : {}),
+  };
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .update(profileUpdate)
+    .eq("id", user.id);
+
+  if (profileError) {
+    return { status: "error", message: "No se pudieron guardar los datos del perfil." };
+  }
+
+  const emailChanged = parsed.data.email.toLowerCase() !== user.email.toLowerCase();
+  if (emailChanged) {
+    const { error: emailError } = await supabase.auth.updateUser({ email: parsed.data.email });
+    if (emailError) {
+      return {
+        status: "error",
+        message: "El perfil se guardó, pero no se pudo solicitar el cambio de correo.",
+        fieldErrors: { email: ["Comprueba el correo o inténtalo de nuevo."] },
+      };
+    }
+  }
+
+  revalidatePath("/app", "layout");
+  revalidatePath("/app/ajustes");
+  revalidatePath(`/admin/clientes/${user.id}`);
+
+  return {
+    status: "success",
+    message: emailChanged
+      ? "Perfil guardado. Revisa tu correo para confirmar la nueva dirección."
+      : "Perfil actualizado correctamente.",
+  };
+}

@@ -41,6 +41,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
 - `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente.
 - `SocialNetworksField`: bloque desplegable, compacto y redondeado que compone `InternalSelect` con icono, prefijo de URL, usuario y acciones de añadir o eliminar. Los perfiles opcionales no deben ocupar altura cuando no se editan ni repetir instrucciones dentro del panel.
+- `ProfileAvatar`: avatar circular con borde de marca, imagen privada mediante URL firmada e iniciales como estado de respaldo.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
@@ -62,6 +63,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - El registro se ajusta al alto visible del dispositivo sin desplazamiento de página; para conseguirlo compacta únicamente sus separaciones, conserva controles táctiles de al menos 44 px y no altera el resto de vistas de autenticación. En móviles de poca altura, los errores de campo permanecen disponibles para tecnologías de asistencia pero salen del flujo visual, porque el toast y el borde rojo ya comunican el fallo sin recortar las acciones.
 - Los campos que comparten fila se alinean desde arriba; una ayuda o un error bajo un campo no debe desplazar verticalmente el control contiguo.
 - La validación del registro evita los avisos nativos del navegador: muestra el error en un toast cerrable mediante una `X` etiquetada y marca en rojo cada control afectado. Los campos de contraseña incluyen una acción accesible para mostrar u ocultar su contenido.
+- El consentimiento sanitario del cuestionario sigue la misma validación propia: el error aparece en `FormErrorToast`, la casilla y su contenedor se marcan en rojo y el mensaje queda asociado mediante `aria-describedby`. Los avisos informativos independientes pueden usar `DismissibleNotice`, cuya `X` no sustituye ni modifica consentimientos obligatorios.
 - El control para mostrar u ocultar la contraseña se reutiliza también en el login y conserva el propósito de autocompletado propio de cada formulario.
 - En escritorio, el menú privado ocupa la altura visible y mantiene el usuario y **Cerrar sesión** accesibles al pie, independientemente de la longitud del contenido.
 - En la cabecera privada móvil, el menú se sitúa a la izquierda y el emblema compacto a la derecha.

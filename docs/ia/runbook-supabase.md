@@ -6,7 +6,7 @@
 - Proyecto: `team-ortega` (`grlntqiviyehnpibaijk`).
 - Región: `eu-west-1` (Irlanda).
 - Aplicación: `https://team-ortega.vercel.app`.
-- Migración inicial aplicada y 11 tablas verificadas.
+- Migraciones `202610120001_initial_schema.sql` y `202610130002_profile_settings.sql` aplicadas; 11 tablas y el bucket privado `profile-avatars` verificados.
 - Site URL: `https://team-ortega.vercel.app`.
 - Redirect URLs: producción y desarrollo local configuradas según la sección siguiente.
 
@@ -17,7 +17,8 @@ No documentar aquí ni en Git las claves publishable, secret o service role.
 1. Usa una organización y un proyecto nuevos que no compartan recursos con otros productos.
 2. Elige una región de la UE.
 3. Ejecuta `supabase/migrations/202610120001_initial_schema.sql` en el SQL Editor.
-4. Comprueba que todas las tablas muestran RLS activado.
+4. Ejecuta después, en orden, el resto de archivos de `supabase/migrations/` que todavía no estén aplicados. `202610130002_profile_settings.sql` añade la ruta de avatar, la edición limitada del perfil y el bucket privado `profile-avatars`.
+5. Comprueba que todas las tablas muestran RLS activado y que el bucket de avatares permanece privado.
 
 ## Administrador inicial
 

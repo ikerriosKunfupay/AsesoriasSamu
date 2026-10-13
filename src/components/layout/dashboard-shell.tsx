@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState, type MouseEvent } from "react";
-import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, Salad, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
+import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, Salad, Settings, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
+import { ProfileAvatar } from "@/components/ui/profile-avatar";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -25,16 +26,19 @@ const clientItems: NavItem[] = [
   { href: "/app/nutricion", label: "Nutrición", icon: Salad },
   { href: "/app/seguimiento", label: "Seguimiento", icon: TrendingUp },
   { href: "/app/cuestionario", label: "Cuestionario", icon: UserRound },
+  { href: "/app/ajustes", label: "Ajustes", icon: Settings },
 ];
 
 export function DashboardShell({
   mode,
   userName,
+  userAvatarUrl,
   onboardingComplete = true,
   children,
 }: {
   mode: "admin" | "client";
   userName: string;
+  userAvatarUrl?: string | null;
   onboardingComplete?: boolean;
   children: React.ReactNode;
 }) {
@@ -74,7 +78,10 @@ export function DashboardShell({
           ))}
         </nav>
         <div className="mt-auto border-t border-zinc-800 pt-5">
-          <p className="mb-3 truncate text-sm font-bold text-white">{userName}</p>
+          <div className="mb-3 flex min-w-0 items-center gap-3">
+            <ProfileAvatar name={userName} src={userAvatarUrl} className="size-10 border-zinc-700 bg-zinc-900 text-xs" />
+            <p className="min-w-0 truncate text-sm font-bold text-white">{userName}</p>
+          </div>
           <form action={logoutAction}>
             <Button variant="ghost" className="w-full justify-start text-zinc-300 hover:bg-zinc-800 hover:text-white" type="submit">
               <LogOut className="size-4" /> Cerrar sesión

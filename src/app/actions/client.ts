@@ -18,7 +18,12 @@ export async function saveOnboardingAction(
   const user = await requireClient();
   const parsed = onboardingSchema.safeParse(formValues(formData));
   if (!parsed.success) {
-    return { status: "error", message: "Revisa los campos marcados.", fieldErrors: fieldErrors(parsed.error) };
+    return {
+      status: "error",
+      message: "Revisa los campos marcados.",
+      messageId: crypto.randomUUID(),
+      fieldErrors: fieldErrors(parsed.error),
+    };
   }
 
   const supabase = await createClient();
@@ -40,7 +45,13 @@ export async function saveOnboardingAction(
     { onConflict: "user_id" },
   );
 
-  if (error) return { status: "error", message: "No se pudo guardar el cuestionario." };
+  if (error) {
+    return {
+      status: "error",
+      message: "No se pudo guardar el cuestionario.",
+      messageId: crypto.randomUUID(),
+    };
+  }
   await supabase.from("consent_acceptances").upsert(
     { user_id: user.id, consent_type: "health_data", policy_version: "2026-10-12" },
     { onConflict: "user_id,consent_type,policy_version" },

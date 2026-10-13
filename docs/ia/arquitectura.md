@@ -18,6 +18,8 @@ La cabecera móvil de `DashboardShell` coloca el disparador de navegación a la 
 
 El layout de `/app` entrega `onboardingComplete` a `DashboardShell`. Mientras sea `false`, el shell intercepta en escritorio y móvil todos los enlaces del cliente salvo `/app/cuestionario` y muestra un diálogo accesible que explica el requisito. La protección no depende solo de la interfaz: `requireCompletedClient()` bloquea también el acceso directo a Inicio, Entrenamiento, Nutrición y Seguimiento, redirigiendo al cuestionario. `revalidatePath("/app", "layout")` actualiza el estado del layout después de `complete_onboarding()` y desbloquea la navegación.
 
+`/app/ajustes` queda igualmente detrás de `requireCompletedClient()`. `updateProfileAction` deriva la identidad de la sesión, valida nombre, teléfono, correo y avatar, y actualiza únicamente la fila propia. El correo se cambia mediante `auth.updateUser()` para conservar la confirmación del proveedor. `profiles.avatar_path` guarda solo la ruta del objeto; la interfaz crea URLs firmadas de una hora para `DashboardShell`, Ajustes y la ficha administrativa. `ProfileAvatar` unifica foto e iniciales de respaldo.
+
 `/registro` usa `registerAction` y `supabase.auth.signUp()` con confirmación por correo. Solo envía `full_name` como metadato y el trigger `handle_new_user()` fuerza siempre `role = client`; el callback conduce al cuestionario inicial. Cuando la acción devuelve éxito sin sesión, `RegistrationSuccessDialog` presenta una confirmación modal y ejecuta `router.replace("/login")` tras 2,5 segundos o al pulsar su CTA. Si el proyecto desactiva la confirmación de correo, una sesión creada durante el registro se redirige directamente al cuestionario y omite el modal.
 
 ## Clientes Supabase
@@ -41,6 +43,8 @@ El sexo usa la primitiva cliente `InternalSelect`: un combobox/listbox con campo
 
 `Field` acepta opcionalmente un contrato `FieldHelpContent` y delega su interacción en `FieldHelp`. Esta primitiva cliente abre un diálogo modal etiquetado, cerrable mediante botón, fondo o Escape, y restaura el foco al disparador. `OnboardingForm` aporta contenido específico para rutina, entrenamiento, comidas, objetivos, limitaciones y alergias. La ayuda es puramente informativa: no modifica el `FormData`, la validación ni el esquema persistido, y en campos sanitarios refuerza la minimización de datos.
 
+`OnboardingForm` usa `noValidate` para sustituir los globos nativos por la respuesta autoritativa de Zod. `saveOnboardingAction` devuelve un `messageId` nuevo en cada error; el `FormErrorToast` reutilizable permite cerrar el aviso y volver a mostrarlo si se repite el envío. `HealthConsentField` asocia el error mediante ARIA y aplica borde, fondo y contorno rojos cuando falta el consentimiento. El recordatorio preventivo de la página usa `DismissibleNotice`: su `X` solo lo oculta en el estado local de la vista y no altera el consentimiento ni los datos enviados.
+
 `SocialNetworksField` sustituye el texto libre de redes sociales por un bloque desplegable redondeado, sin texto introductorio redundante dentro del contenido. Cada fila combina un `InternalSelect` controlado con icono, el prefijo canónico de la plataforma y un input limitado al nombre de usuario; admite añadir, eliminar y un máximo de ocho perfiles. `social-networks.ts` centraliza plataformas, saneamiento, serialización, validación y construcción de URLs. El valor se persiste como JSON mínimo `{ platform, username }[]` en la columna `social_networks text` ya existente, sin migración, y el administrador reconstruye enlaces únicamente desde la lista de plataformas permitidas.
 
 ## Planes
@@ -50,5 +54,7 @@ El sexo usa la primitiva cliente `InternalSelect`: un combobox/listbox con campo
 ## Build
 
 La compilación usa `next build --webpack`. Turbopack necesita abrir procesos/puertos auxiliares en algunos entornos restringidos; Webpack produce el mismo artefacto Next.js y permite una validación reproducible. Las rutas privadas requieren variables únicamente en tiempo de ejecución y se marcan `force-dynamic`.
+
+Las Server Actions aceptan hasta 3 MB para permitir el multipart del avatar, pero `updateProfileAction` mantiene un límite de aplicación de 2 MB y restringe el MIME a JPG, PNG o WebP.
 
 `src/app/layout.tsx` registra Archivo y DM Sans mediante `next/font/google` y expone `--font-team-display` y `--font-team-body`. Next descarga y autoaloja los archivos durante el build; `globals.css` consume esas variables con fallbacks de sistema para todas las rutas públicas y privadas.

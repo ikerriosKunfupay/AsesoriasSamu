@@ -1,5 +1,18 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-ajustes-perfil-cliente`
+
+- Añadido un apartado de Ajustes para que cada cliente pueda cambiar foto, nombre, teléfono y correo.
+- La foto se mantiene privada y el cambio de correo requiere confirmar la nueva dirección.
+- La ficha administrativa muestra ahora la foto y todos los datos básicos de contacto del cliente.
+- Las comprobaciones de interacción, datos, código, tipos y compilación finalizaron correctamente con 43 pruebas; el almacenamiento privado también quedó activado y verificado.
+
+## 2026-10-13 — `2026-10-13-consentimiento-cuestionario-toast`
+
+- Sustituido el aviso nativo al omitir el consentimiento del cuestionario por un toast cerrable y un marcado rojo de la casilla.
+- Añadida una `X` al recordatorio sobre datos de salud para poder ocultarlo sin afectar al consentimiento obligatorio.
+- Verificados los nuevos controles y el resto de la aplicación con 39 pruebas, análisis de código, tipos y compilación.
+
 ## 2026-10-13 — `2026-10-13-refinado-redes-sociales`
 
 - Eliminado el texto explicativo redundante del interior del desplegable de redes sociales.

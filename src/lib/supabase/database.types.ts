@@ -9,6 +9,7 @@ export type Database = {
           id: string;
           full_name: string;
           phone: string | null;
+          avatar_path: string | null;
           role: UserRole;
           status: ProfileStatus;
           onboarding_complete: boolean;
@@ -19,6 +20,7 @@ export type Database = {
           id: string;
           full_name?: string;
           phone?: string | null;
+          avatar_path?: string | null;
           role?: UserRole;
           status?: ProfileStatus;
           onboarding_complete?: boolean;

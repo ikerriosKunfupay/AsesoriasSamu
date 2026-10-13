@@ -26,6 +26,12 @@ export const emailSchema = z.object({
   email: z.string().trim().email("Introduce un correo válido."),
 });
 
+export const profileSettingsSchema = z.object({
+  fullName: requiredText("El nombre").max(120),
+  phone: z.string().trim().max(30, "El teléfono es demasiado largo."),
+  email: z.string().trim().email("Introduce un correo válido."),
+});
+
 export const updatePasswordSchema = z
   .object({
     password: z.string().min(10, "Usa al menos 10 caracteres."),
