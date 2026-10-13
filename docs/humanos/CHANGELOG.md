@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-orden-interesados-clientes`
+
+- «Interesados» aparece ahora antes que «Clientes» en la navegación del entrenador.
+- Aclarado que una solicitud pública se muestra en Interesados y solo figura en Clientes cuando existe una cuenta registrada o invitada.
+- La comprobación de producción confirmó que la solicitud anterior de Iker no está guardada en ninguna de las dos listas actuales; no se creó ni modificó información para simularla.
+- El análisis de código, los tipos, las 54 pruebas y la compilación finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-alta-admin-inicial`
 
 - Creada y confirmada la cuenta inicial del entrenador, con acceso administrativo activo.

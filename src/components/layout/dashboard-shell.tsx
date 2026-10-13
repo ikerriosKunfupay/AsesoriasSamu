@@ -12,8 +12,8 @@ type NavItem = { href: string; label: string; icon: LucideIcon };
 
 const adminItems: NavItem[] = [
   { href: "/admin", label: "Resumen", icon: Home },
-  { href: "/admin/clientes", label: "Clientes", icon: UsersRound },
   { href: "/admin/interesados", label: "Interesados", icon: UserRound },
+  { href: "/admin/clientes", label: "Clientes", icon: UsersRound },
   { href: "/admin/entrenamientos", label: "Entrenamientos", icon: Dumbbell },
   { href: "/admin/nutricion", label: "Nutrición", icon: Salad },
   { href: "/admin/seguimientos", label: "Seguimientos", icon: TrendingUp },

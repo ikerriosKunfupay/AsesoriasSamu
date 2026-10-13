@@ -9,8 +9,8 @@ La portada, el formulario de información, el acceso, la recuperación de contra
 La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el menú puede consultar:
 
 - **Resumen:** cifras y últimas solicitudes.
-- **Clientes:** estado, cuestionario y ficha completa.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
+- **Clientes:** cuentas registradas o invitadas, estado, cuestionario y ficha completa.
 - **Entrenamientos y nutrición:** histórico de planes.
 - **Seguimientos:** revisiones enviadas por clientes.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
@@ -66,7 +66,7 @@ El teléfono de Ajustes separa el prefijo internacional y el número dentro de u
 
 ## Interesados
 
-`/solicitar-informacion` es una URL no indexable con un formulario breve. El teléfono se escribe directamente junto a un selector interno de prefijo internacional, diseñado como parte de la propia web, y la vía de contacto se elige mediante opciones visibles de WhatsApp o llamada. No pide lesiones, alergias ni otra información de salud. La solicitud aparece en **Interesados**.
+`/solicitar-informacion` es una URL no indexable con un formulario breve. El teléfono se escribe directamente junto a un selector interno de prefijo internacional, diseñado como parte de la propia web, y la vía de contacto se elige mediante opciones visibles de WhatsApp o llamada. No pide lesiones, alergias ni otra información de salud. La solicitud aparece en **Interesados**, que se muestra antes que **Clientes** en el menú del entrenador. No pasa a **Clientes** hasta que exista una cuenta registrada o invitada.
 
 ## Cuotas
 

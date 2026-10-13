@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-orden-interesados-clientes`
+
+- Reordenado `adminItems` en `DashboardShell` para situar `/admin/interesados` antes de `/admin/clientes` tanto en escritorio como en móvil.
+- Documentada la separación entre `leads` y los perfiles con rol `client`; no se altera el modelo de datos ni se requiere migración.
+- La consulta de solo lectura en producción devolvió vacías ambas vistas, por lo que el registro anterior de Iker no puede recuperarse desde la base actual.
+- `pnpm check` superó lint, tipos, 54 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-alta-admin-inicial`
 
 - Provisionada en Supabase Auth la identidad inicial y actualizada exactamente una fila de `profiles` a `admin/active`.

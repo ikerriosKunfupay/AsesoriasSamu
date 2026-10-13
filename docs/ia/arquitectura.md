@@ -14,6 +14,8 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 `DashboardShell` mantiene el lateral de escritorio fijado a la altura visible para que `logoutAction` y el usuario no queden fuera del viewport en páginas largas. En móvil, la misma acción permanece en la navegación desplegable. El campo de contraseña del login usa el componente cliente reutilizable `PasswordInput`, con alternancia accesible entre contenido oculto y visible y `autocomplete="current-password"`.
 
+La navegación administrativa presenta **Interesados** antes de **Clientes** para reflejar el flujo operativo: las filas de `leads` nacen en el formulario público y son independientes de las identidades `client` de `profiles`.
+
 La cabecera móvil de `DashboardShell` coloca el disparador de navegación a la izquierda y `BrandLogo` compacto a la derecha. El menú se ancla al borde izquierdo del disparador; el lateral de escritorio no cambia.
 
 El layout de `/app` entrega `onboardingComplete` a `DashboardShell`. Mientras sea `false`, el shell intercepta en escritorio y móvil todos los enlaces del cliente salvo `/app/cuestionario` y muestra un diálogo accesible que explica el requisito. La protección no depende solo de la interfaz: `requireCompletedClient()` bloquea también el acceso directo a Inicio, Entrenamiento, Nutrición y Seguimiento, redirigiendo al cuestionario. `revalidatePath("/app", "layout")` actualiza el estado del layout después de `complete_onboarding()` y desbloquea la navegación.
