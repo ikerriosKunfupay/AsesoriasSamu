@@ -91,6 +91,7 @@ export async function saveAssignmentAction(
     metadata: { client_id: parsed.data.clientId, status: parsed.data.status },
   });
   revalidatePath(`/admin/clientes/${parsed.data.clientId}`);
+  revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
   revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
   return { status: "success", message: "Plan guardado correctamente." };
 }

@@ -36,28 +36,67 @@ export function InviteClientForm() {
   );
 }
 
-export function AssignmentForm({ clientId, kind }: { clientId: string; kind: "workout" | "nutrition" }) {
+export function AssignmentForm({
+  clientId,
+  clients = [],
+  kind,
+  compact = false,
+}: {
+  clientId?: string;
+  clients?: Array<{ id: string; full_name: string }>;
+  kind: "workout" | "nutrition";
+  compact?: boolean;
+}) {
   const [state, action] = useActionState(saveAssignmentAction, initialActionState);
+  const formId = useId();
+  const titleId = `${formId}-${kind}-title`;
+  const contentId = `${formId}-${kind}-content`;
+  const clientFieldId = `${formId}-${kind}-client`;
+  const startsOnId = `${formId}-${kind}-starts-on`;
+  const statusId = `${formId}-${kind}-status`;
+
   return (
     <form action={action} className="grid gap-5">
-      <input type="hidden" name="clientId" value={clientId} />
+      {clientId ? <input type="hidden" name="clientId" value={clientId} /> : (
+        <Field label="Cliente" htmlFor={clientFieldId} required error={state.fieldErrors?.clientId?.[0]}>
+          <InternalSelect
+            id={clientFieldId}
+            name="clientId"
+            ariaLabel={kind === "workout" ? "Cliente del entrenamiento" : "Cliente de la pauta nutricional"}
+            options={clients.map((client) => ({ value: client.id, label: client.full_name }))}
+            placeholder="Selecciona un cliente"
+            required
+            invalid={Boolean(state.fieldErrors?.clientId)}
+            menuPortal
+          />
+        </Field>
+      )}
       <input type="hidden" name="kind" value={kind} />
       <FormMessage state={state} />
-      <Field label="Título" htmlFor={`${kind}-title`} required error={state.fieldErrors?.title?.[0]}>
-        <Input id={`${kind}-title`} name="title" required placeholder={kind === "workout" ? "Fuerza · Semana 1" : "Plan nutricional · Octubre"} />
+      <Field label="Título" htmlFor={titleId} required error={state.fieldErrors?.title?.[0]}>
+        <Input id={titleId} name="title" required placeholder={kind === "workout" ? "Fuerza · Semana 1" : "Plan nutricional · Octubre"} />
       </Field>
-      <Field label="Contenido del plan" htmlFor={`${kind}-content`} required error={state.fieldErrors?.content?.[0]} hint="Puedes usar saltos de línea para ordenar días, ejercicios o comidas.">
-        <Textarea id={`${kind}-content`} name="content" rows={10} required />
+      <Field label="Contenido del plan" htmlFor={contentId} required error={state.fieldErrors?.content?.[0]} hint="Puedes usar saltos de línea para ordenar días, ejercicios o comidas.">
+        <Textarea id={contentId} name="content" rows={compact ? 7 : 10} required />
       </Field>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Fecha de inicio" htmlFor={`${kind}-startsOn`} error={state.fieldErrors?.startsOn?.[0]}>
-          <Input id={`${kind}-startsOn`} name="startsOn" type="date" />
+      <div className={cn("grid gap-5", compact ? "grid-cols-1" : "sm:grid-cols-2")}>
+        <Field label="Fecha de inicio" htmlFor={startsOnId} error={state.fieldErrors?.startsOn?.[0]}>
+          <Input id={startsOnId} name="startsOn" type="date" />
         </Field>
-        <Field label="Estado" htmlFor={`${kind}-status`} required error={state.fieldErrors?.status?.[0]}>
-          <select id={`${kind}-status`} name="status" defaultValue="published" className="min-h-12 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5">
-            <option value="published">Publicado para el cliente</option>
-            <option value="draft">Borrador</option>
-          </select>
+        <Field label="Estado" htmlFor={statusId} required error={state.fieldErrors?.status?.[0]}>
+          <InternalSelect
+            id={statusId}
+            name="status"
+            ariaLabel="Estado del plan"
+            defaultValue="published"
+            options={[
+              { value: "published", label: "Publicado para el cliente" },
+              { value: "draft", label: "Borrador" },
+            ]}
+            required
+            invalid={Boolean(state.fieldErrors?.status)}
+            menuPortal
+          />
         </Field>
       </div>
       <SubmitButton pendingLabel="Guardando…">Guardar plan</SubmitButton>

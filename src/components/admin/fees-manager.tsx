@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight, Filter, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, Pencil, Trash2, X } from "lucide-react";
 import { DeleteFeeForm, FeeForm } from "@/components/forms/admin-forms";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InternalSelect } from "@/components/ui/internal-select";
+import { SectionFormSwitch } from "@/components/ui/section-form-switch";
 import {
   emptyFeeFilters,
   filterFees,
@@ -19,28 +20,6 @@ import { formatMoney, statusLabel } from "@/lib/format";
 const PAGE_SIZE = 10;
 
 type ClientOption = { id: string; full_name: string };
-
-function FeeSwitch({ checked, onChange }: { checked: boolean; onChange: () => void }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label="Mostrar formulario para registrar cuota"
-      onClick={onChange}
-      className="inline-flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5 text-sm font-bold"
-    >
-      <span
-        aria-hidden="true"
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${checked ? "bg-primary" : "bg-surface-muted"}`}
-      >
-        <span className={`absolute left-1 top-1 size-4 rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-5" : ""}`} />
-      </span>
-      <Plus className="size-4 text-primary" aria-hidden="true" />
-      Registrar cuota
-    </button>
-  );
-}
 
 function FeeFiltersPanel({
   filters,
@@ -148,7 +127,12 @@ export function FeesManager({ clients, fees }: { clients: ClientOption[]; fees: 
   return (
     <div className="min-w-0">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <FeeSwitch checked={showForm} onChange={() => setShowForm((visible) => !visible)} />
+        <SectionFormSwitch
+          checked={showForm}
+          label="Registrar cuota"
+          ariaLabel="Mostrar formulario para registrar cuota"
+          onChange={() => setShowForm((visible) => !visible)}
+        />
         <p className="text-sm font-bold text-muted" aria-live="polite">
           {filteredFees.length} {filteredFees.length === 1 ? "cuota" : "cuotas"}
         </p>

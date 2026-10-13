@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-sidebar-y-creacion-de-planes`
+
+- El menú administrativo separa ahora **Asesorías** —Clientes, Entrenamientos, Nutrición y Seguimientos— y **Pagos** —Tarifas y Cuotas—, tanto en escritorio como en móvil.
+- Entrenamientos y Nutrición permiten crear nuevos planes desde su propia sección mediante un interruptor que muestra u oculta el formulario y reajusta el histórico.
+- El formulario permite elegir el cliente y mantiene los selectores dentro del diseño de Team Ortega; la creación desde la ficha sigue disponible como acceso rápido.
+- Ambos históricos muestran como máximo diez registros por página y se adaptan a tarjetas móviles sin desplazamiento horizontal.
+- La validación final completó análisis de código, tipos, 113 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-cuotas-filtrables-y-editables`
 
 - La página de **Cuotas** abre como tabla completa y un interruptor permite mostrar u ocultar el formulario de registro cuando se necesita.

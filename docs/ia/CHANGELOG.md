@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-sidebar-y-creacion-de-planes`
+
+- `DashboardShell` sustituye la lista plana del administrador por grupos compartidos entre navegación de escritorio y móvil, conservando el cálculo activo y las guardas existentes.
+- `AssignmentsManager` unifica Entrenamientos y Nutrición con switch de creación, formulario lateral, tabla responsiva y paginación de diez filas; `SectionFormSwitch` se extrae y también se reutiliza en Cuotas.
+- `AssignmentForm` admite cliente fijo o seleccionable, usa `InternalSelect` para cliente/estado y mantiene el mismo contrato `FormData`; `saveAssignmentAction` revalida además la sección administrativa correspondiente.
+- Las páginas consultan planes y perfiles en paralelo, conservan los nombres de clientes archivados en el histórico y excluyen esas cuentas del selector de nuevas asignaciones.
+- No hay migraciones ni cambios de permisos. `pnpm lint`, `pnpm typecheck`, 113 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-cuotas-filtrables-y-editables`
 
 - `FeesManager` incorpora switch de formulario, filtros plegables, paginación cliente de diez elementos y modales accesibles de edición y borrado.

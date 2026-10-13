@@ -10,13 +10,10 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 
 - **Resumen:** cinco indicadores compactos y un panel filtrable con ingresos, previsión, objetivos y composición de la cartera.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
-- **Clientes:** cuentas registradas o invitadas, alta o baja, modalidad, tarifa, precio, notas internas, cuestionario y ficha completa.
-- **Entrenamientos y nutrición:** histórico de planes.
-- **Seguimientos:** revisiones enviadas por clientes.
-- **Tarifas:** precios habituales reutilizables para asignar las condiciones de cada asesoría.
-- **Cuotas:** registro manual de pendiente, pagada o exenta.
+- **Asesorías:** agrupa Clientes, Entrenamientos, Nutrición y Seguimientos. Incluye cuentas registradas o invitadas, alta o baja, condiciones, notas, cuestionarios, planes y revisiones.
+- **Pagos:** agrupa Tarifas y Cuotas para separar los precios habituales del registro manual de pendiente, pagada o exenta.
 
-El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, una barra compacta sobre el contenido mantiene siempre en el mismo lugar la acción **Ocultar menú** o **Mostrar menú**, sin tapar el logo ni mezclarse con los enlaces; la elección se recuerda en ese navegador. La sección actual queda remarcada tanto en el lateral como en el desplegable móvil y conserva ese contexto dentro de sus fichas o páginas internas. El menú lateral cambia también con el selector de tema: claro presenta fondo blanco y texto oscuro, mientras que oscuro recupera el fondo negro y el texto claro. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la navegación desplegable.
+El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, una barra compacta sobre el contenido mantiene siempre en el mismo lugar la acción **Ocultar menú** o **Mostrar menú**, sin tapar el logo ni mezclarse con los enlaces; la elección se recuerda en ese navegador. **Asesorías** y **Pagos** ordenan visualmente sus enlaces sin añadir pasos ni ocultarlos en submenús. La sección actual queda remarcada tanto en el lateral como en el desplegable móvil y conserva ese contexto dentro de sus fichas o páginas internas. El menú lateral cambia también con el selector de tema: claro presenta fondo blanco y texto oscuro, mientras que oscuro recupera el fondo negro y el texto claro. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la misma navegación agrupada.
 
 La misma barra permite alternar entre **Modo claro** y **Modo oscuro**. La elección afecta a todo el panel privado, incluidas tablas, formularios, avisos y gráficas, se conserva en ese navegador y parte de la preferencia del sistema la primera vez. Las páginas públicas mantienen la identidad marfil y negra propia de Team Ortega.
 
@@ -42,13 +39,15 @@ El entrenador también puede iniciar el alta desde el panel:
 2. Indica nombre y correo.
 3. El cliente recibe un enlace para crear su contraseña.
 4. Al entrar, completa el cuestionario inicial.
-5. Desde su ficha, el entrenador publica entrenamiento y nutrición.
+5. El entrenador publica entrenamiento y nutrición desde sus secciones propias o, como acceso rápido, desde la ficha del cliente.
 
 La lista y la ficha permiten dar de alta o de baja a cada cliente mediante un interruptor. Su selector permanece dentro de la pista y separado de la etiqueta **Activo/Inactivo**. Un cliente dado de baja conserva su información, pero no puede acceder al área privada hasta que el entrenador vuelva a activarlo. El entrenador también puede guardar una nota interna desde la propia fila de la tabla o desde la ficha; se guarda automáticamente mientras escribe, sin añadir una línea de estado permanente a la fila, ambas zonas muestran el mismo apunte y nunca aparece en la cuenta del cliente.
 
 Cada cliente admite condiciones comerciales privadas: modalidad **Presencial** o **Virtual**, una tarifa y el precio realmente acordado. Cada plantilla de tarifa define también su modalidad y de uno a siete días por semana, de forma que, por ejemplo, **Mensual · Presencial · 3 días** y **Mensual · Virtual · 5 días** sean opciones distintas. Los precios no admiten valores negativos. Las tarifas creadas pueden verse como tabla, lista o galería y la elección se recuerda en ese navegador; **Editar** abre el mismo formulario desde cualquiera de las tres vistas. Modalidad, tarifa y periodicidad usan siempre desplegables internos de Team Ortega, tanto en la tabla y la ficha como al crear o editar una tarifa; al cambiar la tarifa se propone su precio habitual y su modalidad. Los desplegables y el menú de tres puntos flotan sobre la tabla para no quedar recortados; este último agrupa el ajuste de precio, la creación de nuevas tarifas, la gestión del catálogo y el acceso a la ficha, evitando botones permanentes en cada fila. En móvil, cada cliente se presenta como una tarjeta completa en lugar de obligar a desplazar una tabla horizontal. Las tarifas Mensual, Semestral y Anual se prorratean en el resumen; una tarifa personalizada indica además cuántos meses cubre. El botón **Filtros** despliega criterios independientes para cliente, alta/baja, cuestionario, modalidad, tarifa, rango de precio y notas; cerrado no ocupa altura adicional y muestra cuántos criterios están activos. Cada cabecera mantiene el ciclo de orden ascendente, descendente y original.
 
 La ficha adapta su botón **Volver** al lugar desde el que se abrió: regresa a Resumen cuando se accedió desde un indicador, a Clientes desde la tabla y a Entrenamientos, Nutrición o Seguimientos desde esas secciones. El teléfono se presenta siempre con su prefijo internacional; los números antiguos sin prefijo explícito se interpretan como españoles (`+34`). Si se abre un enlace directo sin origen reconocido, vuelve a Clientes como destino seguro.
+
+**Entrenamientos** y **Nutrición** abren con su histórico ocupando todo el ancho útil. Un interruptor permite mostrar el formulario de creación sin abandonar la sección, elegir un cliente activo, redactar el contenido y decidir si se publica o queda como borrador. Al mostrarlo, el listado se reajusta a su lado en escritorio; al ocultarlo recupera todo el ancho. Ambos historiales se paginan cada diez registros y siguen enlazando a la ficha del cliente. Los formularios de la ficha se mantienen como atajo opcional.
 
 En ambos casos la cuenta se crea siempre con rol de cliente. El formulario público no permite solicitar ni escoger el rol de administrador.
 

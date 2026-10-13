@@ -115,4 +115,19 @@ describe("DashboardShell", () => {
     expect(activeLinks[1]).toHaveClass("bg-surface-muted", "text-foreground");
     expect(screen.getAllByRole("link", { name: "Resumen" })[0]).not.toHaveAttribute("aria-current");
   });
+
+  it("agrupa el menú administrativo en asesorías y pagos", () => {
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Resumen</p>
+      </DashboardShell>,
+    );
+
+    const navigation = screen.getByRole("navigation", { name: "Administración" });
+    expect(screen.getAllByText("Asesorías")).toHaveLength(2);
+    expect(screen.getAllByText("Pagos")).toHaveLength(2);
+    expect(navigation.textContent?.indexOf("Interesados")).toBeLessThan(navigation.textContent?.indexOf("Asesorías") ?? 0);
+    expect(navigation.textContent?.indexOf("Clientes")).toBeLessThan(navigation.textContent?.indexOf("Pagos") ?? 0);
+    expect(navigation).toHaveTextContent(/Tarifas\s*Cuotas/);
+  });
 });

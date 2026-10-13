@@ -11,26 +11,43 @@ import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
+type NavGroup = { label?: string; items: NavItem[] };
 
-const adminItems: NavItem[] = [
-  { href: "/admin", label: "Resumen", icon: Home },
-  { href: "/admin/interesados", label: "Interesados", icon: UserRound },
-  { href: "/admin/clientes", label: "Clientes", icon: UsersRound },
-  { href: "/admin/entrenamientos", label: "Entrenamientos", icon: Dumbbell },
-  { href: "/admin/nutricion", label: "Nutrición", icon: Salad },
-  { href: "/admin/seguimientos", label: "Seguimientos", icon: TrendingUp },
-  { href: "/admin/tarifas", label: "Tarifas", icon: Tags },
-  { href: "/admin/cuotas", label: "Cuotas", icon: WalletCards },
+const adminGroups: NavGroup[] = [
+  {
+    items: [
+      { href: "/admin", label: "Resumen", icon: Home },
+      { href: "/admin/interesados", label: "Interesados", icon: UserRound },
+    ],
+  },
+  {
+    label: "Asesorías",
+    items: [
+      { href: "/admin/clientes", label: "Clientes", icon: UsersRound },
+      { href: "/admin/entrenamientos", label: "Entrenamientos", icon: Dumbbell },
+      { href: "/admin/nutricion", label: "Nutrición", icon: Salad },
+      { href: "/admin/seguimientos", label: "Seguimientos", icon: TrendingUp },
+    ],
+  },
+  {
+    label: "Pagos",
+    items: [
+      { href: "/admin/tarifas", label: "Tarifas", icon: Tags },
+      { href: "/admin/cuotas", label: "Cuotas", icon: WalletCards },
+    ],
+  },
 ];
 
-const clientItems: NavItem[] = [
-  { href: "/app/inicio", label: "Inicio", icon: Home },
-  { href: "/app/entrenamiento", label: "Entrenamiento", icon: Dumbbell },
-  { href: "/app/nutricion", label: "Nutrición", icon: Salad },
-  { href: "/app/seguimiento", label: "Seguimiento", icon: TrendingUp },
-  { href: "/app/cuestionario", label: "Cuestionario", icon: UserRound },
-  { href: "/app/ajustes", label: "Ajustes", icon: Settings },
-];
+const clientGroups: NavGroup[] = [{
+  items: [
+    { href: "/app/inicio", label: "Inicio", icon: Home },
+    { href: "/app/entrenamiento", label: "Entrenamiento", icon: Dumbbell },
+    { href: "/app/nutricion", label: "Nutrición", icon: Salad },
+    { href: "/app/seguimiento", label: "Seguimiento", icon: TrendingUp },
+    { href: "/app/cuestionario", label: "Cuestionario", icon: UserRound },
+    { href: "/app/ajustes", label: "Ajustes", icon: Settings },
+  ],
+}];
 
 const SIDEBAR_STORAGE_KEY = "team-ortega:sidebar-open";
 
@@ -52,7 +69,7 @@ export function DashboardShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const items = mode === "admin" ? adminItems : clientItems;
+  const groups = mode === "admin" ? adminGroups : clientGroups;
   const [showOnboardingNotice, setShowOnboardingNotice] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const navigationLocked = mode === "client" && !onboardingComplete;
@@ -84,6 +101,39 @@ export function DashboardShell({
     window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open));
   }
 
+  function navigationGroups(surface: "sidebar" | "mobile") {
+    return groups.map((group, index) => (
+      <div key={group.label ?? group.items[0]?.href} className={index > 0 ? "mt-4" : ""}>
+        {group.label ? (
+          <p className="mb-1 px-3 text-[0.65rem] font-black uppercase tracking-[0.2em] text-primary">{group.label}</p>
+        ) : null}
+        <div className="grid gap-1">
+          {group.items.map(({ href, label, icon: Icon }) => {
+            const active = isCurrentNavItem(pathname, href);
+            const activeClass = surface === "sidebar"
+              ? "bg-sidebar-hover text-sidebar-foreground"
+              : "bg-surface-muted text-foreground";
+            const idleClass = surface === "sidebar"
+              ? "text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"
+              : "text-muted hover:bg-surface-muted hover:text-foreground";
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                onClick={(event) => guardNavigation(event, href)}
+                className={`flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold transition-colors ${active ? activeClass : idleClass}`}
+              >
+                <Icon className="size-5 text-primary" aria-hidden="true" />
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+    ));
+  }
+
   return (
     <div className={`min-h-screen bg-background lg:grid ${isDesktopSidebarOpen ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-1"}`}>
       {isDesktopSidebarOpen ? (
@@ -95,22 +145,8 @@ export function DashboardShell({
             className="text-sidebar-foreground"
           />
         </div>
-        <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="mt-6 grid gap-1">
-          {items.map(({ href, label, icon: Icon }) => {
-            const active = isCurrentNavItem(pathname, href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                onClick={(event) => guardNavigation(event, href)}
-                className={`flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold transition-colors ${active ? "bg-sidebar-hover text-sidebar-foreground" : "text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"}`}
-              >
-                <Icon className="size-5 text-primary" aria-hidden="true" />
-                {label}
-              </Link>
-            );
-          })}
+        <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="mt-6">
+          {navigationGroups("sidebar")}
         </nav>
         <div className="mt-auto border-t border-sidebar-border pt-5">
           <div className="mb-3 flex min-w-0 items-center gap-3">
@@ -131,21 +167,8 @@ export function DashboardShell({
             <summary className="grid size-11 cursor-pointer list-none place-items-center rounded-[var(--radius-md)] border border-border" aria-label="Abrir navegación">
               <Menu className="size-5" />
             </summary>
-            <nav className="absolute left-0 mt-2 grid w-64 gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
-              {items.map(({ href, label, icon: Icon }) => {
-                const active = isCurrentNavItem(pathname, href);
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    aria-current={active ? "page" : undefined}
-                    onClick={(event) => guardNavigation(event, href)}
-                    className={`flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold transition-colors ${active ? "bg-surface-muted text-foreground" : "text-muted hover:bg-surface-muted hover:text-foreground"}`}
-                  >
-                    <Icon className="size-5 text-primary" aria-hidden="true" /> {label}
-                  </Link>
-                );
-              })}
+            <nav className="absolute left-0 mt-2 w-72 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
+              {navigationGroups("mobile")}
               <ThemeToggle className="w-full" />
               <form action={logoutAction} className="border-t border-border pt-1">
                 <Button type="submit" variant="ghost" className="w-full justify-start"><LogOut className="size-4" /> Cerrar sesión</Button>
