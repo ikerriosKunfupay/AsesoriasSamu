@@ -8,9 +8,11 @@ El formulario de captación y los formularios Auth conservan `Field`, `Input`, `
 
 ## Render y sesiones
 
-La aplicación usa App Router. `src/proxy.ts` refresca cookies de Supabase y no toma decisiones definitivas de autorización. `src/lib/auth/current-user.ts` es la capa de acceso autenticada: obtiene `auth.getUser()`, lee el perfil y retorna un DTO mínimo cacheado por petición.
+La aplicación usa App Router. `src/proxy.ts` refresca cookies de Supabase únicamente en rutas de autenticación y zonas privadas; las páginas públicas sin sesión dejan de ejecutar trabajo Auth en cada petición. El proxy no toma decisiones definitivas de autorización. Tanto el proxy como `src/lib/auth/current-user.ts` verifican la identidad mediante `auth.getClaims()`: con la firma ES256 del proyecto, Supabase valida el JWT contra JWKS cacheadas y evita la consulta remota obligatoria de `getUser()`. La DAL lee después el perfil sujeto a RLS y retorna un DTO mínimo cacheado por petición.
 
 Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requireClient()` y están marcados como dinámicos. Las Server Actions vuelven a verificar el rol; no confían en la navegación.
+
+`vercel.json` fija la Function de Next.js en `dub1`, junto a Supabase `eu-west-1`. Antes de este ajuste, el encabezado `x-vercel-id` confirmaba ejecución en `iad1`; cada pantalla privada encadenaba llamadas transatlánticas. Las rutas administrativas incluyen `loading.tsx` para mostrar una estructura estable durante el streaming. **Interesados** selecciona solo las columnas representadas y limita la primera lectura a 100 filas, ordenadas de más reciente a más antigua.
 
 `DashboardShell` mantiene el lateral de escritorio fijado a la altura visible para que `logoutAction` y el usuario no queden fuera del viewport en páginas largas. En móvil, la misma acción permanece en la navegación desplegable. El campo de contraseña del login usa el componente cliente reutilizable `PasswordInput`, con alternancia accesible entre contenido oculto y visible y `autocomplete="current-password"`.
 

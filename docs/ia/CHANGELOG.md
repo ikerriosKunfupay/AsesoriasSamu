@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-rendimiento-panel`
+
+- Añadido `vercel.json` con `regions: ["dub1"]` para alinear el runtime de Next.js con Supabase `eu-west-1`; la medición previa mostró `x-vercel-id: cdg1::iad1`.
+- Sustituidos los dos `auth.getUser()` del proxy y la DAL por `auth.getClaims()`. El proyecto firma con ES256, por lo que la verificación puede usar JWKS cacheadas sin la petición Auth que `getUser()` siempre realiza.
+- Reducido el matcher del proxy a Auth y áreas privadas; la landing, privacidad y captación ya no refrescan sesiones innecesariamente.
+- Añadido `src/app/admin/loading.tsx` y restringida la consulta de Interesados a sus columnas visibles y 100 filas recientes.
+- `pnpm check` superó lint, tipos, 55 pruebas y build Webpack.
+
 ## 2026-10-13 — `2026-10-13-trazabilidad-solicitudes`
 
 - `createLeadAction` usa `insert().select("id").single()` y no devuelve éxito sin la representación de la fila creada.

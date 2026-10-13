@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-rendimiento-panel`
+
+- Acercado el servidor del panel a la base de datos europea para eliminar varias esperas transatlánticas en cada pantalla.
+- Reducido el trabajo de sesión repetido y retirado de las páginas públicas que no lo necesitan.
+- Añadido un estado de carga inmediato en la administración y acotada la primera lista de Interesados a las 100 solicitudes más recientes.
+- Antes del cambio, las mediciones repetidas dieron alrededor de 1 s para Resumen y entre 1,1 y 8,1 s para Interesados; la respuesta confirmó que el servidor se estaba ejecutando en Washington.
+- El análisis de código, los tipos, las 55 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-trazabilidad-solicitudes`
 
 - El formulario de información solo confirma el envío cuando la solicitud ha quedado guardada en la base de datos.

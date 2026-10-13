@@ -17,21 +17,21 @@ export type CurrentUser = {
 
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const supabase = await createClient();
-  const { data: authData, error: authError } = await supabase.auth.getUser();
-  if (authError || !authData.user) return null;
+  const { data: authData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !authData?.claims.sub) return null;
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("id, full_name, avatar_path, role, status, onboarding_complete")
-    .eq("id", authData.user.id)
+    .eq("id", authData.claims.sub)
     .single();
 
   if (profileError || !profile) return null;
 
   return {
     id: profile.id,
-    email: authData.user.email ?? "",
-    fullName: profile.full_name || authData.user.email || "Usuario",
+    email: authData.claims.email ?? "",
+    fullName: profile.full_name || authData.claims.email || "Usuario",
     avatarPath: profile.avatar_path,
     role: profile.role,
     status: profile.status,

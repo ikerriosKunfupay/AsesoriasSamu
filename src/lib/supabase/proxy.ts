@@ -22,6 +22,8 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  // Verifica la firma y renueva la sesión cuando sea necesario. En proyectos
+  // con claves asimétricas evita la consulta remota que getUser() hace siempre.
+  await supabase.auth.getClaims();
   return response;
 }

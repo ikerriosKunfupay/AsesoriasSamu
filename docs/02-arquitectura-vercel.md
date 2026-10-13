@@ -36,6 +36,7 @@ El proyecto está desplegado desde la rama `main` del repositorio `ikerriosKunfu
 - URL pública: `https://team-ortega.vercel.app`.
 - Plan: Hobby de la cuenta personal.
 - Framework detectado: Next.js.
+- Región de las Functions: `dub1` (Dublín), alineada con Supabase `eu-west-1`.
 - Variables: las cuatro variables de Supabase están configuradas como sensibles para Production y Preview.
 
 Vercel limita Hobby a uso personal no comercial. Team Ortega apoya una actividad profesional y la landing presenta un servicio, aunque la aplicación no cobre. El propietario decidió realizar este primer despliegue gratuito conociendo esa restricción; no debe interpretarse como validación de cumplimiento comercial. Antes de explotar el portal comercialmente hay que migrar a Vercel Pro, obtener autorización expresa de Vercel o elegir otro alojamiento compatible. Referencias: [Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines) y [Hobby Plan](https://vercel.com/docs/plans/hobby).
@@ -56,4 +57,4 @@ El SMTP incluido por Supabase es solo para pruebas, restringe destinatarios y ti
 
 ## Regiones y datos
 
-Para usuarios en España, crea el proyecto Supabase en una región europea. Antes de producción, completa la información legal, el contrato de encargado y la política de conservación aplicable a datos de salud.
+Para usuarios en España, crea el proyecto Supabase en una región europea y mantén las Functions de Vercel en la misma región o en la más cercana disponible. `vercel.json` conserva actualmente `dub1`; no debe retirarse mientras Supabase siga en `eu-west-1`. Antes de producción, completa la información legal, el contrato de encargado y la política de conservación aplicable a datos de salud.
