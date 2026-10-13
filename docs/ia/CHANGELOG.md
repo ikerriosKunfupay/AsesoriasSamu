@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-selectores-internos-resumen`
+
+- `DashboardAnalytics` sustituye sus tres `<select>` nativos por `InternalSelect` controlados, manteniendo el cálculo reactivo de periodo, modalidad y tarifa.
+- `InternalSelect` incorpora `gap-3` y padding derecho explícito en el disparador; las pruebas cubren ausencia de selects nativos, selección controlada y espaciado de la flecha.
+- `pnpm check` superó lint, tipos, 91 pruebas y build Webpack; `git diff --check` no detectó errores.
+
 ## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`
 
 - `ClientAdminNotesForm` usa input compacto en tabla y autosave con debounce de 700 ms o `blur`; elimina el submit visible y conserva estados accesibles.

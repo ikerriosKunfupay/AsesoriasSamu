@@ -111,7 +111,7 @@ export function InternalSelect({
         aria-describedby={invalid ? `${id}-error` : undefined}
         disabled={disabled}
         className={cn(
-          "flex min-h-12 w-full items-center justify-between rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5 text-left text-base text-foreground transition-colors focus:border-primary focus:outline-none disabled:pointer-events-none disabled:opacity-60",
+          "flex min-h-12 w-full items-center justify-between gap-3 rounded-[var(--radius-md)] border border-border-strong bg-surface py-2 pl-3.5 pr-4 text-left text-base text-foreground transition-colors focus:border-primary focus:outline-none disabled:pointer-events-none disabled:opacity-60",
           className,
         )}
         onClick={() => (isOpen ? setIsOpen(false) : openMenu())}

@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-selectores-internos-resumen`
+
+- Los filtros de periodo, modalidad y tarifa del resumen abren ahora desplegables propios de Team Ortega en lugar del menú exterior del sistema.
+- El texto, la flecha y el borde derecho de todos los selectores internos mantienen una separación más cómoda.
+- El análisis de código, los tipos, las 91 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`
 
 - Las notas de cliente quedan alineadas en una sola línea y se guardan automáticamente, sin botón adicional.

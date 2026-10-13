@@ -31,4 +31,10 @@ describe("InternalSelect", () => {
     expect(screen.getByRole("listbox")).toBeInTheDocument();
     await waitFor(() => expect(screen.getAllByRole("option")[0]).toHaveFocus());
   });
+
+  it("separa la flecha del contenido y del borde derecho", () => {
+    render(<InternalSelect id="sex" name="sex" options={options} ariaLabel="Sexo" />);
+
+    expect(screen.getByRole("combobox", { name: "Sexo" })).toHaveClass("gap-3", "pr-4");
+  });
 });

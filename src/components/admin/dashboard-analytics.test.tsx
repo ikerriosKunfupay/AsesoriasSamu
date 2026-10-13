@@ -98,4 +98,25 @@ describe("DashboardAnalytics", () => {
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("usa selectores internos para los tres filtros de estadísticas", () => {
+    const { container } = render(
+      <DashboardAnalytics
+        clients={clients}
+        fees={fees}
+        goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
+        referencePeriod="2026-10"
+      />,
+    );
+
+    expect(container.querySelector("select")).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Periodo de las gráficas" })).toHaveTextContent("Últimos 6 meses");
+    expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Todas las modalidades");
+    expect(screen.getByRole("combobox", { name: "Filtrar por tarifa" })).toHaveTextContent("Todas las tarifas");
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Filtrar por modalidad" }));
+    fireEvent.click(screen.getByRole("option", { name: "Presencial" }));
+
+    expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Presencial");
+  });
 });

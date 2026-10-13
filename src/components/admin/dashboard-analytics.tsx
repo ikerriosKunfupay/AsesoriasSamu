@@ -35,6 +35,7 @@ import { SubmitButton } from "@/components/forms/submit-button";
 import { Card } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InternalSelect } from "@/components/ui/internal-select";
 import {
   buildDashboardAnalytics,
   filterAnalyticsClients,
@@ -49,7 +50,17 @@ import { initialActionState } from "@/lib/forms/action-state";
 import { formatMoney } from "@/lib/format";
 
 const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
-const selectClassName = "min-h-11 w-full min-w-0 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold";
+const analyticsSelectClassName = "min-h-11 text-sm font-bold";
+const periodOptions = [
+  { value: "3", label: "Últimos 3 meses" },
+  { value: "6", label: "Últimos 6 meses" },
+  { value: "12", label: "Últimos 12 meses" },
+] as const;
+const modalityOptions = [
+  { value: "all", label: "Todas las modalidades" },
+  { value: "in_person", label: "Presencial" },
+  { value: "online", label: "Virtual" },
+] as const;
 const tooltipStyle = { background: "var(--surface)", borderColor: "var(--border)", borderRadius: 12, color: "var(--foreground)" };
 
 type AnalyticsMetricKey = "collected" | "recurring" | "forecast" | "pending" | "average" | "active";
@@ -364,36 +375,34 @@ export function DashboardAnalytics({
           </p>
         </div>
         <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[10.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
-          <select
-            className={selectClassName}
-            aria-label="Periodo de las gráficas"
-            value={filters.months}
-            onChange={(event) => setFilters((current) => ({ ...current, months: Number(event.target.value) as AnalyticsFilters["months"] }))}
-          >
-            <option value={3}>Últimos 3 meses</option>
-            <option value={6}>Últimos 6 meses</option>
-            <option value={12}>Últimos 12 meses</option>
-          </select>
-          <select
-            className={selectClassName}
-            aria-label="Filtrar por modalidad"
+          <InternalSelect
+            id="analytics-period"
+            options={periodOptions}
+            className={analyticsSelectClassName}
+            ariaLabel="Periodo de las gráficas"
+            value={String(filters.months)}
+            onValueChange={(value) => setFilters((current) => ({ ...current, months: Number(value) as AnalyticsFilters["months"] }))}
+          />
+          <InternalSelect
+            id="analytics-modality"
+            options={modalityOptions}
+            className={analyticsSelectClassName}
             value={filters.modality}
-            onChange={(event) => setFilters((current) => ({ ...current, modality: event.target.value as AnalyticsFilters["modality"] }))}
-          >
-            <option value="all">Todas las modalidades</option>
-            <option value="in_person">Presencial</option>
-            <option value="online">Virtual</option>
-          </select>
-          <select
-            className={selectClassName}
-            aria-label="Filtrar por tarifa"
+            ariaLabel="Filtrar por modalidad"
+            onValueChange={(value) => setFilters((current) => ({ ...current, modality: value as AnalyticsFilters["modality"] }))}
+          />
+          <InternalSelect
+            id="analytics-pricing-plan"
+            options={[
+              { value: "all", label: "Todas las tarifas" },
+              ...pricingPlans.map(([id, name]) => ({ value: id, label: name })),
+              { value: "unassigned", label: "Sin tarifa asignada" },
+            ]}
+            className={analyticsSelectClassName}
             value={filters.pricingPlanId}
-            onChange={(event) => setFilters((current) => ({ ...current, pricingPlanId: event.target.value }))}
-          >
-            <option value="all">Todas las tarifas</option>
-            {pricingPlans.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
-            <option value="unassigned">Sin tarifa asignada</option>
-          </select>
+            ariaLabel="Filtrar por tarifa"
+            onValueChange={(value) => setFilters((current) => ({ ...current, pricingPlanId: value }))}
+          />
         </div>
       </div>
 
