@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-migracion-detalles-tarifas`
+
+- Aplicada en la base de datos de Team Ortega la estructura que distingue las tarifas por modalidad y días semanales.
+- Verificado que las siete migraciones del proyecto coinciden entre el repositorio y Supabase antes de publicar la aplicación.
+
 ## 2026-10-14 — `2026-10-14-invitacion-centrada`
 
 - La cabecera y el formulario de **Nueva invitación** se muestran como un único bloque centrado en el espacio disponible.
@@ -41,7 +46,7 @@
 - Las tarifas creadas pueden consultarse como tabla, lista o galería; la vista elegida se recuerda en el navegador y la edición se abre desde cualquiera de ellas.
 - Los importes de las tarifas ya no admiten signos negativos ni caracteres ajenos a un precio y el servidor mantiene la validación como segunda protección.
 - La primera prueba de las vistas usó una coincidencia de texto demasiado estricta y se corrigió; la validación final completó análisis de código, tipos, 98 pruebas y compilación de producción.
-- La previsualización local del panel no pudo cargar datos porque este checkout temporal no contiene las credenciales de Supabase; la migración nueva debe aplicarse antes de publicar esta versión.
+- La previsualización local del panel no pudo cargar datos porque este checkout temporal no contiene las credenciales de Supabase; la migración se aplicó posteriormente y queda registrada en la entrada `2026-10-14-migracion-detalles-tarifas`.
 
 ## 2026-10-14 — `2026-10-14-navegacion-activa-panel`
 

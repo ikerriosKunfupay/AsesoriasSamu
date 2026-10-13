@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-migracion-detalles-tarifas`
+
+- `supabase db push --linked` aplicó `202610140001_pricing_plan_service_details.sql` al proyecto enlazado de Team Ortega.
+- La comprobación posterior con `supabase migration list --linked` devolvió `202610120001`–`202610140001` sincronizadas en local y remoto.
+
 ## 2026-10-14 — `2026-10-14-invitacion-centrada`
 
 - `/admin/clientes/nuevo` envuelve `PageHeading` y `Card` en `mx-auto w-full max-w-3xl`, sin modificar `InviteClientForm` ni su Server Action.
@@ -41,7 +46,7 @@
 - `PricingPlanForm` exige modalidad y entre uno y siete días, usa `InternalSelect` para las opciones y sanea los importes en la escritura; las Server Actions persisten esos campos y heredan la modalidad al asignar una plantilla.
 - `PricingPlansCatalog` ofrece tabla, lista y galería persistidas en `localStorage`, con un editor modal compartido para evitar duplicar formularios.
 - La primera prueba dirigida del catálogo falló por buscar como nodo aislado un texto compuesto; se ajustó a contenido accesible y `pnpm check` terminó con lint, tipos, 98 pruebas y build Webpack correctos.
-- El servidor local arrancó tras autorizar el puerto, pero `/admin/tarifas` devolvió `500` por ausencia explícita de variables públicas y privadas de Supabase en el checkout temporal; no se simuló una sesión ni se aplicó todavía la migración remota.
+- El servidor local arrancó tras autorizar el puerto, pero `/admin/tarifas` devolvió `500` por ausencia explícita de variables públicas y privadas de Supabase en el checkout temporal; no se simuló una sesión. La migración remota se aplicó después y queda registrada en `2026-10-14-migracion-detalles-tarifas`.
 
 ## 2026-10-14 — `2026-10-14-navegacion-activa-panel`
 

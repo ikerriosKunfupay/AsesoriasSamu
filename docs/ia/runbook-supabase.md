@@ -7,7 +7,7 @@
 - Región: `eu-west-1` (Irlanda).
 - Aplicación: `https://team-ortega.vercel.app`.
 - Migraciones `202610120001`–`202610130006` aplicadas y sincronizadas con el historial remoto; las tablas `pricing_plans`, `client_commercial_terms` y `admin_dashboard_settings`, las 11 tablas iniciales y el bucket privado `profile-avatars` están verificados.
-- `202610140001_pricing_plan_service_details.sql` está versionada para añadir modalidad y días a las plantillas, pero debe aplicarse antes de desplegar el código que consulta esas columnas.
+- `202610140001_pricing_plan_service_details.sql` añade modalidad y días a las plantillas. Se aplicó al proyecto enlazado el 14 de octubre de 2026 y el historial local/remoto quedó sincronizado hasta esa versión.
 - Site URL: `https://team-ortega.vercel.app`.
 - Redirect URLs: producción y desarrollo local configuradas según la sección siguiente.
 
