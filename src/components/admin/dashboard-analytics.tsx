@@ -370,9 +370,6 @@ export function DashboardAnalytics({
         <div className="min-w-0 xl:flex-1">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Inteligencia del negocio</p>
           <h2 id="business-intelligence-heading" className="mt-2 text-3xl font-black">Valor de las asesorías</h2>
-          <p className="mt-1 max-w-3xl text-sm text-muted">
-            Cobros reales, cartera mensual equivalente, previsión y composición de clientes. Los filtros se aplican a todas las cifras y gráficas.
-          </p>
         </div>
         <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[11.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
           <InternalSelect

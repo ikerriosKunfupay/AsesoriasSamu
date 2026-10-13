@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-resumen-sin-descripcion-asesorias`
+
+- Eliminado el texto explicativo situado bajo **Valor de las asesorías** para dejar una cabecera más limpia y compacta.
+- Se mantienen sin cambios el título, los filtros, los indicadores interactivos y las gráficas.
+- El análisis de código, los tipos y las tres pruebas específicas del panel finalizaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-cuestionario-estructurado`
 
 - El cuestionario inicial se divide en cinco bloques numerados: datos físicos, rutina, alimentación y objetivos, salud e información adicional.

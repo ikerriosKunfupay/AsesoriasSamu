@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-resumen-sin-descripcion-asesorias`
+
+- `DashboardAnalytics` retira el párrafo auxiliar de la cabecera de negocio sin modificar el `aria-labelledby`, el estado de los filtros ni los cálculos.
+- `pnpm lint`, `pnpm typecheck`, las tres pruebas de `dashboard-analytics.test.tsx` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-cuestionario-estructurado`
 
 - `OnboardingForm` incorpora secciones semánticas etiquetadas mediante `aria-labelledby`, con encabezado, descripción y numeración visual compartidos.
