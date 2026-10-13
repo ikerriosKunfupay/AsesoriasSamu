@@ -7,6 +7,7 @@ import {
   assignmentSchema,
   clientAdminNoteSchema,
   clientCommercialTermsSchema,
+  clientCommercialQuickUpdateSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
   feeSchema,
@@ -357,4 +358,71 @@ export async function saveClientCommercialTermsAction(
   revalidatePath(`/admin/clientes/${parsed.data.clientId}`);
   revalidatePath("/admin/tarifas");
   return { status: "success", message: "Condiciones comerciales guardadas." };
+}
+
+export async function saveClientCommercialQuickUpdateAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = clientCommercialQuickUpdateSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "No se pudo actualizar este campo." };
+  }
+
+  const admin = createAdminClient();
+  const { data: currentTerms, error: currentError } = await admin
+    .from("client_commercial_terms")
+    .select("modality, pricing_plan_id, agreed_amount_eur")
+    .eq("client_id", parsed.data.clientId)
+    .maybeSingle();
+
+  if (currentError) return { status: "error", message: "No se pudieron leer las condiciones actuales." };
+
+  let modality = currentTerms?.modality ?? "in_person";
+  let pricingPlanId = currentTerms?.pricing_plan_id ?? null;
+  let amountEur = currentTerms?.agreed_amount_eur ?? 0;
+
+  if (parsed.data.field === "modality") {
+    modality = parsed.data.value;
+  } else {
+    pricingPlanId = parsed.data.value || null;
+    if (pricingPlanId) {
+      const { data: plan, error: planError } = await admin
+        .from("pricing_plans")
+        .select("default_amount_eur")
+        .eq("id", pricingPlanId)
+        .maybeSingle();
+      if (planError || !plan) return { status: "error", message: "La tarifa seleccionada ya no está disponible." };
+      amountEur = plan.default_amount_eur;
+    }
+  }
+
+  const { error } = await admin.from("client_commercial_terms").upsert(
+    {
+      client_id: parsed.data.clientId,
+      modality,
+      pricing_plan_id: pricingPlanId,
+      agreed_amount_eur: amountEur,
+      updated_by: adminUser.id,
+    },
+    { onConflict: "client_id" },
+  );
+
+  if (error) return { status: "error", message: "No se pudo actualizar este campo." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "client.commercial_terms_quick_updated",
+    entity_type: "profile",
+    entity_id: parsed.data.clientId,
+    metadata: { field: parsed.data.field },
+  });
+  revalidatePath("/admin/clientes");
+  revalidatePath("/admin");
+  revalidatePath(`/admin/clientes/${parsed.data.clientId}`);
+  return {
+    status: "success",
+    message: parsed.data.field === "modality" ? "Modalidad actualizada." : "Tarifa actualizada.",
+  };
 }

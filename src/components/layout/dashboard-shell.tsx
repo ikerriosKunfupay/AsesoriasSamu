@@ -130,7 +130,7 @@ export function DashboardShell({
           </details>
           <BrandLogo compact href={mode === "admin" ? "/admin" : "/app/inicio"} onClick={(event) => guardNavigation(event, "/app/inicio")} />
         </header>
-        <div className="sticky top-0 z-20 hidden min-h-16 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur lg:flex lg:px-8">
+        <div className="sticky top-0 z-20 hidden min-h-16 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur lg:flex lg:px-10 xl:px-12">
             <button
               type="button"
               aria-label={isDesktopSidebarOpen ? "Ocultar menú lateral" : "Mostrar menú lateral"}
@@ -142,7 +142,7 @@ export function DashboardShell({
             </button>
             <ThemeToggle />
         </div>
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8 xl:px-12">{children}</main>
       </div>
       {showOnboardingNotice ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-5 py-8" role="presentation" onMouseDown={(event) => {

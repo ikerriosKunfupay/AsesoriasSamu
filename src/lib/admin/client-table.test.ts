@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   filterAndSortClients,
+  emptyClientTableFilters,
   nextClientTableSort,
   type ClientTableItem,
 } from "./client-table";
@@ -12,20 +13,21 @@ const clients: ClientTableItem[] = [
 ];
 
 describe("filtro y orden de clientes", () => {
-  it("busca sin distinguir mayúsculas ni acentos en todas las columnas visibles", () => {
-    expect(filterAndSortClients(clients, "alvaro", null).map((client) => client.id)).toEqual(["1"]);
-    expect(filterAndSortClients(clients, "inactivo", null).map((client) => client.id)).toEqual(["2"]);
-    expect(filterAndSortClients(clients, "mananas", null).map((client) => client.id)).toEqual(["2"]);
-    expect(filterAndSortClients(clients, "presencial", null).map((client) => client.id)).toEqual(["1"]);
-    expect(filterAndSortClients(clients, "semestral", null).map((client) => client.id)).toEqual(["2"]);
-    expect(filterAndSortClients(clients, "300", null).map((client) => client.id)).toEqual(["2"]);
+  it("filtra cada columna de forma independiente", () => {
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, name: "alvaro" }, null).map((client) => client.id)).toEqual(["1"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, status: "archived" }, null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, notes: "mananas" }, null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, modality: "in_person" }, null).map((client) => client.id)).toEqual(["1"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, pricingPlanId: "p2" }, null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, minAmount: "100", maxAmount: "300" }, null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, { ...emptyClientTableFilters, questionnaire: "pending" }, null).map((client) => client.id)).toEqual(["2", "3"]);
   });
 
   it("ordena en ambos sentidos y conserva el orden original sin criterio", () => {
-    expect(filterAndSortClients(clients, "", { key: "name", direction: "desc" }).map((client) => client.id))
+    expect(filterAndSortClients(clients, emptyClientTableFilters, { key: "name", direction: "desc" }).map((client) => client.id))
       .toEqual(["3", "2", "1"]);
-    expect(filterAndSortClients(clients, "", null).map((client) => client.id)).toEqual(["1", "2", "3"]);
-    expect(filterAndSortClients(clients, "", { key: "amount", direction: "desc" }).map((client) => client.id))
+    expect(filterAndSortClients(clients, emptyClientTableFilters, null).map((client) => client.id)).toEqual(["1", "2", "3"]);
+    expect(filterAndSortClients(clients, emptyClientTableFilters, { key: "amount", direction: "desc" }).map((client) => client.id))
       .toEqual(["2", "1", "3"]);
   });
 

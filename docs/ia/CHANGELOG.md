@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`
+
+- `ClientAdminNotesForm` usa input compacto en tabla y autosave con debounce de 700 ms o `blur`; elimina el submit visible y conserva estados accesibles.
+- Añadidos `clientCommercialQuickUpdateSchema` y `saveClientCommercialQuickUpdateAction` para actualizar modalidad o tarifa desde la fila, completar los campos `NOT NULL`, aplicar el precio habitual y auditar sin valores sensibles.
+- `ClientsTable` incorpora selectores `InternalSelect` por fila, menú de acciones de tres puntos y filtros plegables independientes para todas sus columnas.
+- `client-table.ts` sustituye la búsqueda global por `ClientTableFilters`, incluido rango decimal de precio, y mantiene la ordenación triestado.
+- `InternalSelect` admite deshabilitado, clases compactas y apertura superior; `DashboardShell` unifica padding lateral responsivo en barra y contenido.
+- Añadidas pruebas de esquema, filtros, controles de fila, nota automática, menú compacto y padding del shell.
+
 ## 2026-10-14 — `2026-10-14-tema-filtros-y-kpis`
 
 - `globals.css` incorpora tokens semánticos `sidebar-*` diferenciados para los temas claro y oscuro y los expone a Tailwind mediante `@theme`.

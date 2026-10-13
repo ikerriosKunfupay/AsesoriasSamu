@@ -14,11 +14,13 @@ export function ClientCommercialTermsEditor({
   clientName,
   pricingPlans,
   initialTerms,
+  menuTrigger = false,
 }: {
   clientId: string;
   clientName: string;
   pricingPlans: PricingPlanOption[];
   initialTerms: ClientCommercialTermsValue;
+  menuTrigger?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -39,9 +41,16 @@ export function ClientCommercialTermsEditor({
 
   return (
     <>
-      <Button ref={triggerRef} type="button" variant="outline" size="sm" onClick={() => setOpen(true)}>
+      <Button
+        ref={triggerRef}
+        type="button"
+        variant={menuTrigger ? "ghost" : "outline"}
+        size="sm"
+        className={menuTrigger ? "w-full justify-start" : undefined}
+        onClick={() => setOpen(true)}
+      >
         <SlidersHorizontal aria-hidden="true" className="size-4" />
-        Condiciones
+        {menuTrigger ? "Ajustar precio o crear tarifa" : "Condiciones"}
       </Button>
       {open ? (
         <div

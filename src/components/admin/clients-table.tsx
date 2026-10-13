@@ -1,30 +1,35 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, ArrowUpDown, Search, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Filter, MoreHorizontal, Tags, X } from "lucide-react";
+import { saveClientCommercialQuickUpdateAction } from "@/app/actions/admin";
 import { ClientCommercialTermsEditor } from "@/components/admin/client-commercial-terms-editor";
 import {
   ClientAdminNotesForm,
   ClientStatusSwitch,
 } from "@/components/forms/admin-forms";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { InternalSelect } from "@/components/ui/internal-select";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import {
   billingCycleLabel,
-  serviceModalityLabel,
+  serviceModalityOptions,
   type PricingPlanOption,
 } from "@/lib/admin/commercial-terms";
 import {
   filterAndSortClients,
+  emptyClientTableFilters,
   nextClientTableSort,
+  type ClientTableFilters,
   type ClientTableItem,
   type ClientTableSort,
   type ClientTableSortKey,
 } from "@/lib/admin/client-table";
 import { formatMoney } from "@/lib/format";
+import { initialActionState } from "@/lib/forms/action-state";
 
 const columnLabels: Record<ClientTableSortKey, string> = {
   name: "Cliente",
@@ -64,6 +69,99 @@ function SortableHeader({
   );
 }
 
+function QuickCommercialSelect({
+  clientId,
+  field,
+  value,
+  label,
+  options,
+  className,
+}: {
+  clientId: string;
+  field: "modality" | "pricingPlanId";
+  value: string;
+  label: string;
+  options: Array<{ value: string; label: string }>;
+  className?: string;
+}) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [selectedValue, setSelectedValue] = useState(value);
+  const [state, action, pending] = useActionState(saveClientCommercialQuickUpdateAction, initialActionState);
+
+  return (
+    <form ref={formRef} action={action} className="grid gap-1">
+      <input type="hidden" name="clientId" value={clientId} />
+      <input type="hidden" name="field" value={field} />
+      <input type="hidden" name="value" value={selectedValue} />
+      <InternalSelect
+        id={`quick-${field}-${clientId}`}
+        value={selectedValue}
+        options={options}
+        ariaLabel={label}
+        invalid={state.status === "error"}
+        disabled={pending}
+        menuPlacement="top"
+        className={`min-h-10 px-2.5 text-sm font-bold disabled:opacity-60 ${className ?? ""}`}
+        onValueChange={(nextValue) => {
+          if (pending) return;
+          setSelectedValue(nextValue);
+          window.requestAnimationFrame(() => formRef.current?.requestSubmit());
+        }}
+      />
+      <span className="sr-only" role={state.status === "error" ? "alert" : "status"} aria-live="polite">
+        {pending ? "Guardando…" : state.message}
+      </span>
+    </form>
+  );
+}
+
+function ClientRowActions({
+  client,
+  pricingPlans,
+  detailHref,
+}: {
+  client: ClientTableItem;
+  pricingPlans: PricingPlanOption[];
+  detailHref: string;
+}) {
+  return (
+    <details className="group relative">
+      <summary
+        aria-label={`Más opciones para ${client.name}`}
+        className="grid size-10 cursor-pointer list-none place-items-center rounded-[var(--radius-md)] border border-border-strong bg-surface transition hover:bg-surface-muted [&::-webkit-details-marker]:hidden"
+      >
+        <MoreHorizontal aria-hidden="true" className="size-5" />
+      </summary>
+      <div className="absolute bottom-full right-0 z-30 mb-2 grid w-64 gap-1 rounded-[var(--radius-md)] border border-border bg-surface p-2 shadow-xl">
+        <ClientCommercialTermsEditor
+          clientId={client.id}
+          clientName={client.name}
+          pricingPlans={pricingPlans}
+          initialTerms={client.modality && client.agreedAmountEur != null ? {
+            modality: client.modality,
+            pricingPlanId: client.pricingPlanId,
+            agreedAmountEur: client.agreedAmountEur,
+          } : null}
+          menuTrigger
+        />
+        <Link
+          href="/admin/tarifas"
+          className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
+        >
+          <Tags aria-hidden="true" className="size-4" />
+          Gestionar tarifas
+        </Link>
+        <Link
+          href={detailHref}
+          className="inline-flex min-h-10 items-center rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
+        >
+          Ver ficha
+        </Link>
+      </div>
+    </details>
+  );
+}
+
 export function ClientsTable({
   clients,
   pricingPlans,
@@ -71,41 +169,126 @@ export function ClientsTable({
   clients: ClientTableItem[];
   pricingPlans: PricingPlanOption[];
 }) {
-  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<ClientTableFilters>({ ...emptyClientTableFilters });
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [sort, setSort] = useState<ClientTableSort>(null);
   const visibleClients = useMemo(
-    () => filterAndSortClients(clients, query, sort),
-    [clients, query, sort],
+    () => filterAndSortClients(clients, filters, sort),
+    [clients, filters, sort],
   );
+  const activeFilterCount = Object.entries(filters).filter(([key, value]) => (
+    key === "status" || key === "questionnaire" || key === "modality" || key === "pricingPlanId"
+      ? value !== "all"
+      : String(value).trim() !== ""
+  )).length;
+
+  function updateFilter<Key extends keyof ClientTableFilters>(key: Key, value: ClientTableFilters[Key]) {
+    setFilters((current) => ({ ...current, [key]: value }));
+  }
 
   function resetTable() {
-    setQuery("");
+    setFilters({ ...emptyClientTableFilters });
     setSort(null);
   }
 
   return (
-    <Card className="overflow-hidden p-0">
-      <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center">
-        <div className="relative min-w-0 flex-1">
-          <Search aria-hidden="true" className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-muted" />
-          <Input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por cliente, estado, modalidad, tarifa, precio o notas…"
-            aria-label="Filtrar clientes"
-            className="pl-11"
-          />
-        </div>
-        {query || sort ? (
+    <Card className="p-0">
+      <div className="border-b border-border p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="button" variant="outline" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="client-table-filters">
+            <Filter aria-hidden="true" className="size-4" />
+            Filtros
+            {activeFilterCount ? <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-white">{activeFilterCount}</span> : null}
+          </Button>
+          {activeFilterCount || sort ? (
           <Button type="button" variant="ghost" onClick={resetTable}>
             <X aria-hidden="true" className="size-4" />
             Restablecer
           </Button>
+          ) : null}
+          <p className="ml-auto shrink-0 text-sm font-bold text-muted" aria-live="polite">
+            {visibleClients.length} de {clients.length}
+          </p>
+        </div>
+        {filtersOpen ? (
+          <div id="client-table-filters" className="mt-4 grid gap-3 border-t border-border pt-4 sm:grid-cols-2 xl:grid-cols-4">
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+              Cliente
+              <Input value={filters.name} onChange={(event) => updateFilter("name", event.target.value)} placeholder="Nombre…" className="min-h-10 text-sm normal-case tracking-normal text-foreground" />
+            </label>
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+              Alta / baja
+              <InternalSelect
+                id="client-filter-status"
+                value={filters.status}
+                ariaLabel="Filtrar por alta o baja"
+                className="min-h-10 text-sm normal-case tracking-normal"
+                options={[
+                  { value: "all", label: "Todos" },
+                  { value: "active", label: "Activos" },
+                  { value: "archived", label: "Inactivos" },
+                ]}
+                onValueChange={(value) => updateFilter("status", value as ClientTableFilters["status"])}
+              />
+            </label>
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+              Cuestionario
+              <InternalSelect
+                id="client-filter-questionnaire"
+                value={filters.questionnaire}
+                ariaLabel="Filtrar por cuestionario"
+                className="min-h-10 text-sm normal-case tracking-normal"
+                options={[
+                  { value: "all", label: "Todos" },
+                  { value: "complete", label: "Completado" },
+                  { value: "pending", label: "Pendiente" },
+                ]}
+                onValueChange={(value) => updateFilter("questionnaire", value as ClientTableFilters["questionnaire"])}
+              />
+            </label>
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+              Modalidad
+              <InternalSelect
+                id="client-filter-modality"
+                value={filters.modality}
+                ariaLabel="Filtrar por modalidad"
+                className="min-h-10 text-sm normal-case tracking-normal"
+                options={[
+                  { value: "all", label: "Todas" },
+                  ...serviceModalityOptions,
+                  { value: "unassigned", label: "Sin asignar" },
+                ]}
+                onValueChange={(value) => updateFilter("modality", value as ClientTableFilters["modality"])}
+              />
+            </label>
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+              Tarifa
+              <InternalSelect
+                id="client-filter-pricing-plan"
+                value={filters.pricingPlanId}
+                ariaLabel="Filtrar por tarifa"
+                className="min-h-10 text-sm normal-case tracking-normal"
+                options={[
+                  { value: "all", label: "Todas" },
+                  ...pricingPlans.map((plan) => ({ value: plan.id, label: plan.name })),
+                  { value: "unassigned", label: "Sin asignar" },
+                ]}
+                onValueChange={(value) => updateFilter("pricingPlanId", value)}
+              />
+            </label>
+            <fieldset className="grid gap-1.5">
+              <legend className="text-xs font-black uppercase tracking-wide text-muted">Precio (€)</legend>
+              <div className="grid grid-cols-2 gap-2">
+                <Input value={filters.minAmount} onChange={(event) => updateFilter("minAmount", event.target.value.replace(/[^0-9.,]/g, ""))} inputMode="decimal" placeholder="Mín." aria-label="Precio mínimo" className="min-h-10 text-sm" />
+                <Input value={filters.maxAmount} onChange={(event) => updateFilter("maxAmount", event.target.value.replace(/[^0-9.,]/g, ""))} inputMode="decimal" placeholder="Máx." aria-label="Precio máximo" className="min-h-10 text-sm" />
+              </div>
+            </fieldset>
+            <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted sm:col-span-2">
+              Notas internas
+              <Input value={filters.notes} onChange={(event) => updateFilter("notes", event.target.value)} placeholder="Contenido de la nota…" className="min-h-10 text-sm normal-case tracking-normal text-foreground" />
+            </label>
+          </div>
         ) : null}
-        <p className="shrink-0 text-sm font-bold text-muted" aria-live="polite">
-          {visibleClients.length} de {clients.length}
-        </p>
       </div>
       <div className="overflow-x-auto">
         <table className="data-table">
@@ -136,14 +319,37 @@ export function ClientsTable({
                     <ClientStatusSwitch clientId={client.id} clientName={client.name} status={client.status} />
                   </td>
                   <td>{client.onboardingComplete ? "Completado" : "Pendiente"}</td>
-                  <td>{serviceModalityLabel(client.modality)}</td>
                   <td>
-                    {client.pricingPlanName ? (
-                      <span className="grid gap-0.5">
-                        <b>{client.pricingPlanName}</b>
-                        <small className="text-muted">{billingCycleLabel(client.billingCycle)}</small>
-                      </span>
-                    ) : "Sin asignar"}
+                    <QuickCommercialSelect
+                      key={`modality-${client.modality ?? "unassigned"}`}
+                      clientId={client.id}
+                      field="modality"
+                      value={client.modality ?? ""}
+                      label={`Modalidad de ${client.name}`}
+                      className="w-32"
+                      options={client.modality
+                        ? serviceModalityOptions
+                        : [{ value: "", label: "Sin asignar" }, ...serviceModalityOptions]}
+                    />
+                  </td>
+                  <td>
+                    <QuickCommercialSelect
+                      key={`pricing-${client.pricingPlanId ?? "unassigned"}`}
+                      clientId={client.id}
+                      field="pricingPlanId"
+                      value={client.pricingPlanId ?? ""}
+                      label={`Tarifa de ${client.name}`}
+                      className="w-44"
+                      options={[
+                        { value: "", label: "Sin asignar" },
+                        ...pricingPlans
+                        .filter((plan) => plan.active || plan.id === client.pricingPlanId)
+                        .map((plan) => ({
+                          value: plan.id,
+                          label: `${plan.name} · ${billingCycleLabel(plan.billingCycle)}`,
+                        })),
+                      ]}
+                    />
                   </td>
                   <td className="whitespace-nowrap font-bold">
                     {client.agreedAmountEur == null ? "—" : formatMoney(client.agreedAmountEur)}
@@ -152,19 +358,7 @@ export function ClientsTable({
                     <ClientAdminNotesForm clientId={client.id} initialNotes={client.notes} compact />
                   </td>
                   <td>
-                    <div className="flex justify-end gap-2">
-                      <ClientCommercialTermsEditor
-                        clientId={client.id}
-                        clientName={client.name}
-                        pricingPlans={pricingPlans}
-                        initialTerms={client.modality && client.agreedAmountEur != null ? {
-                          modality: client.modality,
-                          pricingPlanId: client.pricingPlanId,
-                          agreedAmountEur: client.agreedAmountEur,
-                        } : null}
-                      />
-                      <ButtonLink href={detailHref} size="sm" variant="outline">Ver ficha</ButtonLink>
-                    </div>
+                    <ClientRowActions client={client} pricingPlans={pricingPlans} detailHref={detailHref} />
                   </td>
                 </tr>
               );

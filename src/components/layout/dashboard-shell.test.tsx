@@ -88,5 +88,6 @@ describe("DashboardShell", () => {
     expect(sidebar).toHaveClass("bg-sidebar", "text-sidebar-foreground", "border-sidebar-border");
     expect(sidebar).not.toHaveClass("bg-surface-inverse", "text-white");
     expect(screen.getAllByRole("link", { name: "Resumen" })[0]).toHaveClass("text-sidebar-muted", "hover:bg-sidebar-hover");
+    expect(screen.getByRole("main")).toHaveClass("px-4", "sm:px-6", "lg:px-10", "xl:px-12");
   });
 });

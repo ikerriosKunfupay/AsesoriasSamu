@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`
+
+- Las notas de cliente quedan alineadas en una sola línea y se guardan automáticamente, sin botón adicional.
+- Modalidad y tarifa se cambian directamente desde selectores internos de su propia columna.
+- Un menú de tres puntos reúne el ajuste de precio, la creación y gestión de tarifas y el acceso a la ficha.
+- Los filtros por cada columna permanecen plegados bajo un único botón y muestran el número de criterios activos.
+- El contenido conserva un padding lateral más amplio y coherente aunque se oculte el menú.
+
 ## 2026-10-14 — `2026-10-14-tema-filtros-y-kpis`
 
 - El modo claro cambia ahora también el menú lateral a fondo blanco, texto oscuro y estados de interacción claros.

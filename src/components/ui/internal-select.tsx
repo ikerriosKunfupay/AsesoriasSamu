@@ -2,6 +2,7 @@
 
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type InternalSelectOption = {
   value: string;
@@ -20,6 +21,9 @@ export function InternalSelect({
   ariaLabel,
   required,
   invalid,
+  className,
+  menuPlacement = "bottom",
+  disabled,
 }: {
   id: string;
   name?: string;
@@ -31,6 +35,9 @@ export function InternalSelect({
   ariaLabel: string;
   required?: boolean;
   invalid?: boolean;
+  className?: string;
+  menuPlacement?: "top" | "bottom";
+  disabled?: boolean;
 }) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +109,11 @@ export function InternalSelect({
         aria-required={required}
         aria-invalid={invalid || undefined}
         aria-describedby={invalid ? `${id}-error` : undefined}
-        className="flex min-h-12 w-full items-center justify-between rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5 text-left text-base text-foreground transition-colors focus:border-primary focus:outline-none"
+        disabled={disabled}
+        className={cn(
+          "flex min-h-12 w-full items-center justify-between rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5 text-left text-base text-foreground transition-colors focus:border-primary focus:outline-none disabled:pointer-events-none disabled:opacity-60",
+          className,
+        )}
         onClick={() => (isOpen ? setIsOpen(false) : openMenu())}
         onKeyDown={(event) => {
           if (event.key === "ArrowDown" || event.key === "ArrowUp") {
@@ -126,7 +137,10 @@ export function InternalSelect({
           id={listboxId}
           role="listbox"
           aria-label={`Opciones de ${ariaLabel}`}
-          className="absolute top-[calc(100%+0.5rem)] left-0 z-30 w-full overflow-hidden rounded-[var(--radius-md)] border border-border-strong bg-surface py-1 shadow-2xl"
+          className={cn(
+            "absolute left-0 z-40 w-full overflow-hidden rounded-[var(--radius-md)] border border-border-strong bg-surface py-1 shadow-2xl",
+            menuPlacement === "top" ? "bottom-[calc(100%+0.5rem)]" : "top-[calc(100%+0.5rem)]",
+          )}
         >
           {options.map((option, index) => {
             const isSelected = option.value === value;

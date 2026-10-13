@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useId } from "react";
+import { useActionState, useEffect, useId, useRef, useState } from "react";
 import {
   inviteClientAction,
   saveAssignmentAction,
@@ -105,34 +105,63 @@ export function ClientAdminNotesForm({
   compact?: boolean;
 }) {
   const fieldId = useId();
-  const [state, action] = useActionState(saveClientAdminNoteAction, initialActionState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const timeoutRef = useRef<number | null>(null);
+  const lastSubmittedNotes = useRef(initialNotes);
+  const [notes, setNotes] = useState(initialNotes);
+  const [state, action, pending] = useActionState(saveClientAdminNoteAction, initialActionState);
+
+  useEffect(() => () => {
+    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+  }, []);
+
+  function queueSave(nextNotes: string, delay = 700) {
+    if (timeoutRef.current !== null) window.clearTimeout(timeoutRef.current);
+    if (nextNotes === lastSubmittedNotes.current) return;
+    timeoutRef.current = window.setTimeout(() => {
+      lastSubmittedNotes.current = nextNotes;
+      formRef.current?.requestSubmit();
+    }, delay);
+  }
+
+  const noteFieldProps = {
+    id: fieldId,
+    name: "notes",
+    value: notes,
+    maxLength: 5000,
+    placeholder: "Escribe un recordatorio privado…",
+    "aria-describedby": compact ? `${fieldId}-status` : `${fieldId}-hint ${fieldId}-status`,
+    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setNotes(event.target.value);
+      queueSave(event.target.value);
+    },
+    onBlur: (event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => queueSave(event.target.value, 0),
+  };
 
   return (
-    <form action={action} className={cn("grid gap-2", compact ? "min-w-64" : "max-w-3xl gap-3")}>
+    <form ref={formRef} action={action} className={cn("grid gap-2", compact ? "w-56" : "max-w-3xl gap-3")}>
       <input type="hidden" name="clientId" value={clientId} />
       <label className={cn("font-bold", compact ? "sr-only" : "text-sm")} htmlFor={fieldId}>
         Notas internas
       </label>
-      <Textarea
-        id={fieldId}
-        name="notes"
-        defaultValue={initialNotes}
-        rows={compact ? 2 : 5}
-        maxLength={5000}
-        placeholder="Escribe un recordatorio privado sobre este cliente…"
-        aria-describedby={compact ? undefined : `${fieldId}-hint`}
-        className={compact ? "min-h-20 text-sm" : undefined}
-      />
+      {compact ? (
+        <Input {...noteFieldProps} className="min-h-10 text-sm" />
+      ) : (
+        <Textarea {...noteFieldProps} rows={5} />
+      )}
       {!compact ? (
         <p id={`${fieldId}-hint`} className="text-sm text-muted">
-          Solo lo verá la administración. Anota información práctica y evita copiar informes médicos completos.
+          Solo lo verá la administración. Se guarda automáticamente; anota información práctica y evita copiar informes médicos completos.
         </p>
       ) : null}
-      <div className="flex flex-wrap items-start gap-3">
-        <SubmitButton pendingLabel="Guardando…" className={compact ? "min-h-10 px-3" : undefined}>
-          Guardar nota
-        </SubmitButton>
-        <div className="min-w-0 flex-1"><FormMessage state={state} /></div>
+      <div id={`${fieldId}-status`} className={cn("min-h-4 text-xs", state.status === "error" ? "text-danger" : "text-muted")} aria-live="polite">
+        {pending
+          ? "Guardando…"
+          : state.status === "error"
+            ? state.message
+            : state.status === "success"
+              ? "Guardado"
+              : compact ? "Guardado automático" : "Los cambios se guardan automáticamente."}
       </div>
     </form>
   );

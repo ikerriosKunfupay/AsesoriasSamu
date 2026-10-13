@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   clientCommercialTermsSchema,
+  clientCommercialQuickUpdateSchema,
   clientAdminNoteSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
@@ -162,6 +163,15 @@ describe("validación de formularios", () => {
       newPlanName: "Anual",
       newBillingCycle: "annual",
     }).success).toBe(true);
+  });
+
+  it("valida los cambios rápidos de modalidad y tarifa", () => {
+    const clientId = "11111111-1111-4111-8111-111111111111";
+    const pricingPlanId = "22222222-2222-4222-8222-222222222222";
+
+    expect(clientCommercialQuickUpdateSchema.safeParse({ clientId, field: "modality", value: "online" }).success).toBe(true);
+    expect(clientCommercialQuickUpdateSchema.safeParse({ clientId, field: "pricingPlanId", value: pricingPlanId }).success).toBe(true);
+    expect(clientCommercialQuickUpdateSchema.safeParse({ clientId, field: "modality", value: "phone" }).success).toBe(false);
   });
 
   it("valida los límites físicos del cuestionario", () => {

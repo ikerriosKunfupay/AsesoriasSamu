@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ClientStatusSwitch } from "./admin-forms";
+import { ClientAdminNotesForm, ClientStatusSwitch } from "./admin-forms";
 
 vi.mock("@/app/actions/admin", () => ({
   inviteClientAction: vi.fn(),
@@ -24,5 +24,13 @@ describe("ClientStatusSwitch", () => {
     expect(track).toHaveClass("shrink-0");
     expect(thumb).toHaveClass("left-1", "translate-x-5");
     expect(control).toHaveTextContent("Activo");
+  });
+
+  it("muestra la nota compacta con guardado automático y sin botón", () => {
+    render(<ClientAdminNotesForm clientId="client-1" initialNotes="Llamar el viernes" compact />);
+
+    expect(screen.getByDisplayValue("Llamar el viernes")).toHaveClass("min-h-10");
+    expect(screen.getByText("Guardado automático")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /guardar nota/i })).not.toBeInTheDocument();
   });
 });

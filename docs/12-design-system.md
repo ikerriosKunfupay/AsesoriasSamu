@@ -44,7 +44,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
-- `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente.
+- `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente. Admite apertura superior para celdas situadas al final de tablas con scroll y una altura compacta mediante clases del consumidor.
 - `SocialNetworksField`: bloque desplegable, compacto y redondeado que compone `InternalSelect` con icono, prefijo de URL, usuario y acciones de añadir o eliminar. Los perfiles opcionales no deben ocupar altura cuando no se editan ni repetir instrucciones dentro del panel.
 - `ProfileAvatar`: avatar circular con borde de marca, imagen privada mediante URL firmada e iniciales como estado de respaldo.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.

@@ -75,6 +75,19 @@ export const clientStatusSchema = z.object({
   nextStatus: z.enum(["active", "archived"]),
 });
 
+export const clientCommercialQuickUpdateSchema = z.discriminatedUnion("field", [
+  z.object({
+    clientId: z.string().uuid("Cliente no válido."),
+    field: z.literal("modality"),
+    value: z.enum(["in_person", "online"]),
+  }),
+  z.object({
+    clientId: z.string().uuid("Cliente no válido."),
+    field: z.literal("pricingPlanId"),
+    value: z.union([z.string().uuid("Tarifa no válida."), z.literal("")]),
+  }),
+]);
+
 export const dashboardGoalsSchema = z.object({
   monthlyRevenueGoalEur: z.preprocess(
     parseUnsignedDecimal,
