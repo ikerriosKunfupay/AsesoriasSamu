@@ -130,6 +130,45 @@ export async function requestPasswordResetAction(
   };
 }
 
+export async function resendConfirmationAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = emailSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa el correo.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email: parsed.data.email,
+    options: {
+      emailRedirectTo: `${origin}/auth/callback?next=/app/cuestionario`,
+    },
+  });
+
+  if (error?.status === 429 || error?.code === "over_email_send_rate_limit") {
+    return {
+      status: "error",
+      message: "Espera al menos un minuto desde el último intento antes de reenviar el correo.",
+    };
+  }
+
+  if (error) {
+    return {
+      status: "error",
+      message: "No se pudo procesar el reenvío. Revisa el correo o inténtalo de nuevo en unos minutos.",
+    };
+  }
+
+  return {
+    status: "success",
+    message: "Si la cuenta está pendiente de confirmar, recibirás un nuevo enlace. Revisa también spam y promociones.",
+  };
+}
+
 export async function updatePasswordAction(
   _previous: ActionState,
   formData: FormData,

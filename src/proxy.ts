@@ -12,6 +12,7 @@ export const config = {
     "/auth/:path*",
     "/login",
     "/registro",
+    "/reenviar-confirmacion",
     "/recuperar-contrasena",
     "/cuenta-inactiva",
   ],

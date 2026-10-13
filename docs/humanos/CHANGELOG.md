@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-reenvio-confirmacion-registro`
+
+- Añadida en el acceso la opción «No he recibido el correo de confirmación» para solicitar un enlace nuevo sin volver a registrarse.
+- El formulario recuerda revisar spam y promociones y explica cuándo hay que esperar un minuto antes de repetir el envío.
+- La confirmación de alta avisa de esta alternativa antes de llevar al login.
+- El análisis de código, los tipos, las 59 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-rendimiento-panel`
 
 - Acercado el servidor del panel a la base de datos europea para eliminar varias esperas transatlánticas en cada pantalla.

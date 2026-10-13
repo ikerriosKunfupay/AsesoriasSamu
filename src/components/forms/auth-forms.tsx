@@ -7,6 +7,7 @@ import {
   loginAction,
   registerAction,
   requestPasswordResetAction,
+  resendConfirmationAction,
   updatePasswordAction,
 } from "@/app/actions/auth";
 import { Field } from "@/components/ui/field";
@@ -37,9 +38,14 @@ export function LoginForm() {
         />
       </Field>
       <SubmitButton pendingLabel="Entrando…" className="w-full">Entrar</SubmitButton>
-      <Link className="text-center text-sm font-bold text-primary hover:underline" href="/recuperar-contrasena">
-        He olvidado mi contraseña
-      </Link>
+      <div className="grid gap-2 text-center text-sm font-bold text-primary">
+        <Link className="hover:underline" href="/recuperar-contrasena">
+          He olvidado mi contraseña
+        </Link>
+        <Link className="hover:underline" href="/reenviar-confirmacion">
+          No he recibido el correo de confirmación
+        </Link>
+      </div>
       <p className="text-center text-sm text-muted">
         ¿Todavía no tienes cuenta?{" "}
         <Link className="font-bold text-foreground underline decoration-primary decoration-2 underline-offset-4" href="/registro">
@@ -116,6 +122,29 @@ export function PasswordResetForm() {
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>
       <SubmitButton pendingLabel="Enviando…" className="w-full">Enviar enlace seguro</SubmitButton>
+    </form>
+  );
+}
+
+export function ResendConfirmationForm() {
+  const [state, action] = useActionState(resendConfirmationAction, initialActionState);
+  return (
+    <form action={action} className="grid gap-5" noValidate>
+      <FormMessage state={state} />
+      <Field label="Correo electrónico" htmlFor="email" required error={state.fieldErrors?.email?.[0]}>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          aria-invalid={Boolean(state.fieldErrors?.email?.[0])}
+        />
+      </Field>
+      <SubmitButton pendingLabel="Reenviando…" className="w-full">Reenviar confirmación</SubmitButton>
+      <Link className="text-center text-sm font-bold text-primary hover:underline" href="/login">
+        Volver al acceso
+      </Link>
     </form>
   );
 }

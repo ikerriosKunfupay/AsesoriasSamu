@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-reenvio-confirmacion-registro`
+
+- Añadidos `/reenviar-confirmacion`, `ResendConfirmationForm` y `resendConfirmationAction` sobre `auth.resend({ type: "signup" })`, reutilizando el callback del registro.
+- La acción mantiene una respuesta genérica para impedir enumeración de cuentas y presenta un mensaje específico para el límite `429`/`over_email_send_rate_limit`.
+- Incorporadas pruebas para el reenvío correcto, el intervalo mínimo, los fallos del proveedor y la validación previa del correo.
+- `pnpm check` superó lint, tipos, 59 pruebas y build Webpack.
+
 ## 2026-10-13 — `2026-10-13-rendimiento-panel`
 
 - Añadido `vercel.json` con `regions: ["dub1"]` para alinear el runtime de Next.js con Supabase `eu-west-1`; la medición previa mostró `x-vercel-id: cdg1::iad1`.

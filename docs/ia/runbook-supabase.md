@@ -49,6 +49,8 @@ where id = '<UUID_VERIFICADO>';
 
 En el entorno desplegado, correo + contraseña está activo y la confirmación de correo está habilitada. El registro público debe permanecer activo; la aplicación fuerza el rol `client` mediante el trigger de base de datos.
 
+Si una persona no recibe la confirmación, debe usar `/reenviar-confirmacion` desde el acceso y esperar al menos 60 segundos entre solicitudes. No debe repetir el alta para forzar el envío: Supabase protege contra la enumeración de cuentas y un `signUp()` repetido puede aparentar éxito sin crear otra identidad ni reenviar el mensaje. Si tampoco llega el reenvío, revisa primero spam/promociones y después los registros SMTP de Brevo y Auth de Supabase.
+
 ## SMTP
 
 Configura el SMTP propio en Authentication > Emails > SMTP Settings. Verifica dominio/remitente y desactiva el seguimiento de enlaces del proveedor para no modificar los enlaces de Auth. Prueba invitación y recuperación con una cuenta de prueba antes de usar correos de clientes.

@@ -39,6 +39,9 @@ export function RegistrationSuccessDialog({
         <p className="mt-3 text-sm font-bold text-foreground">
           Te llevamos al acceso para que puedas iniciar sesión después de confirmar el correo.
         </p>
+        <p className="mt-2 text-sm leading-6 text-muted">
+          Si no te llega, desde el acceso podrás reenviar la confirmación sin crear otra cuenta.
+        </p>
         <Button className="public-action mt-6 w-full" onClick={onContinue}>
           Ir al login
         </Button>
