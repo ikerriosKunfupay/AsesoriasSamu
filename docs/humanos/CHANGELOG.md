@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-controles-cuestionario-interno`
+
+- La edad solo admite números enteros positivos; peso y altura admiten decimales con coma o punto y se guardan como un único valor numérico normalizado.
+- Sustituido el selector gris del navegador para el sexo por un desplegable propio de Team Ortega, compatible con teclado.
+- Reordenado todo el cuestionario en una cuadrícula regular, con campos emparejados del mismo tamaño.
+- En móvil, el menú privado aparece a la izquierda y el logo a la derecha.
+- Las comprobaciones finales terminaron correctamente. Las primeras pruebas del selector detectaron dos detalles de foco y etiquetado accesible, corregidos antes de la entrega; la vista privada local no pudo abrirse sin las variables de Supabase del entorno temporal y se verificará sobre el despliegue conectado.
+
 ## 2026-10-13 — `2026-10-13-bloqueo-navegacion-cuestionario`
 
 - Mientras el cuestionario inicial esté pendiente, los accesos a Inicio, Entrenamiento, Nutrición y Seguimiento muestran un aviso explicativo y no abandonan el cuestionario.

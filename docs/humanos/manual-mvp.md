@@ -35,6 +35,10 @@ En ambos casos la cuenta se crea siempre con rol de cliente. El formulario públ
 
 El cliente ve únicamente sus datos. Antes de consultar el resto del área personal debe completar el cuestionario inicial. Mientras esté pendiente, cualquier acceso a Inicio, Entrenamiento, Nutrición o Seguimiento muestra un aviso y mantiene al cliente en el cuestionario. Al guardarlo correctamente, toda la navegación queda desbloqueada.
 
+El cuestionario se presenta en una cuadrícula regular: los campos de una misma fila conservan el mismo ancho y las áreas de texto emparejadas tienen la misma altura. La edad solo permite números enteros positivos y mantiene el rango de 16 a 90 años. Peso y altura aceptan decimales escritos con coma o punto, pero se guardan como valores numéricos normalizados. El sexo se elige mediante un desplegable propio de Team Ortega, no mediante el menú visual del navegador.
+
+En móvil, el botón de navegación queda a la izquierda de la cabecera privada y el emblema de Team Ortega a la derecha.
+
 Después puede:
 
 - completar o actualizar su cuestionario;

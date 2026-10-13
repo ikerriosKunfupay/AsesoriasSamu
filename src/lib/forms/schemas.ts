@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseUnsignedDecimal, parseUnsignedInteger } from "./numeric-values";
 
 const requiredText = (label: string, min = 2) =>
   z.string().trim().min(min, `${label} es obligatorio.`).max(2000, `${label} es demasiado largo.`);
@@ -50,10 +51,19 @@ export const inviteSchema = z.object({
 });
 
 export const onboardingSchema = z.object({
-  age: z.coerce.number().int().min(16, "La edad mínima es 16 años.").max(90),
+  age: z.preprocess(
+    parseUnsignedInteger,
+    z.number({ error: "Introduce una edad válida." }).int().min(16, "La edad mínima es 16 años.").max(90),
+  ),
   sex: z.enum(["mujer", "hombre", "otro", "prefiero_no_indicar"]),
-  weightKg: z.coerce.number().min(35).max(300),
-  heightCm: z.coerce.number().min(120).max(230),
+  weightKg: z.preprocess(
+    parseUnsignedDecimal,
+    z.number({ error: "Introduce un peso válido." }).min(35).max(300),
+  ),
+  heightCm: z.preprocess(
+    parseUnsignedDecimal,
+    z.number({ error: "Introduce una altura válida." }).min(120).max(230),
+  ),
   occupationSchedule: requiredText("El horario", 5),
   trainingPriority: requiredText("La prioridad", 5),
   mealAvailability: requiredText("La disponibilidad para comer", 5),

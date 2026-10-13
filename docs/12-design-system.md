@@ -38,6 +38,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
+- `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
@@ -61,6 +62,9 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - La validación del registro evita los avisos nativos del navegador: muestra el error en un toast cerrable mediante una `X` etiquetada y marca en rojo cada control afectado. Los campos de contraseña incluyen una acción accesible para mostrar u ocultar su contenido.
 - El control para mostrar u ocultar la contraseña se reutiliza también en el login y conserva el propósito de autocompletado propio de cada formulario.
 - En escritorio, el menú privado ocupa la altura visible y mantiene el usuario y **Cerrar sesión** accesibles al pie, independientemente de la longitud del contenido.
+- En la cabecera privada móvil, el menú se sitúa a la izquierda y el emblema compacto a la derecha.
+- El cuestionario del cliente usa una cuadrícula responsiva: cuatro datos físicos en escritorio amplio, dos columnas para respuestas narrativas y una sola columna en móvil. Las áreas de texto de una misma fila conservan la misma altura y las ayudas equivalentes reservan el mismo espacio.
+- Los campos físicos no dependen de `type="number"`: edad filtra a enteros sin signo; peso y altura usan teclado decimal, aceptan coma o punto y delegan la normalización definitiva al esquema del servidor.
 - El éxito del registro usa un diálogo modal marfil con acento rojo, mensaje de confirmación, CTA inmediato y redirección automática al login; no permanece como un aviso insertado dentro del formulario.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.

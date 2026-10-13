@@ -84,12 +84,11 @@ export function DashboardShell({
       </aside>
       <div className="min-w-0">
         <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-border bg-surface/95 px-4 backdrop-blur lg:hidden">
-          <BrandLogo compact href={mode === "admin" ? "/admin" : "/app/inicio"} onClick={(event) => guardNavigation(event, "/app/inicio")} />
           <details className="relative">
             <summary className="grid size-11 cursor-pointer list-none place-items-center rounded-[var(--radius-md)] border border-border" aria-label="Abrir navegación">
               <Menu className="size-5" />
             </summary>
-            <nav className="absolute right-0 mt-2 grid w-64 gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
+            <nav className="absolute left-0 mt-2 grid w-64 gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
               {items.map(({ href, label, icon: Icon }) => (
                 <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold hover:bg-surface-muted">
                   <Icon className="size-5 text-primary" aria-hidden="true" /> {label}
@@ -100,6 +99,7 @@ export function DashboardShell({
               </form>
             </nav>
           </details>
+          <BrandLogo compact href={mode === "admin" ? "/admin" : "/app/inicio"} onClick={(event) => guardNavigation(event, "/app/inicio")} />
         </header>
         <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>

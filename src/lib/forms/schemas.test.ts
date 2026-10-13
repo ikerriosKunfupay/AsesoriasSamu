@@ -84,4 +84,71 @@ describe("validación de formularios", () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it("normaliza coma y punto antes de guardar peso y altura", () => {
+    const result = onboardingSchema.safeParse({
+      age: "30",
+      sex: "mujer",
+      weightKg: "80,25",
+      heightCm: "178.5",
+      occupationSchedule: "Trabajo de mañana de lunes a viernes.",
+      trainingPriority: "Entrenar fuerza cuatro días por semana.",
+      mealAvailability: "Cuatro comidas con pausa al mediodía.",
+      conditionsInjuries: "",
+      allergiesIntolerances: "",
+      goals: "Mejorar fuerza y composición corporal.",
+      socialNetworks: "",
+      healthConsent: "on",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.weightKg).toBe(80.25);
+      expect(result.data.heightCm).toBe(178.5);
+    }
+  });
+
+  it.each(["-34", "34.5", "34e2", "edad"])(
+    "rechaza una edad que no sea un entero positivo: %s",
+    (age) => {
+      const result = onboardingSchema.safeParse({
+        age,
+        sex: "hombre",
+        weightKg: "80",
+        heightCm: "178",
+        occupationSchedule: "Trabajo de mañana de lunes a viernes.",
+        trainingPriority: "Entrenar fuerza cuatro días por semana.",
+        mealAvailability: "Cuatro comidas con pausa al mediodía.",
+        conditionsInjuries: "",
+        allergiesIntolerances: "",
+        goals: "Mejorar fuerza y composición corporal.",
+        socialNetworks: "",
+        healthConsent: "on",
+      });
+
+      expect(result.success).toBe(false);
+    },
+  );
+
+  it.each(["-80", "80kg", "80--", "80,2.5"])(
+    "rechaza peso con signos, texto o más de un separador: %s",
+    (weightKg) => {
+      const result = onboardingSchema.safeParse({
+        age: "30",
+        sex: "hombre",
+        weightKg,
+        heightCm: "178",
+        occupationSchedule: "Trabajo de mañana de lunes a viernes.",
+        trainingPriority: "Entrenar fuerza cuatro días por semana.",
+        mealAvailability: "Cuatro comidas con pausa al mediodía.",
+        conditionsInjuries: "",
+        allergiesIntolerances: "",
+        goals: "Mejorar fuerza y composición corporal.",
+        socialNetworks: "",
+        healthConsent: "on",
+      });
+
+      expect(result.success).toBe(false);
+    },
+  );
 });
