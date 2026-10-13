@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-padding-lateral-publico`
+
+- Actualizado el gutter global de `.page-shell` a `1.5rem` por defecto y `3rem` desde `768px`, manteniendo `max-width: 1200px`.
+
+## 2026-10-13 — `2026-10-13-intercambio-cta-portada`
+
+- `MarketingHeader` y el hero intercambian destinos y etiquetas: `/login` usa el CTA primario «Acceder» y `/solicitar-informacion` la acción secundaria «Quiero información».
+- La navegación móvil expone «Acceder» como única acción principal.
+
 ## 2026-10-13 — `2026-10-13-inicio-login-izquierda`
 
 - `AuthShell` alinea el enlace de retorno con `lg:justify-start`; el encabezado móvil mantiene la marca y el acceso separados con `justify-between`.

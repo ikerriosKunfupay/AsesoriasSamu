@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-padding-lateral-publico`
+
+- Añadido más espacio lateral uniforme en toda la portada, su cabecera, sus secciones y el pie, también en móvil.
+
+## 2026-10-13 — `2026-10-13-intercambio-cta-portada`
+
+- Intercambiadas las acciones de la portada: «Acceder» pasa a ser el botón rojo principal y «Quiero información» queda como opción secundaria.
+
 ## 2026-10-13 — `2026-10-13-inicio-login-izquierda`
 
 - Movido el acceso «Inicio» al lado izquierdo del formulario en las pantallas privadas de escritorio.

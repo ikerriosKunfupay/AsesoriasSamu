@@ -14,13 +14,13 @@ export function MarketingHeader() {
           <Link href="/#metodo" className="min-h-11 content-center border-b-2 border-transparent text-xs font-black tracking-[0.12em] text-zinc-300 uppercase hover:border-primary hover:text-white">
             Cómo trabajamos
           </Link>
-          <ButtonLink href="/login" variant="ghost" className="rounded-none border-b-2 border-white/40 bg-transparent px-0 text-white hover:border-primary hover:bg-transparent">
-            Acceso clientes
+          <ButtonLink href="/solicitar-informacion" variant="ghost" className="rounded-none border-b-2 border-white/40 bg-transparent px-0 text-white hover:border-primary hover:bg-transparent">
+            Quiero información
           </ButtonLink>
-          <ButtonLink href="/solicitar-informacion" className="public-action">Quiero información</ButtonLink>
+          <ButtonLink href="/login" className="public-action">Acceder</ButtonLink>
         </nav>
-        <ButtonLink href="/solicitar-informacion" size="sm" className="public-action md:hidden">
-          Información
+        <ButtonLink href="/login" size="sm" className="public-action md:hidden">
+          Acceder
         </ButtonLink>
       </div>
     </header>

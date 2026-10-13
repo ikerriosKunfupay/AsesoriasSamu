@@ -189,7 +189,7 @@ textarea {
 .page-shell {
   margin-inline: auto;
   max-width: 1200px;
-  padding-inline: 1rem;
+  padding-inline: 1.5rem;
   width: 100%;
 }
 
@@ -223,7 +223,7 @@ textarea {
 
 @media (min-width: 768px) {
   .page-shell {
-    padding-inline: 2rem;
+    padding-inline: 3rem;
   }
 }
 

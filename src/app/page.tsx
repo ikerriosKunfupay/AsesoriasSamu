@@ -59,11 +59,11 @@ export default function Home() {
                 plantillas genéricas y con un plan que evoluciona contigo.
               </p>
               <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <ButtonLink href="/solicitar-informacion" size="lg" className="public-action">
-                  Quiero más información <ArrowRight aria-hidden="true" size={18} />
+                <ButtonLink href="/login" size="lg" className="public-action">
+                  Acceder <ArrowRight aria-hidden="true" size={18} />
                 </ButtonLink>
-                <ButtonLink href="/login" variant="ghost" size="lg" className="rounded-none border-b-2 border-white/45 bg-transparent px-0 text-white hover:border-primary hover:bg-transparent">
-                  Acceso clientes
+                <ButtonLink href="/solicitar-informacion" variant="ghost" size="lg" className="rounded-none border-b-2 border-white/45 bg-transparent px-0 text-white hover:border-primary hover:bg-transparent">
+                  Quiero información
                 </ButtonLink>
               </div>
             </div>
