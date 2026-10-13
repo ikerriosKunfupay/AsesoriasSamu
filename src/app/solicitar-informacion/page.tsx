@@ -31,7 +31,7 @@ export default function LeadPage() {
       </aside>
       <section className="px-5 py-8 sm:px-10 lg:px-16 lg:py-10">
         <div className="mx-auto max-w-3xl">
-          <div className="mb-14 flex justify-end">
+          <div className="mb-14 flex justify-start">
             <Link href="/" className="inline-flex min-h-11 items-center gap-2 border-b-2 border-foreground/35 text-sm font-black uppercase hover:border-primary">
               <ArrowLeft size={16} aria-hidden="true" /> Volver al inicio
             </Link>

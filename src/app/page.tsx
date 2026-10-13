@@ -59,9 +59,6 @@ export default function Home() {
                 plantillas genéricas y con un plan que evoluciona contigo.
               </p>
               <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-                <ButtonLink href="/login" size="lg" className="public-action">
-                  Acceder <ArrowRight aria-hidden="true" size={18} />
-                </ButtonLink>
                 <ButtonLink href="/solicitar-informacion" variant="ghost" size="lg" className="rounded-none border-b-2 border-white/45 bg-transparent px-0 text-white hover:border-primary hover:bg-transparent">
                   Quiero información
                 </ButtonLink>
@@ -122,9 +119,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="metodo" className="public-dark scroll-mt-20 border-y border-white/10 py-22 sm:py-30">
-          <div className="page-shell grid gap-14 lg:grid-cols-[0.72fr_1.28fr]">
-            <div className="lg:sticky lg:top-32 lg:self-start">
+        <section id="metodo" className="public-dark scroll-mt-20 overflow-x-hidden border-y border-white/10 py-22 sm:py-30">
+          <div className="page-shell grid min-w-0 gap-14 xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
+            <div className="min-w-0 xl:sticky xl:top-32 xl:self-start">
               <p className="public-kicker text-primary">Cómo funciona</p>
               <h2 className="font-display mt-7 text-5xl leading-[0.9] font-black uppercase sm:text-6xl">
                 Claro desde<br />el primer día.
@@ -134,7 +131,7 @@ export default function Home() {
                 tus revisiones y tu progreso siempre a mano.
               </p>
             </div>
-            <ol className="border-t border-white/30">
+            <ol className="min-w-0 border-t border-white/30">
               {steps.map((step, index) => (
                 <li key={step} className="grid gap-5 border-b border-white/20 py-8 sm:grid-cols-[9rem_1fr] sm:items-center sm:py-10">
                   <span className="font-display text-7xl leading-none font-black text-primary">0{index + 1}</span>

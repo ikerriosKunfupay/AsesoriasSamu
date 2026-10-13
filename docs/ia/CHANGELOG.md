@@ -1,5 +1,18 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-volver-inicio-formulario-izquierda`
+
+- El contenedor del enlace de retorno en `/solicitar-informacion` cambia de `justify-end` a `justify-start`.
+
+## 2026-10-13 — `2026-10-13-eliminar-scroll-metodo`
+
+- La cuadrícula de `#metodo` pasa de `lg` a `xl`, usa pistas `minmax(0, …)`, aplica `min-w-0` a ambos hijos y contiene cualquier desbordamiento horizontal residual.
+- `pnpm check` superó lint, tipos, 5 pruebas y build al repetirse con red; el primer build falló exclusivamente por `ENOTFOUND fonts.googleapis.com` en el sandbox.
+
+## 2026-10-13 — `2026-10-13-retirar-acceso-hero`
+
+- Eliminado del hero el `ButtonLink` dirigido a `/login`; se conserva el enlace secundario a `/solicitar-informacion` y el acceso principal del `MarketingHeader`.
+
 ## 2026-10-13 — `2026-10-13-padding-lateral-publico`
 
 - Actualizado el gutter global de `.page-shell` a `1.5rem` por defecto y `3rem` desde `768px`, manteniendo `max-width: 1200px`.

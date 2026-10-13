@@ -52,8 +52,10 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - El hero de entrada debe dejar visibles la propuesta, la explicación y las acciones principales sin ocupar de forma agobiante toda la primera pantalla; reservar los tamaños extremos para acentos puntuales.
 - El emblema de marca debe seguir visible en el hero móvil como un recurso compacto y secundario, sin desplazar el contenido principal ni competir con los CTA.
 - Los CTA públicos usan remate diagonal y las acciones secundarias se presentan como enlaces subrayados. Los controles públicos son lineales; el panel mantiene las primitivas operativas estándar.
-- En la portada, «Acceder» es el CTA rojo principal y «Quiero información» queda como acción secundaria enlazada al formulario de contacto.
+- En la portada, «Acceder» se reserva para la cabecera; el hero muestra únicamente «Quiero información» para evitar duplicar el acceso en la misma pantalla.
+- La sección «Cómo funciona» se apila hasta `xl`; sus columnas usan `minmax(0, …)` y nunca deben generar desplazamiento horizontal.
 - En las vistas de autenticación, la cabecera móvil comienza cerca del borde superior y presenta la marca antes del formulario; en escritorio, el regreso a Inicio se alinea con el borde izquierdo del formulario.
+- Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.
 - Inputs de 16 px en móvil y objetivos táctiles de al menos 44 px.
 - Foco siempre visible, contraste legible y reducción de movimiento respetada.

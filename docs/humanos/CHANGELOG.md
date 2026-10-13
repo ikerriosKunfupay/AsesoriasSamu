@@ -1,5 +1,18 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-volver-inicio-formulario-izquierda`
+
+- Movido «Volver al inicio» al lado izquierdo del formulario para mantener la navegación alineada con el contenido.
+
+## 2026-10-13 — `2026-10-13-eliminar-scroll-metodo`
+
+- Eliminado el desplazamiento lateral de la sección «Cómo funciona»; en pantallas sin anchura suficiente, el contenido se muestra apilado.
+- La validación final terminó correctamente; un primer intento de compilación no pudo descargar las fuentes por una restricción temporal de red local.
+
+## 2026-10-13 — `2026-10-13-retirar-acceso-hero`
+
+- Retirado el botón «Acceder» del bloque principal de la portada; el acceso continúa disponible en la cabecera.
+
 ## 2026-10-13 — `2026-10-13-padding-lateral-publico`
 
 - Añadido más espacio lateral uniforme en toda la portada, su cabecera, sus secciones y el pie, también en móvil.
