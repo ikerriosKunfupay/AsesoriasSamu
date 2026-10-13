@@ -1,128 +1,144 @@
-import Link from "next/link";
-import {
-  ClipboardCheck,
-  FileText,
-  UserPlus,
-  UsersRound,
-  WalletCards,
-} from "lucide-react";
+import { DashboardKpis, type DashboardKpi } from "@/components/admin/dashboard-kpis";
 import { PageHeading } from "@/components/layout/page-heading";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { formatDate, formatMoney, statusLabel } from "@/lib/format";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { formatDate } from "@/lib/format";
+
+const MAX_MODAL_ITEMS = 10;
+
+function contactPreferenceLabel(value: string) {
+  if (value === "whatsapp") return "WhatsApp";
+  if (value === "phone" || value === "call") return "Llamada";
+  if (value === "email") return "Correo";
+  return value;
+}
 
 export default async function AdminDashboardPage() {
   const supabase = createAdminClient();
-  const [clients, newLeads, recentLeads, questionnaires, recentQuestionnaires, checkIns, fees] = await Promise.all([
-    supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "client"),
-    supabase.from("leads").select("id", { count: "exact", head: true }).eq("status", "new"),
-    supabase.from("leads").select("id, full_name, goal, created_at, status").order("created_at", { ascending: false }).limit(5),
-    supabase.from("onboarding_submissions").select("id", { count: "exact", head: true }),
-    supabase.from("onboarding_submissions").select("user_id, submitted_at, updated_at").order("updated_at", { ascending: false }).limit(5),
-    supabase.from("check_ins").select("id", { count: "exact", head: true }),
-    supabase.from("manual_fee_records").select("id", { count: "exact", head: true }).eq("status", "pending"),
+  const [clients, leads, questionnaires, checkIns, fees] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, full_name, status, onboarding_complete, created_at", { count: "exact" })
+      .eq("role", "client")
+      .order("created_at", { ascending: false })
+      .limit(MAX_MODAL_ITEMS),
+    supabase
+      .from("leads")
+      .select("id, full_name, contact_preference, status, created_at", { count: "exact" })
+      .eq("status", "new")
+      .order("created_at", { ascending: false })
+      .limit(MAX_MODAL_ITEMS),
+    supabase
+      .from("onboarding_submissions")
+      .select("id, user_id, submitted_at, updated_at", { count: "exact" })
+      .order("updated_at", { ascending: false })
+      .limit(MAX_MODAL_ITEMS),
+    supabase
+      .from("check_ins")
+      .select("id, client_id, created_at", { count: "exact" })
+      .order("created_at", { ascending: false })
+      .limit(MAX_MODAL_ITEMS),
+    supabase
+      .from("manual_fee_records")
+      .select("id, client_id, period, amount_eur, updated_at", { count: "exact" })
+      .eq("status", "pending")
+      .order("updated_at", { ascending: false })
+      .limit(MAX_MODAL_ITEMS),
   ]);
 
-  const questionnaireUserIds = recentQuestionnaires.data?.map((item) => item.user_id) ?? [];
-  let questionnaireProfiles: Array<{
-    id: string;
-    full_name: string;
-    status: string;
-    onboarding_complete: boolean;
-  }> = [];
+  const relatedClientIds = Array.from(
+    new Set([
+      ...(questionnaires.data ?? []).map((item) => item.user_id),
+      ...(checkIns.data ?? []).map((item) => item.client_id),
+      ...(fees.data ?? []).map((item) => item.client_id),
+    ]),
+  );
+  const relatedProfiles = relatedClientIds.length
+    ? await supabase.from("profiles").select("id, full_name").in("id", relatedClientIds)
+    : { data: [] as Array<{ id: string; full_name: string }> };
+  const namesById = new Map((relatedProfiles.data ?? []).map((profile) => [profile.id, profile.full_name]));
 
-  if (questionnaireUserIds.length > 0) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("id, full_name, status, onboarding_complete")
-      .in("id", questionnaireUserIds);
-    questionnaireProfiles = data ?? [];
-  }
-
-  const profilesById = new Map(questionnaireProfiles.map((profile) => [profile.id, profile]));
-  const stats = [
-    { label: "Clientes registrados", value: clients.count ?? 0, icon: UsersRound },
-    { label: "Interesados nuevos", value: newLeads.count ?? 0, icon: UserPlus },
-    { label: "Cuestionarios recibidos", value: questionnaires.count ?? 0, icon: FileText },
-    { label: "Seguimientos", value: checkIns.count ?? 0, icon: ClipboardCheck },
-    { label: "Cuotas pendientes", value: fees.count ?? 0, icon: WalletCards },
+  const kpis: DashboardKpi[] = [
+    {
+      key: "clients",
+      label: "Clientes registrados",
+      value: clients.count ?? 0,
+      viewAllHref: "/admin/clientes",
+      hasMore: (clients.count ?? 0) > MAX_MODAL_ITEMS,
+      emptyMessage: "Todavía no hay clientes registrados.",
+      items: (clients.data ?? []).map((client) => ({
+        id: client.id,
+        title: client.full_name,
+        detail: `${statusLabel(client.status)} · ${client.onboarding_complete ? "Cuestionario completado" : "Cuestionario pendiente"}`,
+        date: formatDate(client.created_at),
+        href: `/admin/clientes/${client.id}`,
+      })),
+    },
+    {
+      key: "leads",
+      label: "Interesados nuevos",
+      value: leads.count ?? 0,
+      viewAllHref: "/admin/interesados",
+      hasMore: (leads.count ?? 0) > MAX_MODAL_ITEMS,
+      emptyMessage: "Todavía no hay interesados nuevos.",
+      items: (leads.data ?? []).map((lead) => ({
+        id: lead.id,
+        title: lead.full_name,
+        detail: `${contactPreferenceLabel(lead.contact_preference)} · ${statusLabel(lead.status)}`,
+        date: formatDate(lead.created_at),
+        href: `/admin/interesados#interesado-${lead.id}`,
+      })),
+    },
+    {
+      key: "questionnaires",
+      label: "Cuestionarios recibidos",
+      value: questionnaires.count ?? 0,
+      viewAllHref: "/admin/clientes",
+      hasMore: (questionnaires.count ?? 0) > MAX_MODAL_ITEMS,
+      emptyMessage: "Todavía no hay cuestionarios recibidos.",
+      items: (questionnaires.data ?? []).map((questionnaire) => ({
+        id: questionnaire.id,
+        title: namesById.get(questionnaire.user_id) ?? "Cliente",
+        detail: "Cuestionario inicial recibido",
+        date: formatDate(questionnaire.updated_at || questionnaire.submitted_at),
+        href: `/admin/clientes/${questionnaire.user_id}#cuestionario`,
+      })),
+    },
+    {
+      key: "check-ins",
+      label: "Seguimientos",
+      value: checkIns.count ?? 0,
+      viewAllHref: "/admin/seguimientos",
+      hasMore: (checkIns.count ?? 0) > MAX_MODAL_ITEMS,
+      emptyMessage: "Todavía no hay seguimientos.",
+      items: (checkIns.data ?? []).map((checkIn) => ({
+        id: checkIn.id,
+        title: namesById.get(checkIn.client_id) ?? "Cliente",
+        detail: "Seguimiento semanal recibido",
+        date: formatDate(checkIn.created_at),
+        href: `/admin/seguimientos#seguimiento-${checkIn.id}`,
+      })),
+    },
+    {
+      key: "fees",
+      label: "Cuotas pendientes",
+      value: fees.count ?? 0,
+      viewAllHref: "/admin/cuotas",
+      hasMore: (fees.count ?? 0) > MAX_MODAL_ITEMS,
+      emptyMessage: "No hay cuotas pendientes.",
+      items: (fees.data ?? []).map((fee) => ({
+        id: fee.id,
+        title: namesById.get(fee.client_id) ?? "Cliente",
+        detail: `${fee.period} · ${formatMoney(fee.amount_eur)}`,
+        date: formatDate(fee.updated_at),
+        href: `/admin/cuotas#cuota-${fee.id}`,
+      })),
+    },
   ];
 
   return (
     <>
-      <PageHeading eyebrow="Panel privado" title="Resumen" description="Vista rápida de clientes, cuestionarios, interesados y tareas de seguimiento." />
-      <div className="dashboard-grid">
-        {stats.map(({ label, value, icon: Icon }) => (
-          <Card key={label} className="flex items-center gap-4">
-            <span className="grid size-12 place-items-center rounded-xl bg-primary-soft text-primary"><Icon size={23} /></span>
-            <div><p className="text-3xl font-black">{value}</p><p className="text-sm font-bold text-muted">{label}</p></div>
-          </Card>
-        ))}
-      </div>
-
-      <Card className="mt-6">
-        <div className="mb-5">
-          <h2 className="text-xl font-black">Últimos cuestionarios</h2>
-          <p className="mt-1 text-sm text-muted">Formularios iniciales enviados desde cuentas de cliente.</p>
-        </div>
-        {recentQuestionnaires.data?.length ? (
-          <div className="overflow-x-auto">
-            <table className="data-table">
-              <thead><tr><th>Cliente</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
-              <tbody>
-                {recentQuestionnaires.data.map((questionnaire) => {
-                  const profile = profilesById.get(questionnaire.user_id);
-                  return (
-                    <tr key={questionnaire.user_id}>
-                      <td className="font-bold">{profile?.full_name || "Cliente"}</td>
-                      <td>{formatDate(questionnaire.updated_at || questionnaire.submitted_at)}</td>
-                      <td>
-                        <Badge tone={profile?.onboarding_complete ? "success" : "warning"}>
-                          {profile?.onboarding_complete ? "Completado" : "Pendiente de activar"}
-                        </Badge>
-                      </td>
-                      <td className="text-right">
-                        <Link className="font-bold text-primary hover:underline" href={`/admin/clientes/${questionnaire.user_id}`}>
-                          Ver ficha
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="rounded-xl bg-surface-muted p-5 text-sm text-muted">Todavía no hay cuestionarios guardados.</p>
-        )}
-      </Card>
-
-      <Card className="mt-6">
-        <div className="mb-5">
-          <h2 className="text-xl font-black">Últimos interesados</h2>
-          <p className="mt-1 text-sm text-muted">Personas que han pedido información desde la landing.</p>
-        </div>
-        {recentLeads.data?.length ? (
-          <div className="overflow-x-auto">
-            <table className="data-table">
-              <thead><tr><th>Nombre</th><th>Objetivo</th><th>Fecha</th><th>Estado</th></tr></thead>
-              <tbody>
-                {recentLeads.data.map((lead) => (
-                  <tr key={lead.id}>
-                    <td className="font-bold">{lead.full_name}</td>
-                    <td className="max-w-sm truncate text-muted">{lead.goal}</td>
-                    <td>{formatDate(lead.created_at)}</td>
-                    <td><Badge tone={lead.status === "new" ? "brand" : "neutral"}>{lead.status === "new" ? "Nuevo" : lead.status}</Badge></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="rounded-xl bg-surface-muted p-5 text-sm text-muted">Todavía no hay interesados.</p>
-        )}
-      </Card>
+      <PageHeading eyebrow="Panel privado" title="Resumen" description="Pulsa cualquier indicador para consultar sus últimos movimientos." />
+      <DashboardKpis kpis={kpis} />
     </>
   );
 }

@@ -8,16 +8,16 @@ La portada, el formulario de información, el acceso, la recuperación de contra
 
 La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el menú puede consultar:
 
-- **Resumen:** cifras y últimas solicitudes.
+- **Resumen:** cinco indicadores compactos con acceso a sus últimos movimientos.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
 - **Clientes:** cuentas registradas o invitadas, estado, cuestionario y ficha completa.
 - **Entrenamientos y nutrición:** histórico de planes.
 - **Seguimientos:** revisiones enviadas por clientes.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
 
-El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En móvil, el cierre de sesión está dentro del menú superior.
+El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, el botón de la cabecera del propio lateral permite ocultarlo para ampliar el espacio de trabajo; mientras está cerrado aparece **Mostrar menú** y la elección se recuerda en ese navegador. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la navegación desplegable.
 
-El panel se ejecuta en la misma región europea que la base de datos para evitar esperas innecesarias. Durante una navegación interna, la estructura de la siguiente vista aparece inmediatamente y muestra un estado de carga hasta que llegan los datos. El resumen diferencia **Cuestionarios recibidos**, enviados desde cuentas de cliente, de **Interesados**, enviados desde la landing. Los últimos cuestionarios enlazan directamente con la ficha del cliente. La lista de **Interesados** carga primero las 100 solicitudes más recientes; una futura paginación permitirá consultar el histórico cuando se supere ese volumen.
+El panel se ejecuta en la misma región europea que la base de datos para evitar esperas innecesarias. Durante una navegación interna, la estructura de la siguiente vista aparece inmediatamente y muestra un estado de carga hasta que llegan los datos. El resumen diferencia **Clientes registrados**, **Interesados nuevos**, **Cuestionarios recibidos**, **Seguimientos** y **Cuotas pendientes** en una sola fila compacta de escritorio. Al pulsar un indicador se abre un resumen con sus diez registros más recientes; cada fila lleva al registro concreto y, cuando existen más de diez, **Ver más** abre la sección completa. No se muestran respuestas de salud dentro de estos resúmenes. La lista de **Interesados** carga primero las 100 solicitudes más recientes; una futura paginación permitirá consultar el histórico cuando se supere ese volumen.
 
 La cuenta inicial designada para el entrenador está provisionada como administradora activa. El acceso comprueba primero el rol persistido y entra directamente al panel; el mecanismo de preparación inicial solo actúa si esa identidad todavía figura como cliente. El resto de registros continúa entrando siempre como cliente y la contraseña del administrador no se guarda en el código ni en las tablas de la aplicación.
 

@@ -7,7 +7,10 @@ vi.mock("@/app/actions/auth", () => ({
 
 import { DashboardShell } from "./dashboard-shell";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+});
 
 describe("DashboardShell", () => {
   it("avisa y bloquea el resto del área cuando el cuestionario está pendiente", () => {
@@ -35,5 +38,22 @@ describe("DashboardShell", () => {
     const trainingLink = screen.getAllByRole("link", { name: "Entrenamiento" })[0];
     expect(trainingLink).toHaveAttribute("href", "/app/entrenamiento");
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("permite ocultar y volver a mostrar el menú lateral", () => {
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Resumen</p>
+      </DashboardShell>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Ocultar menú lateral" }));
+    expect(screen.queryByRole("button", { name: "Ocultar menú lateral" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Mostrar menú lateral" })).toBeInTheDocument();
+    expect(window.localStorage.getItem("team-ortega:sidebar-open")).toBe("false");
+
+    fireEvent.click(screen.getByRole("button", { name: "Mostrar menú lateral" }));
+    expect(screen.getByRole("button", { name: "Ocultar menú lateral" })).toBeInTheDocument();
+    expect(window.localStorage.getItem("team-ortega:sidebar-open")).toBe("true");
   });
 });

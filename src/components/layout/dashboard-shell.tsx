@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type MouseEvent } from "react";
-import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, Salad, Settings, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
+import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,8 @@ const clientItems: NavItem[] = [
   { href: "/app/ajustes", label: "Ajustes", icon: Settings },
 ];
 
+const SIDEBAR_STORAGE_KEY = "team-ortega:sidebar-open";
+
 export function DashboardShell({
   mode,
   userName,
@@ -44,7 +46,15 @@ export function DashboardShell({
 }) {
   const items = mode === "admin" ? adminItems : clientItems;
   const [showOnboardingNotice, setShowOnboardingNotice] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
   const navigationLocked = mode === "client" && !onboardingComplete;
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setIsDesktopSidebarOpen(window.localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "false");
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     if (!showOnboardingNotice) return;
@@ -61,14 +71,30 @@ export function DashboardShell({
     setShowOnboardingNotice(true);
   }
 
+  function setDesktopSidebar(open: boolean) {
+    setIsDesktopSidebarOpen(open);
+    window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open));
+  }
+
   return (
-    <div className="min-h-screen bg-background lg:grid lg:grid-cols-[260px_1fr]">
+    <div className={`min-h-screen bg-background lg:grid ${isDesktopSidebarOpen ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-1"}`}>
+      {isDesktopSidebarOpen ? (
       <aside className="hidden h-dvh self-start border-r border-zinc-800 bg-surface-inverse p-5 text-white lg:sticky lg:top-0 lg:flex lg:flex-col">
-        <BrandLogo
-          href={mode === "admin" ? "/admin" : "/app/inicio"}
-          onClick={(event) => guardNavigation(event, "/app/inicio")}
-          className="mb-8 text-white"
-        />
+        <div className="mb-8 flex items-center justify-between gap-3">
+          <BrandLogo
+            href={mode === "admin" ? "/admin" : "/app/inicio"}
+            onClick={(event) => guardNavigation(event, "/app/inicio")}
+            className="min-w-0 text-white"
+          />
+          <button
+            type="button"
+            aria-label="Ocultar menú lateral"
+            onClick={() => setDesktopSidebar(false)}
+            className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-zinc-700 text-zinc-300 transition hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
+          >
+            <PanelLeftClose className="size-5" aria-hidden="true" />
+          </button>
+        </div>
         <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="grid gap-1">
           {items.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white">
@@ -89,6 +115,7 @@ export function DashboardShell({
           </form>
         </div>
       </aside>
+      ) : null}
       <div className="min-w-0">
         <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-border bg-surface/95 px-4 backdrop-blur lg:hidden">
           <details className="relative">
@@ -108,6 +135,19 @@ export function DashboardShell({
           </details>
           <BrandLogo compact href={mode === "admin" ? "/admin" : "/app/inicio"} onClick={(event) => guardNavigation(event, "/app/inicio")} />
         </header>
+        {!isDesktopSidebarOpen ? (
+          <div className="sticky top-0 z-20 hidden min-h-16 items-center border-b border-border bg-surface/95 px-4 backdrop-blur lg:flex lg:px-8">
+            <button
+              type="button"
+              aria-label="Mostrar menú lateral"
+              onClick={() => setDesktopSidebar(true)}
+              className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold text-foreground transition hover:bg-surface-muted"
+            >
+              <PanelLeftOpen className="size-5 text-primary" aria-hidden="true" />
+              Mostrar menú
+            </button>
+          </div>
+        ) : null}
         <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
       {showOnboardingNotice ? (

@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-kpis-interactivos-sidebar-plegable`
+
+- Reorganizados los cinco indicadores del resumen del entrenador en una única fila compacta de escritorio.
+- Cada indicador abre ahora sus diez movimientos más recientes y permite entrar directamente en el registro seleccionado; si hay más resultados, aparece **Ver más**.
+- Añadida la posibilidad de ocultar y recuperar el menú lateral en escritorio, recordando la preferencia en el navegador.
+- El análisis de código, los tipos, las 68 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-permisos-solicitudes`
 
 - Identificado el rechazo real del formulario público: la base de datos devolvía un error de permisos al intentar guardar y leer interesados.

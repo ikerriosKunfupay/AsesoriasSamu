@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-kpis-interactivos-sidebar-plegable`
+
+- `AdminDashboardPage` combina conteos exactos con consultas limitadas a diez filas y entrega a `DashboardKpis` DTO mínimos sin respuestas sensibles.
+- `DashboardKpis` implementa disparadores accesibles, modal cerrable por botón, fondo o Escape, restauración de foco, enlaces profundos y **Ver más** condicionado por el total.
+- Añadidos fragmentos de destino a interesados, cuestionario, seguimientos y cuotas, con resaltado `:target`; `DashboardShell` persiste el estado del lateral en `localStorage` sin cambiar la navegación móvil.
+- Añadidas pruebas de modal, límite, enlaces y alternancia del lateral; `npm run lint`, `npm run typecheck`, 68 pruebas y `npm run build` terminaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-permisos-solicitudes`
 
 - Los logs de Supabase confirmaron `POST /rest/v1/leads` y lecturas administrativas con estado `403`, `PostgREST 42501`, usando la clave privada `sb_secret`; la tabla permanecía vacía.
