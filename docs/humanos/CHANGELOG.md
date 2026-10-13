@@ -6,7 +6,7 @@
 - Añadida una migración que habilita las operaciones privadas del backend sin abrir la tabla a visitantes anónimos.
 - Los fallos de guardado dejan ahora un código técnico sin nombres, correos, teléfonos ni contenido del formulario.
 - El análisis de código, los tipos, las 65 pruebas y la compilación de producción finalizaron correctamente.
-- La activación en la base de datos de producción y la comprobación de un envío real quedan pendientes de autorización.
+- Los permisos se aplicaron en la base de datos de producción y el panel volvió a mostrar correctamente el cliente y su cuestionario; el próximo envío público servirá como comprobación final de escritura.
 
 ## 2026-10-13 — `2026-10-13-visibilidad-cuestionarios-admin`
 

@@ -6,7 +6,7 @@
 - `202610130003_service_role_permissions.sql` declara DML explícito para `service_role` sobre las tablas operativas y privilegios por defecto para tablas y secuencias futuras; no concede acceso a `anon` ni elimina RLS.
 - `createLeadAction` emite `lead.create_failed` con el código técnico o `lead.created` sin PII.
 - `pnpm check` superó lint, tipos, 65 pruebas y build Webpack.
-- Pendiente aplicar la migración al proyecto productivo y verificar un envío real tras la autorización del responsable.
+- La migración se aplicó al proyecto productivo con resultado correcto; la recarga del panel confirmó de nuevo 1 cliente activo y la tabla de Clientes mostró a Iker con el cuestionario completado. Queda pendiente observar el primer `POST` real posterior al cambio.
 
 ## 2026-10-13 — `2026-10-13-visibilidad-cuestionarios-admin`
 
