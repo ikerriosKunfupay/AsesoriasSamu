@@ -44,12 +44,12 @@ export default function Home() {
         <section className="public-dark relative overflow-hidden border-b-[6px] border-primary">
           <div className="absolute -right-24 top-0 h-full w-[42%] -skew-x-12 bg-white/[0.025]" />
           <div className="absolute right-[9%] top-0 h-40 w-6 -skew-x-12 bg-primary" />
-          <div className="page-shell relative grid min-h-[580px] items-center gap-12 py-14 lg:grid-cols-[1.08fr_0.92fr] lg:py-16">
+          <div className="page-shell relative grid min-h-[500px] items-center gap-10 py-12 lg:grid-cols-[1.08fr_0.92fr] lg:py-12">
             <div className="max-w-3xl">
               <p className="public-kicker mb-6 text-white/65">
                 Entrenamiento online personalizado
               </p>
-              <h1 className="font-display text-[clamp(3.25rem,6.6vw,5.8rem)] leading-[0.84] font-black tracking-[-0.06em] uppercase">
+              <h1 className="font-display text-[clamp(2.8rem,5vw,4.6rem)] leading-[0.86] font-black tracking-[-0.055em] uppercase">
                 Tu objetivo
                 <span className="mt-3 block text-primary">exige un plan</span>
                 <span className="mt-3 block">de verdad.</span>
@@ -67,12 +67,12 @@ export default function Home() {
                 </ButtonLink>
               </div>
             </div>
-            <div className="hero-mark relative mx-auto hidden w-full max-w-[25rem] lg:block">
+            <div className="hero-mark relative mx-auto hidden w-full max-w-[20rem] lg:block">
               <Image
                 src="/brand/team-ortega-mark.png"
                 alt="Team Ortega"
-                width={480}
-                height={480}
+                width={400}
+                height={400}
                 className="relative h-auto w-full drop-shadow-[0_34px_32px_rgba(0,0,0,0.52)]"
                 priority
               />
