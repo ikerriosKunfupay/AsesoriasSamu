@@ -18,7 +18,7 @@
 
 ## Roles
 
-`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos, tanto en registros públicos como en invitaciones. La única excepción de bootstrap está en la Server Action de login: después de que Supabase autentique correctamente a la cuenta inicial designada, el cliente administrativo actualiza su fila concreta a `admin/active`. La contraseña nunca interviene en esa consulta ni sale de Supabase. El formulario de registro solo recoge nombre, correo y contraseña; los datos de salud permanecen en el onboarding autenticado.
+`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos, tanto en registros públicos como en invitaciones. La única excepción de bootstrap está en la Server Action de login: después de que Supabase autentique correctamente a la cuenta inicial designada, el cliente administrativo actualiza su fila concreta a `admin/active` solo si aún no tiene ese rol. Una cuenta ya provisionada como administradora no provoca otra escritura. La contraseña nunca interviene en esa consulta ni sale de Supabase. El formulario de registro solo recoge nombre, correo y contraseña; los datos de salud permanecen en el onboarding autenticado.
 
 ## RLS
 

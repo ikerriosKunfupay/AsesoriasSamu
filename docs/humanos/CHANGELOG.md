@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-alta-admin-inicial`
+
+- Creada y confirmada la cuenta inicial del entrenador, con acceso administrativo activo.
+- El inicio de sesión reconoce directamente una cuenta ya administradora y evita repetir su preparación en cada acceso.
+- Añadida una comprobación automática para conservar el acceso de clientes ordinarios sin cambios; las 54 pruebas, el análisis de código, los tipos y la compilación finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-minimo-contrasena-ocho`
 
 - El registro, la recuperación y el cambio de contraseña aceptan ahora claves desde 8 caracteres.

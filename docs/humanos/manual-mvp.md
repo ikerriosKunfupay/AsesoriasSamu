@@ -17,7 +17,7 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 
 El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En móvil, el cierre de sesión está dentro del menú superior.
 
-La cuenta inicial designada para el entrenador se activa como administradora después de autenticarse correctamente por primera vez. El resto de registros continúa entrando siempre como cliente; la contraseña del administrador no se guarda en el código ni en las tablas de la aplicación.
+La cuenta inicial designada para el entrenador está provisionada como administradora activa. El acceso comprueba primero el rol persistido y entra directamente al panel; el mecanismo de preparación inicial solo actúa si esa identidad todavía figura como cliente. El resto de registros continúa entrando siempre como cliente y la contraseña del administrador no se guarda en el código ni en las tablas de la aplicación.
 
 ## Registro y alta de un cliente
 

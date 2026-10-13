@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-alta-admin-inicial`
+
+- Provisionada en Supabase Auth la identidad inicial y actualizada exactamente una fila de `profiles` a `admin/active`.
+- `loginAction` consulta el perfil antes del bootstrap y solo usa la `service role` cuando la identidad designada todavía no tiene rol administrador.
+- Añadidas pruebas unitarias para la promoción inicial y para evitar escrituras redundantes en administradores existentes; `pnpm check` superó lint, tipos, 54 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-minimo-contrasena-ocho`
 
 - Centralizado el mínimo de contraseña en `PASSWORD_MIN_LENGTH = 8` y reutilizado en los esquemas Zod, atributos `minLength` y mensajes de interfaz.

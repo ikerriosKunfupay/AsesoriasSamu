@@ -10,10 +10,9 @@ import {
   registerSchema,
   updatePasswordSchema,
 } from "@/lib/forms/schemas";
+import { needsInitialAdminPromotion } from "@/lib/auth/admin-bootstrap";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-
-const INITIAL_ADMIN_EMAIL = "samprox77@gmail.com";
 
 export async function loginAction(
   _previous: ActionState,
@@ -30,20 +29,7 @@ export async function loginAction(
     return { status: "error", message: "El correo o la contraseña no son correctos." };
   }
 
-  if (data.user.email?.toLowerCase() === INITIAL_ADMIN_EMAIL) {
-    const admin = createAdminClient();
-    const { error: promotionError } = await admin
-      .from("profiles")
-      .update({ role: "admin", status: "active" })
-      .eq("id", data.user.id);
-
-    if (promotionError) {
-      await supabase.auth.signOut();
-      return { status: "error", message: "No se pudo preparar el acceso de administración." };
-    }
-  }
-
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("role, status, onboarding_complete")
     .eq("id", data.user.id)
@@ -52,6 +38,23 @@ export async function loginAction(
   if (!profile) {
     await supabase.auth.signOut();
     return { status: "error", message: "La cuenta todavía no está preparada. Contacta con Team Ortega." };
+  }
+
+  if (needsInitialAdminPromotion(data.user.email, profile.role)) {
+    const admin = createAdminClient();
+    const { data: promotedProfile, error: promotionError } = await admin
+      .from("profiles")
+      .update({ role: "admin", status: "active" })
+      .eq("id", data.user.id)
+      .select("role, status, onboarding_complete")
+      .single();
+
+    if (promotionError || !promotedProfile) {
+      await supabase.auth.signOut();
+      return { status: "error", message: "No se pudo preparar el acceso de administración." };
+    }
+
+    profile = promotedProfile;
   }
 
   if (profile.status === "suspended" || profile.status === "archived") redirect("/cuenta-inactiva");

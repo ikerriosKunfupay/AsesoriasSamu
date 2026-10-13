@@ -22,7 +22,7 @@ No documentar aquí ni en Git las claves publishable, secret o service role.
 
 ## Administrador inicial
 
-La cuenta inicial designada se promociona a `admin/active` desde `loginAction` únicamente después de que Supabase valide sus credenciales. Para una instalación distinta, cambia esa identidad en el código servidor antes del primer despliegue; no añadas el rol a metadatos del registro ni expongas una selección de rol en la interfaz.
+La cuenta inicial designada está provisionada como `admin/active`. `loginAction` consulta primero el perfil y, si ya es administrador, no realiza ninguna actualización; el bootstrap con `service role` queda como recuperación para una identidad autenticada que todavía figure como cliente. Para una instalación distinta, cambia esa identidad en el código servidor antes del primer despliegue; no añadas el rol a metadatos del registro ni expongas una selección de rol en la interfaz.
 
 Si fuera necesario recuperar manualmente el acceso, verifica primero la identidad y copia su UUID desde Authentication > Users. Después ejecuta con ese UUID literal:
 
