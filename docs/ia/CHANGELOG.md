@@ -2,7 +2,7 @@
 
 ## 2026-10-13 — `2026-10-13-logo-hero-movil`
 
-- Añadida una variante móvil absoluta de `team-ortega-mark.png` en el hero, decorativa para lectores de pantalla y oculta desde `lg`.
+- Añadida una variante móvil absoluta y de carga prioritaria de `team-ortega-mark.png` en el hero, decorativa para lectores de pantalla y oculta desde `lg`.
 
 ## 2026-10-13 — `2026-10-13-hero-mas-compacto`
 

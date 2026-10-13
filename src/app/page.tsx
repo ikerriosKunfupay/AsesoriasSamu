@@ -74,6 +74,7 @@ export default function Home() {
                 width={224}
                 height={224}
                 className="h-auto w-full drop-shadow-[0_22px_24px_rgba(0,0,0,0.48)]"
+                priority
               />
             </div>
             <div className="hero-mark relative mx-auto hidden w-full max-w-[20rem] lg:block">
