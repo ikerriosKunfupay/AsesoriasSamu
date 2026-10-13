@@ -45,6 +45,8 @@ Los cambios de correo y contraseña viven en `account-security.ts`, separados de
 
 Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El `insert` solicita de vuelta el UUID creado y solo devuelve éxito cuando recibe esa representación; después invalida `/admin` y `/admin/interesados`. `leadReference()` deriva los primeros ocho caracteres normalizados del UUID para mostrar la misma referencia en el justificante público y en la tabla administrativa. El control de abuso distribuido queda pendiente para una fase posterior.
 
+`202610130003_service_role_permissions.sql` concede explícitamente al rol servidor el DML mínimo sobre las tablas operativas y configura los mismos privilegios por defecto para tablas futuras. Esto es independiente de RLS: `anon` continúa sin acceso a leads ni datos privados, y la clave `service_role` permanece exclusivamente en el servidor. `createLeadAction` registra únicamente un código técnico si falla la escritura, sin incluir el contenido ni los datos de contacto enviados.
+
 El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. El prefijo usa un listbox propio con cierre exterior y navegación por teclado, sin depender del desplegable nativo. `contactPreference` muestra únicamente WhatsApp y llamada mediante radios visibles integrados en una franja lineal. El esquema conserva `email` para poder interpretar registros históricos, pero la interfaz ya no lo envía; el contrato persistido y la tabla `leads` no cambian.
 
 ## Mutaciones

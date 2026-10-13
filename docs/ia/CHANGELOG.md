@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-permisos-solicitudes`
+
+- Los logs de Supabase confirmaron `POST /rest/v1/leads` y lecturas administrativas con estado `403`, `PostgREST 42501`, usando la clave privada `sb_secret`; la tabla permanecía vacía.
+- `202610130003_service_role_permissions.sql` declara DML explícito para `service_role` sobre las tablas operativas y privilegios por defecto para tablas y secuencias futuras; no concede acceso a `anon` ni elimina RLS.
+- `createLeadAction` emite `lead.create_failed` con el código técnico o `lead.created` sin PII.
+- `pnpm check` superó lint, tipos, 65 pruebas y build Webpack.
+- Pendiente aplicar la migración al proyecto productivo y verificar un envío real tras la autorización del responsable.
+
 ## 2026-10-13 — `2026-10-13-visibilidad-cuestionarios-admin`
 
 - Los logs de producción mostraron un `POST /app/cuestionario` y ningún `POST /solicitar-informacion`: el envío actual era onboarding, mientras el resumen solo consultaba `leads`.

@@ -33,9 +33,13 @@ export async function createLeadAction(
     .single();
 
   if (error || !createdLead) {
+    console.error("lead.create_failed", {
+      code: error?.code ?? "missing_created_lead",
+    });
     return { status: "error", message: "No se pudo guardar la solicitud. Prueba de nuevo en unos minutos." };
   }
 
+  console.info("lead.created");
   revalidatePath("/admin");
   revalidatePath("/admin/interesados");
 

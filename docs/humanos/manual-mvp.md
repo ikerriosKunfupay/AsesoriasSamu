@@ -74,6 +74,8 @@ El teléfono de Ajustes separa el prefijo internacional y el número dentro de u
 
 `/solicitar-informacion` es una URL no indexable con un formulario breve. El teléfono se escribe directamente junto a un selector interno de prefijo internacional, diseñado como parte de la propia web, y la vía de contacto se elige mediante opciones visibles de WhatsApp o llamada. No pide lesiones, alergias ni otra información de salud. La confirmación solo aparece después de que la base de datos devuelva la fila guardada e incluye una referencia breve; esa misma referencia se muestra en **Interesados** para poder comprobar el envío. Esta sección aparece antes que **Clientes** en el menú del entrenador. Una solicitud no pasa a **Clientes** hasta que exista una cuenta registrada o invitada.
 
+La base de datos permite este guardado únicamente mediante el backend privado de Team Ortega. El navegador y los visitantes anónimos no reciben acceso directo a la tabla de interesados.
+
 ## Cuotas
 
 La sección de cuotas solo registra información interna. No cobra, no conecta con bancos y no almacena tarjetas. El responsable actualiza el estado manualmente.
