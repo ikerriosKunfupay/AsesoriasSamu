@@ -1,18 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { MouseEventHandler } from "react";
 import { cn } from "@/lib/utils";
 
 export function BrandLogo({
   compact = false,
   className,
   href = "/",
+  onClick,
 }: {
   compact?: boolean;
   className?: string;
   href?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 }) {
   return (
-    <Link href={href} className={cn("inline-flex min-h-11 items-center gap-2 sm:gap-2.5", className)}>
+    <Link href={href} onClick={onClick} className={cn("inline-flex min-h-11 items-center gap-2 sm:gap-2.5", className)}>
       <Image
         src="/brand/team-ortega-mark.png"
         alt=""

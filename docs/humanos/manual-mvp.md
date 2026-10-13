@@ -33,7 +33,9 @@ En ambos casos la cuenta se crea siempre con rol de cliente. El formulario públ
 
 ## Experiencia del cliente
 
-El cliente ve únicamente sus datos. Puede:
+El cliente ve únicamente sus datos. Antes de consultar el resto del área personal debe completar el cuestionario inicial. Mientras esté pendiente, cualquier acceso a Inicio, Entrenamiento, Nutrición o Seguimiento muestra un aviso y mantiene al cliente en el cuestionario. Al guardarlo correctamente, toda la navegación queda desbloqueada.
+
+Después puede:
 
 - completar o actualizar su cuestionario;
 - consultar el último entrenamiento publicado;

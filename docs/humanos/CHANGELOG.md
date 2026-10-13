@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-bloqueo-navegacion-cuestionario`
+
+- Mientras el cuestionario inicial esté pendiente, los accesos a Inicio, Entrenamiento, Nutrición y Seguimiento muestran un aviso explicativo y no abandonan el cuestionario.
+- Al guardar correctamente el cuestionario, toda la navegación del cliente queda disponible.
+- El acceso directo mediante una URL también queda protegido y devuelve al cuestionario.
+- La primera prueba aislada necesitó ajustar su preparación; la validación completa finalizó correctamente con 13 pruebas, análisis de código, tipos y compilación.
+
 ## 2026-10-13 — `2026-10-13-mejoras-acceso-correo`
 
 - El cierre de sesión permanece visible al pie del menú privado en páginas largas y sigue disponible en el menú móvil.

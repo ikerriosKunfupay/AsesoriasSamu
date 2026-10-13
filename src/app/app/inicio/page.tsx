@@ -1,15 +1,13 @@
 import { Dumbbell, Salad, TrendingUp } from "lucide-react";
-import { redirect } from "next/navigation";
 import { PageHeading } from "@/components/layout/page-heading";
 import { Card } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { requireClient } from "@/lib/auth/current-user";
+import { requireCompletedClient } from "@/lib/auth/current-user";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ClientHomePage() {
-  const user = await requireClient();
-  if (!user.onboardingComplete) redirect("/app/cuestionario");
+  const user = await requireCompletedClient();
   const supabase = await createClient();
   const [workout, nutrition, lastCheckIn] = await Promise.all([
     supabase.from("workout_assignments").select("id, title, starts_on").eq("client_id", user.id).eq("status", "published").order("created_at", { ascending: false }).limit(1).maybeSingle(),

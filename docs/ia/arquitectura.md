@@ -14,6 +14,8 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 `DashboardShell` mantiene el lateral de escritorio fijado a la altura visible para que `logoutAction` y el usuario no queden fuera del viewport en páginas largas. En móvil, la misma acción permanece en la navegación desplegable. El campo de contraseña del login usa el componente cliente reutilizable `PasswordInput`, con alternancia accesible entre contenido oculto y visible y `autocomplete="current-password"`.
 
+El layout de `/app` entrega `onboardingComplete` a `DashboardShell`. Mientras sea `false`, el shell intercepta en escritorio y móvil todos los enlaces del cliente salvo `/app/cuestionario` y muestra un diálogo accesible que explica el requisito. La protección no depende solo de la interfaz: `requireCompletedClient()` bloquea también el acceso directo a Inicio, Entrenamiento, Nutrición y Seguimiento, redirigiendo al cuestionario. `revalidatePath("/app", "layout")` actualiza el estado del layout después de `complete_onboarding()` y desbloquea la navegación.
+
 `/registro` usa `registerAction` y `supabase.auth.signUp()` con confirmación por correo. Solo envía `full_name` como metadato y el trigger `handle_new_user()` fuerza siempre `role = client`; el callback conduce al cuestionario inicial. Cuando la acción devuelve éxito sin sesión, `RegistrationSuccessDialog` presenta una confirmación modal y ejecuta `router.replace("/login")` tras 2,5 segundos o al pulsar su CTA. Si el proyecto desactiva la confirmación de correo, una sesión creada durante el registro se redirige directamente al cuestionario y omite el modal.
 
 ## Clientes Supabase

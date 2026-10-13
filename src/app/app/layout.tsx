@@ -7,5 +7,5 @@ export const dynamic = "force-dynamic";
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const user = await requireClient();
-  return <DashboardShell mode="client" userName={user.fullName}>{children}</DashboardShell>;
+  return <DashboardShell mode="client" userName={user.fullName} onboardingComplete={user.onboardingComplete}>{children}</DashboardShell>;
 }

@@ -55,3 +55,9 @@ export async function requireClient() {
   if (user.role !== "client") redirect("/admin");
   return user;
 }
+
+export async function requireCompletedClient() {
+  const user = await requireClient();
+  if (!user.onboardingComplete) redirect("/app/cuestionario");
+  return user;
+}

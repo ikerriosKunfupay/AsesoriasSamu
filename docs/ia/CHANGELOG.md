@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-bloqueo-navegacion-cuestionario`
+
+- `DashboardShell` recibe `onboardingComplete`, intercepta los enlaces de cliente distintos del cuestionario y muestra un diálogo accesible y cerrable en escritorio y móvil.
+- Añadido `requireCompletedClient()` y aplicado a Inicio, Entrenamiento, Nutrición y Seguimiento para impedir que una URL directa omita el onboarding.
+- Añadidas pruebas del bloqueo previo y de la navegación desbloqueada después de completar el cuestionario.
+- La primera ejecución aislada falló al cargar la Server Action y otra conservó DOM entre casos; se simularon `logoutAction` y la limpieza explícita. `pnpm check` final superó lint, tipos, 13 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-mejoras-acceso-correo`
 
 - `DashboardShell` fija el lateral de escritorio a `100dvh` mediante posición `sticky`, manteniendo accesibles el usuario y el formulario de `logoutAction`.
