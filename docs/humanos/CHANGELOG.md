@@ -1,5 +1,14 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-tema-filtros-y-kpis`
+
+- El modo claro cambia ahora también el menú lateral a fondo blanco, texto oscuro y estados de interacción claros.
+- El modo oscuro conserva el sidebar negro con texto claro y el mismo acento rojo de la marca.
+- Logo, enlaces, separadores, avatar, usuario y cierre de sesión responden conjuntamente al selector de tema.
+- Los filtros de periodo, modalidad y tarifa del resumen permanecen en una única fila en escritorio.
+- Los seis indicadores económicos son ahora accesibles y abren un modal con el desglose filtrado, enlaces directos y hasta diez resultados antes de ofrecer **Ver más**.
+- El interruptor de alta/baja mantiene el selector dentro de su pista y ya no tapa el texto **Activo/Inactivo**.
+
 ## 2026-10-14 — `2026-10-14-despliegue-tarifas-tema`
 
 - Aplicadas en la base de datos de producción las nuevas estructuras de tarifas, condiciones comerciales y objetivos del panel.

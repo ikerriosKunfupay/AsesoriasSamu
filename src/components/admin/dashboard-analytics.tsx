@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import Link from "next/link";
+import { useActionState, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   Area,
   Bar,
@@ -20,30 +21,57 @@ import {
 import {
   Banknote,
   CalendarClock,
+  ChevronRight,
   CircleDollarSign,
   Goal,
   Target,
   TrendingUp,
   Users,
+  X,
 } from "lucide-react";
 import { saveDashboardGoalsAction } from "@/app/actions/admin";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Card } from "@/components/ui/card";
+import { ButtonLink } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   buildDashboardAnalytics,
+  filterAnalyticsClients,
+  monthlyEquivalent,
   type AnalyticsClient,
   type AnalyticsFee,
   type AnalyticsFilters,
   type DashboardGoals,
 } from "@/lib/admin/dashboard-analytics";
+import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import { initialActionState } from "@/lib/forms/action-state";
 import { formatMoney } from "@/lib/format";
 
 const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
-const selectClassName = "min-h-11 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold";
+const selectClassName = "min-h-11 w-full min-w-0 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold";
 const tooltipStyle = { background: "var(--surface)", borderColor: "var(--border)", borderRadius: 12, color: "var(--foreground)" };
+
+type AnalyticsMetricKey = "collected" | "recurring" | "forecast" | "pending" | "average" | "active";
+
+type AnalyticsMetricItem = {
+  id: string;
+  title: string;
+  detail: string;
+  value: string;
+  href?: string;
+};
+
+type AnalyticsMetricDialog = {
+  key: AnalyticsMetricKey;
+  label: string;
+  value: string;
+  description: string;
+  emptyMessage: string;
+  items: AnalyticsMetricItem[];
+  totalItems: number;
+  viewAllHref?: string;
+};
 
 function compactMoney(value: number) {
   return new Intl.NumberFormat("es-ES", {
@@ -54,19 +82,43 @@ function compactMoney(value: number) {
   }).format(value);
 }
 
+function modalityLabel(modality: AnalyticsClient["modality"]) {
+  if (modality === "in_person") return "Presencial";
+  if (modality === "online") return "Virtual";
+  return "Sin modalidad";
+}
+
+function formatPeriod(period: string) {
+  const [year, month] = period.split("-").map(Number);
+  return new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric", timeZone: "UTC" })
+    .format(new Date(Date.UTC(year, month - 1, 1)));
+}
+
 function MetricCard({
+  metricKey,
   label,
   value,
   detail,
   icon: Icon,
+  expanded,
+  onOpen,
 }: {
+  metricKey: AnalyticsMetricKey;
   label: string;
   value: string;
   detail: string;
   icon: typeof Banknote;
+  expanded: boolean;
+  onOpen: (key: AnalyticsMetricKey, trigger: HTMLButtonElement) => void;
 }) {
   return (
-    <Card className="min-w-0 p-4 sm:p-5">
+    <button
+      type="button"
+      aria-haspopup="dialog"
+      aria-expanded={expanded}
+      onClick={(event) => onOpen(metricKey, event.currentTarget)}
+      className="group relative min-w-0 rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:p-5"
+    >
       <div className="flex items-start gap-3">
         <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary-soft text-primary">
           <Icon aria-hidden="true" className="size-5" />
@@ -77,7 +129,8 @@ function MetricCard({
           <p className="mt-1 text-xs leading-relaxed text-muted">{detail}</p>
         </div>
       </div>
-    </Card>
+      <ChevronRight className="absolute right-3 top-3 size-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+    </button>
   );
 }
 
@@ -144,6 +197,11 @@ export function DashboardAnalytics({
   referencePeriod: string;
 }) {
   const [filters, setFilters] = useState<AnalyticsFilters>({ months: 6, modality: "all", pricingPlanId: "all" });
+  const [activeMetricKey, setActiveMetricKey] = useState<AnalyticsMetricKey | null>(null);
+  const dialogTitleId = useId();
+  const dialogDescriptionId = useId();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
   const analytics = useMemo(
     () => buildDashboardAnalytics({ clients, fees, filters, referencePeriod, goals }),
     [clients, fees, filters, goals, referencePeriod],
@@ -154,18 +212,158 @@ export function DashboardAnalytics({
       client.pricingPlanName,
     ])).entries()).sort((left, right) => left[1].localeCompare(right[1], "es"))
   ), [clients]);
+  const metricDialogs = useMemo(() => {
+    const filteredClients = filterAnalyticsClients(clients, filters);
+    const filteredClientIds = new Set(filteredClients.map((client) => client.id));
+    const clientNames = new Map(filteredClients.map((client) => [client.id, client.name]));
+    const activeClients = filteredClients.filter((client) => client.status === "active");
+    const contractedClients = activeClients.filter((client) => client.agreedAmountEur != null);
+    const clientItems = (source: AnalyticsClient[]): AnalyticsMetricItem[] => source
+      .map((client) => ({
+        id: client.id,
+        title: client.name,
+        detail: `${client.pricingPlanName || "Sin tarifa"} · ${modalityLabel(client.modality)}`,
+        value: client.agreedAmountEur == null
+          ? "Sin precio"
+          : `${formatMoney(monthlyEquivalent(client.agreedAmountEur, client.durationMonths))}/mes`,
+        href: getClientDetailHref(client.id, "/admin"),
+      }))
+      .sort((left, right) => left.title.localeCompare(right.title, "es"));
+    const feeItems = (status: "paid" | "pending"): AnalyticsMetricItem[] => fees
+      .filter((fee) => (
+        filteredClientIds.has(fee.clientId)
+        && fee.period === referencePeriod
+        && fee.status === status
+      ))
+      .map((fee) => ({
+        id: fee.id,
+        title: clientNames.get(fee.clientId) ?? "Cliente",
+        detail: `${formatPeriod(fee.period)} · ${status === "paid" ? "Pagada" : "Pendiente"}`,
+        value: formatMoney(fee.amountEur),
+        href: `/admin/cuotas#cuota-${encodeURIComponent(fee.id)}`,
+      }))
+      .sort((left, right) => left.title.localeCompare(right.title, "es"));
+    const paidItems = feeItems("paid");
+    const pendingItems = feeItems("pending");
+    const recurringItems = clientItems(activeClients);
+    const averageItems = clientItems(contractedClients);
+    const historicalItems: AnalyticsMetricItem[] = analytics.revenueSeries
+      .slice(0, -1)
+      .slice(-6)
+      .reverse()
+      .map((period) => ({
+        id: period.period,
+        title: formatPeriod(period.period),
+        detail: "Importe marcado como cobrado",
+        value: formatMoney(period.collected),
+      }));
+    const modality = filters.modality === "all" ? "todas las modalidades" : modalityLabel(filters.modality);
+    const selectedPlan = filters.pricingPlanId === "all"
+      ? "todas las tarifas"
+      : filters.pricingPlanId === "unassigned"
+        ? "clientes sin tarifa"
+        : pricingPlans.find(([id]) => id === filters.pricingPlanId)?.[1] ?? "tarifa seleccionada";
+    const filterSummary = `Filtro actual: ${modality} y ${selectedPlan}.`;
+
+    return [
+      {
+        key: "collected",
+        label: "Cobrado este mes",
+        value: formatMoney(analytics.currentCollected),
+        description: `Cuotas pagadas en ${formatPeriod(referencePeriod)}. ${filterSummary}`,
+        emptyMessage: "No hay cuotas pagadas que coincidan con estos filtros.",
+        items: paidItems,
+        totalItems: paidItems.length,
+        viewAllHref: "/admin/cuotas",
+      },
+      {
+        key: "recurring",
+        label: "Cartera mensual",
+        value: formatMoney(analytics.recurringRevenue),
+        description: `Valor mensual equivalente de cada cliente activo. ${filterSummary}`,
+        emptyMessage: "No hay clientes activos que coincidan con estos filtros.",
+        items: recurringItems,
+        totalItems: recurringItems.length,
+        viewAllHref: "/admin/clientes",
+      },
+      {
+        key: "forecast",
+        label: "Previsión próximo mes",
+        value: formatMoney(analytics.nextMonthForecast),
+        description: `Estimación basada en la cartera contratada y hasta seis meses completos de cobros. Periodo analizado: últimos ${filters.months} meses. ${filterSummary}`,
+        emptyMessage: "Todavía no hay meses completos con cobros; la previsión se apoya en la cartera contratada.",
+        items: historicalItems,
+        totalItems: historicalItems.length,
+      },
+      {
+        key: "pending",
+        label: "Pendiente este mes",
+        value: formatMoney(analytics.currentPending),
+        description: `Cuotas pendientes en ${formatPeriod(referencePeriod)}. ${filterSummary}`,
+        emptyMessage: "No hay cuotas pendientes que coincidan con estos filtros.",
+        items: pendingItems,
+        totalItems: pendingItems.length,
+        viewAllHref: "/admin/cuotas",
+      },
+      {
+        key: "average",
+        label: "Ticket mensual medio",
+        value: formatMoney(analytics.averageTicket),
+        description: `Promedio mensual entre clientes activos con un precio asignado. ${filterSummary}`,
+        emptyMessage: "No hay clientes activos con precio que coincidan con estos filtros.",
+        items: averageItems,
+        totalItems: averageItems.length,
+        viewAllHref: "/admin/clientes",
+      },
+      {
+        key: "active",
+        label: "Clientes activos",
+        value: String(analytics.activeClients),
+        description: `Clientes actualmente dados de alta. ${filterSummary}`,
+        emptyMessage: "No hay clientes activos que coincidan con estos filtros.",
+        items: recurringItems,
+        totalItems: recurringItems.length,
+        viewAllHref: "/admin/clientes",
+      },
+    ] satisfies AnalyticsMetricDialog[];
+  }, [analytics, clients, fees, filters, pricingPlans, referencePeriod]);
+  const activeMetric = metricDialogs.find((metric) => metric.key === activeMetricKey) ?? null;
+
+  useEffect(() => {
+    if (activeMetricKey === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveMetricKey(null);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+      lastTriggerRef.current?.focus();
+    };
+  }, [activeMetricKey]);
+
+  function openMetric(key: AnalyticsMetricKey, trigger: HTMLButtonElement) {
+    lastTriggerRef.current = trigger;
+    setActiveMetricKey(key);
+  }
 
   return (
     <section className="mt-8" aria-labelledby="business-intelligence-heading">
       <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-        <div>
+        <div className="min-w-0 xl:flex-1">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Inteligencia del negocio</p>
           <h2 id="business-intelligence-heading" className="mt-2 text-3xl font-black">Valor de las asesorías</h2>
           <p className="mt-1 max-w-3xl text-sm text-muted">
             Cobros reales, cartera mensual equivalente, previsión y composición de clientes. Los filtros se aplican a todas las cifras y gráficas.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2" aria-label="Filtros de estadísticas">
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[10.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
           <select
             className={selectClassName}
             aria-label="Periodo de las gráficas"
@@ -200,12 +398,12 @@ export function DashboardAnalytics({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        <MetricCard icon={Banknote} label="Cobrado este mes" value={formatMoney(analytics.currentCollected)} detail="Cuotas del mes marcadas como pagadas." />
-        <MetricCard icon={CircleDollarSign} label="Cartera mensual" value={formatMoney(analytics.recurringRevenue)} detail="Valor mensual equivalente de tarifas activas." />
-        <MetricCard icon={TrendingUp} label="Previsión próximo mes" value={formatMoney(analytics.nextMonthForecast)} detail="Combina tendencia reciente y cartera contratada." />
-        <MetricCard icon={CalendarClock} label="Pendiente este mes" value={formatMoney(analytics.currentPending)} detail="Cuotas del mes todavía pendientes." />
-        <MetricCard icon={Target} label="Ticket mensual medio" value={formatMoney(analytics.averageTicket)} detail="Promedio mensual por cliente con precio." />
-        <MetricCard icon={Users} label="Clientes activos" value={String(analytics.activeClients)} detail="Clientes en alta dentro de los filtros." />
+        <MetricCard metricKey="collected" icon={Banknote} label="Cobrado este mes" value={formatMoney(analytics.currentCollected)} detail="Cuotas del mes marcadas como pagadas." expanded={activeMetricKey === "collected"} onOpen={openMetric} />
+        <MetricCard metricKey="recurring" icon={CircleDollarSign} label="Cartera mensual" value={formatMoney(analytics.recurringRevenue)} detail="Valor mensual equivalente de tarifas activas." expanded={activeMetricKey === "recurring"} onOpen={openMetric} />
+        <MetricCard metricKey="forecast" icon={TrendingUp} label="Previsión próximo mes" value={formatMoney(analytics.nextMonthForecast)} detail="Combina tendencia reciente y cartera contratada." expanded={activeMetricKey === "forecast"} onOpen={openMetric} />
+        <MetricCard metricKey="pending" icon={CalendarClock} label="Pendiente este mes" value={formatMoney(analytics.currentPending)} detail="Cuotas del mes todavía pendientes." expanded={activeMetricKey === "pending"} onOpen={openMetric} />
+        <MetricCard metricKey="average" icon={Target} label="Ticket mensual medio" value={formatMoney(analytics.averageTicket)} detail="Promedio mensual por cliente con precio." expanded={activeMetricKey === "average"} onOpen={openMetric} />
+        <MetricCard metricKey="active" icon={Users} label="Clientes activos" value={String(analytics.activeClients)} detail="Clientes en alta dentro de los filtros." expanded={activeMetricKey === "active"} onOpen={openMetric} />
       </div>
 
       <div className="mt-6 grid gap-6 2xl:grid-cols-[1.65fr_1fr]">
@@ -296,6 +494,86 @@ export function DashboardAnalytics({
       <p className="mt-4 text-xs leading-relaxed text-muted">
         Las cifras son internas y orientativas. “Cobrado” depende del registro manual de cuotas; “cartera” prorratea el precio acordado; la previsión combina esa cartera con la tendencia de hasta seis meses completos. No representa beneficio neto porque no se registran gastos.
       </p>
+
+      {activeMetric ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-4 py-8"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setActiveMetricKey(null);
+          }}
+        >
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescriptionId}
+            className="relative w-full max-w-2xl rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-2xl sm:p-7"
+          >
+            <button
+              ref={closeButtonRef}
+              type="button"
+              aria-label="Cerrar detalle del indicador"
+              onClick={() => setActiveMetricKey(null)}
+              className="absolute right-4 top-4 grid size-10 place-items-center rounded-full text-muted transition hover:bg-surface-muted hover:text-foreground"
+            >
+              <X className="size-5" aria-hidden="true" />
+            </button>
+
+            <p className="text-sm font-black uppercase tracking-[0.16em] text-primary">Detalle del indicador</p>
+            <h2 id={dialogTitleId} className="font-display mt-2 pr-12 text-3xl font-black uppercase leading-none">
+              {activeMetric.label}
+            </h2>
+            <p className="mt-3 text-3xl font-black">{activeMetric.value}</p>
+            <p id={dialogDescriptionId} className="mt-2 text-sm leading-6 text-muted">
+              {activeMetric.description}
+            </p>
+
+            {activeMetric.items.length ? (
+              <ul className="mt-5 grid max-h-[min(55vh,32rem)] gap-2 overflow-y-auto pr-1">
+                {activeMetric.items.slice(0, 10).map((item) => (
+                  <li key={item.id}>
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        onClick={() => setActiveMetricKey(null)}
+                        className="group flex min-h-16 items-center justify-between gap-4 rounded-[var(--radius-md)] border border-border px-4 py-3 transition hover:border-primary/40 hover:bg-primary-soft/50"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate font-bold text-foreground">{item.title}</span>
+                          <span className="mt-1 block truncate text-sm text-muted">{item.detail}</span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2 text-sm font-bold text-muted group-hover:text-primary">
+                          {item.value}
+                          <ChevronRight className="size-4" aria-hidden="true" />
+                        </span>
+                      </Link>
+                    ) : (
+                      <div className="flex min-h-16 items-center justify-between gap-4 rounded-[var(--radius-md)] border border-border px-4 py-3">
+                        <span className="min-w-0">
+                          <span className="block truncate font-bold text-foreground">{item.title}</span>
+                          <span className="mt-1 block truncate text-sm text-muted">{item.detail}</span>
+                        </span>
+                        <span className="shrink-0 text-sm font-bold">{item.value}</span>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-5 rounded-[var(--radius-md)] bg-surface-muted p-5 text-sm text-muted">{activeMetric.emptyMessage}</p>
+            )}
+
+            {activeMetric.viewAllHref && activeMetric.totalItems > 10 ? (
+              <div className="mt-5 flex justify-end border-t border-border pt-5">
+                <ButtonLink href={activeMetric.viewAllHref} onClick={() => setActiveMetricKey(null)}>
+                  Ver más
+                </ButtonLink>
+              </div>
+            ) : null}
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }

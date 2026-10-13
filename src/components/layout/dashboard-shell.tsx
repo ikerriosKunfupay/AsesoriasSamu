@@ -81,29 +81,29 @@ export function DashboardShell({
   return (
     <div className={`min-h-screen bg-background lg:grid ${isDesktopSidebarOpen ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-1"}`}>
       {isDesktopSidebarOpen ? (
-      <aside className="hidden h-dvh self-start border-r border-zinc-800 bg-surface-inverse p-5 text-white lg:sticky lg:top-0 lg:flex lg:flex-col">
+      <aside className="hidden h-dvh self-start border-r border-sidebar-border bg-sidebar p-5 text-sidebar-foreground lg:sticky lg:top-0 lg:flex lg:flex-col">
         <div className="mb-3">
           <BrandLogo
             href={mode === "admin" ? "/admin" : "/app/inicio"}
             onClick={(event) => guardNavigation(event, "/app/inicio")}
-            className="text-white"
+            className="text-sidebar-foreground"
           />
         </div>
         <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="mt-6 grid gap-1">
           {items.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white">
+            <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground">
               <Icon className="size-5 text-primary" aria-hidden="true" />
               {label}
             </Link>
           ))}
         </nav>
-        <div className="mt-auto border-t border-zinc-800 pt-5">
+        <div className="mt-auto border-t border-sidebar-border pt-5">
           <div className="mb-3 flex min-w-0 items-center gap-3">
-            <ProfileAvatar name={userName} src={userAvatarUrl} className="size-10 border-zinc-700 bg-zinc-900 text-xs" />
-            <p className="min-w-0 truncate text-sm font-bold text-white">{userName}</p>
+            <ProfileAvatar name={userName} src={userAvatarUrl} className="size-10 text-xs" />
+            <p className="min-w-0 truncate text-sm font-bold text-sidebar-foreground">{userName}</p>
           </div>
           <form action={logoutAction}>
-            <Button variant="ghost" className="w-full justify-start text-zinc-300 hover:bg-zinc-800 hover:text-white" type="submit">
+            <Button variant="ghost" className="w-full justify-start text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground" type="submit">
               <LogOut className="size-4" /> Cerrar sesión
             </Button>
           </form>

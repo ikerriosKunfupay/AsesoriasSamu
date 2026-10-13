@@ -76,4 +76,17 @@ describe("DashboardShell", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(window.localStorage.getItem("team-ortega:theme")).toBe("light");
   });
+
+  it("usa colores temáticos en el menú lateral", () => {
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Resumen</p>
+      </DashboardShell>,
+    );
+
+    const sidebar = screen.getByRole("complementary");
+    expect(sidebar).toHaveClass("bg-sidebar", "text-sidebar-foreground", "border-sidebar-border");
+    expect(sidebar).not.toHaveClass("bg-surface-inverse", "text-white");
+    expect(screen.getAllByRole("link", { name: "Resumen" })[0]).toHaveClass("text-sidebar-muted", "hover:bg-sidebar-hover");
+  });
 });

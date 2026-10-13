@@ -1,5 +1,15 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-tema-filtros-y-kpis`
+
+- `globals.css` incorpora tokens semánticos `sidebar-*` diferenciados para los temas claro y oscuro y los expone a Tailwind mediante `@theme`.
+- `DashboardShell` elimina colores `zinc` y blancos fijados del lateral; navegación, pie, perfil y `logoutAction` consumen ahora los nuevos tokens.
+- Añadida una prueba que impide recuperar el fondo inverso fijo y exige las clases temáticas del sidebar.
+- `DashboardAnalytics` cambia el contenedor flexible de filtros por una cuadrícula de tres columnas, con controles `w-full min-w-0` y anchos de escritorio estables.
+- `DashboardAnalytics` convierte sus seis métricas comerciales en disparadores de diálogo, deriva desgloses coherentes con los filtros y enlaza clientes mediante `returnTo=/admin` y cuotas mediante fragmentos `cuota-*`.
+- Los diálogos limitan la vista a diez registros, ofrecen **Ver más** cuando procede, bloquean el scroll, cierran con fondo o `Escape` y restauran el foco.
+- `ClientStatusSwitch` ancla el thumb con `left-1`, usa un desplazamiento contenido y evita que pista, thumb y etiqueta se solapen; se añadieron pruebas de ambos comportamientos.
+
 ## 2026-10-14 — `2026-10-14-despliegue-tarifas-tema`
 
 - Verificada en `team-ortega` la presencia real de las migraciones históricas `202610120001`–`202610130004`; se reconcilió su historial remoto antes de continuar.

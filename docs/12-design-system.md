@@ -35,9 +35,12 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 
 El producto privado dispone de temas claro y oscuro mediante `data-theme` en `<html>`. Ambos reutilizan los mismos tokens semánticos; no se deben introducir variantes `dark:` aisladas en cada feature. La preferencia se guarda como `team-ortega:theme`, se aplica antes de hidratar para evitar parpadeos y, si todavía no existe, respeta la preferencia del sistema. La identidad editorial pública conserva su paleta marfil y negra independientemente de la elección del panel.
 
+El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, `sidebar-foreground`, `sidebar-muted`, `sidebar-hover` y `sidebar-border`. En claro es una superficie blanca con texto oscuro; en oscuro recupera el fondo negro y el contraste claro de la identidad. No se deben fijar clases `zinc` o `text-white` directamente en su composición.
+
 ## Componentes
 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
+- Los KPI accionables se presentan como botones completos, con foco visible, indicación direccional y `aria-haspopup="dialog"`. Su modal conserva el contexto del filtro, muestra como máximo diez filas, permite cerrar con `Escape` o pulsando el fondo y devuelve el foco a la tarjeta de origen.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.

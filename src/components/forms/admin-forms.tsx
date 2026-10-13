@@ -161,19 +161,19 @@ export function ClientStatusSwitch({
           aria-checked={isActive}
           aria-label={isActive ? `Dar de baja a ${clientName}` : `Dar de alta a ${clientName}`}
           disabled={pending}
-          className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border-strong bg-surface px-3 text-sm font-bold transition-colors hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-55"
+          className="inline-flex min-h-10 items-center gap-2.5 whitespace-nowrap rounded-full border border-border-strong bg-surface px-3 text-sm font-bold transition-colors hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-55"
         >
           <span
             aria-hidden="true"
             className={cn(
-              "relative h-6 w-11 rounded-full transition-colors",
+              "relative h-6 w-11 shrink-0 rounded-full transition-colors",
               isActive ? "bg-success" : "bg-muted/45",
             )}
           >
             <span
               className={cn(
-                "absolute top-1 size-4 rounded-full bg-white shadow-sm transition-transform",
-                isActive ? "translate-x-6" : "translate-x-1",
+                "absolute left-1 top-1 size-4 rounded-full bg-white shadow-sm transition-transform",
+                isActive ? "translate-x-5" : "translate-x-0",
               )}
             />
           </span>
