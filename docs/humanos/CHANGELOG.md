@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-cerrar-toast-registro`
+
+- Añadida una `X` al aviso de error del registro para poder cerrarlo sin perder los campos marcados.
+- Si se vuelve a enviar el formulario con el mismo error, el aviso aparece de nuevo.
+
 ## 2026-10-13 — `2026-10-13-mejorar-password-registro`
 
 - Alineados los dos campos de contraseña del registro para que sus etiquetas y líneas tengan el mismo tamaño y comiencen a la misma altura.

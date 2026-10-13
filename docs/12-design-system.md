@@ -57,7 +57,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - En móvil, los pasos de «Cómo funciona» usan un carrusel con vista parcial de la siguiente tarjeta, contador, paginación y flechas; desde `md` se muestra la lista completa.
 - En las vistas de autenticación, la cabecera móvil comienza cerca del borde superior y presenta la marca antes del formulario; en escritorio, el regreso a Inicio se alinea con el borde izquierdo del formulario.
 - Los campos que comparten fila se alinean desde arriba; una ayuda o un error bajo un campo no debe desplazar verticalmente el control contiguo.
-- La validación del registro evita los avisos nativos del navegador: muestra el error en un toast y marca en rojo cada control afectado. Los campos de contraseña incluyen una acción accesible para mostrar u ocultar su contenido.
+- La validación del registro evita los avisos nativos del navegador: muestra el error en un toast cerrable mediante una `X` etiquetada y marca en rojo cada control afectado. Los campos de contraseña incluyen una acción accesible para mostrar u ocultar su contenido.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.
 - Inputs de 16 px en móvil y objetivos táctiles de al menos 44 px.

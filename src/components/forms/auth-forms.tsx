@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AlertCircle, Eye, EyeOff } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, X } from "lucide-react";
 import { useActionState, useState } from "react";
 import {
   loginAction,
@@ -15,8 +15,10 @@ import { initialActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
 import { SubmitButton } from "./submit-button";
 
-function FormErrorToast({ message }: { message?: string }) {
-  if (!message) return null;
+function FormErrorToast({ message, messageId }: { message?: string; messageId?: string }) {
+  const [dismissedId, setDismissedId] = useState<string>();
+
+  if (!message || !messageId || dismissedId === messageId) return null;
 
   return (
     <div
@@ -26,6 +28,14 @@ function FormErrorToast({ message }: { message?: string }) {
     >
       <AlertCircle className="mt-0.5 shrink-0" size={20} aria-hidden="true" />
       <p className="min-w-0 flex-1">{message}</p>
+      <button
+        type="button"
+        className="-my-2 -mr-2 grid size-11 shrink-0 place-items-center text-white/80 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        onClick={() => setDismissedId(messageId)}
+        aria-label="Cerrar aviso"
+      >
+        <X size={18} aria-hidden="true" />
+      </button>
     </div>
   );
 }
@@ -98,7 +108,10 @@ export function RegisterForm() {
   const [state, action] = useActionState(registerAction, initialActionState);
   return (
     <form action={action} className="grid gap-5" noValidate>
-      <FormErrorToast message={state.status === "error" ? state.message : undefined} />
+      <FormErrorToast
+        message={state.status === "error" ? state.message : undefined}
+        messageId={state.status === "error" ? state.messageId : undefined}
+      />
       {state.status === "success" ? <FormMessage state={state} /> : null}
       <div className="grid items-start gap-5 sm:grid-cols-2">
         <Field label="Nombre y apellidos" htmlFor="fullName" required error={state.fieldErrors?.fullName?.[0]}>

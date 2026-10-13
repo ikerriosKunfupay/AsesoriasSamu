@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-cerrar-toast-registro`
+
+- Ampliado `ActionState` con `messageId`; `registerAction` genera un UUID nuevo en cada error para que el mismo toast pueda reaparecer tras descartarlo.
+- `FormErrorToast` conserva localmente el identificador cerrado y expone un botón accesible `Cerrar aviso` con el icono `X`.
+
 ## 2026-10-13 — `2026-10-13-mejorar-password-registro`
 
 - Añadido `items-start` a la cuadrícula responsive de `RegisterForm` para impedir que el texto de ayuda de la contraseña estire y desplace el campo de confirmación.

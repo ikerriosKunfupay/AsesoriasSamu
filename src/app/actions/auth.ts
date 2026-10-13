@@ -58,6 +58,7 @@ export async function registerAction(
     return {
       status: "error",
       message: parsed.error.issues[0]?.message ?? "Revisa los campos marcados en rojo.",
+      messageId: crypto.randomUUID(),
       fieldErrors: fieldErrors(parsed.error),
     };
   }
@@ -77,6 +78,7 @@ export async function registerAction(
     return {
       status: "error",
       message: "No se pudo crear la cuenta. Revisa los datos o prueba con otro correo.",
+      messageId: crypto.randomUUID(),
     };
   }
 
