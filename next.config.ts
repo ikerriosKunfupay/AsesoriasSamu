@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
+const vercelDeploymentId = process.env.VERCEL_DEPLOYMENT_ID
+  ?.replace(/^dpl_/, "")
+  .replace(/[^a-zA-Z0-9_-]/g, "")
+  .slice(0, 32);
+
 const nextConfig: NextConfig = {
+  ...(vercelDeploymentId ? { deploymentId: vercelDeploymentId } : {}),
   poweredByHeader: false,
   reactStrictMode: true,
   turbopack: {

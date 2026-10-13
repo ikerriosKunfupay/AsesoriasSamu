@@ -16,6 +16,8 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 `DashboardShell` mantiene el lateral de escritorio fijado a la altura visible para que `logoutAction` y el usuario no queden fuera del viewport en páginas largas. En móvil, la misma acción permanece en la navegación desplegable. El campo de contraseña del login usa el componente cliente reutilizable `PasswordInput`, con alternancia accesible entre contenido oculto y visible y `autocomplete="current-password"`.
 
+`next.config.ts` deriva `deploymentId` del identificador único que Vercel expone durante cada build, retirando el prefijo reservado `dpl_` y limitándolo al formato admitido por Next.js. Los clientes incluyen así su versión en navegaciones y Server Actions para que la plataforma no mezcle una pestaña antigua con el despliegue actual. `src/app/login/error.tsx` es la recuperación local del acceso: sustituye la pantalla genérica ante un fallo de navegación y fuerza una recarga completa mediante una acción explícita, sin conservar la contraseña en el navegador.
+
 La navegación administrativa presenta **Interesados** antes de **Clientes** para reflejar el flujo operativo: las filas de `leads` nacen en el formulario público y son independientes de las identidades `client` de `profiles`.
 
 La cabecera móvil de `DashboardShell` coloca el disparador de navegación a la izquierda y `BrandLogo` compacto a la derecha. El menú se ancla al borde izquierdo del disparador; el lateral de escritorio no cambia.

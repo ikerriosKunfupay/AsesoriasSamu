@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-recuperacion-login-despliegue`
+
+- Corregida la causa de la pantalla «This page couldn’t load» que podía aparecer al iniciar sesión desde una pestaña abierta antes de una publicación nueva.
+- Cada versión de la web queda ahora identificada para evitar que el formulario antiguo termine en el servidor nuevo.
+- Si una pestaña demasiado antigua no pudiera recuperarse automáticamente, el acceso muestra una explicación propia y un botón para recargar; la cuenta no queda bloqueada.
+- El análisis de código, los tipos, las 61 pruebas y la compilación finalizaron correctamente; una compilación adicional confirmó que el identificador se incorpora a la versión generada.
+
 ## 2026-10-13 — `2026-10-13-diagnostico-registro-existente`
 
 - Corregido el falso «Cuenta creada» que podía aparecer al intentar registrarse con un correo ya utilizado.

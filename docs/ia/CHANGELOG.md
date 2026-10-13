@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-recuperacion-login-despliegue`
+
+- Los logs de Vercel localizaron un `POST /login` con estado `409` y `Failed to find Server Action`, originado por un cliente de un despliegue anterior; no fue un rechazo de Supabase ni un error del perfil.
+- `next.config.ts` configura `deploymentId` a partir de `VERCEL_DEPLOYMENT_ID`, elimina el prefijo reservado, sanea caracteres y limita el valor a 32 posiciones para activar la identificación de versión en Next.js 16.
+- Añadido `src/app/login/error.tsx` como límite de error específico y recuperación mediante recarga completa. No se persisten credenciales ni se cambia el contrato de autenticación.
+- `pnpm check` superó lint, tipos, 61 pruebas y build Webpack; un segundo build con un `VERCEL_DEPLOYMENT_ID` sintético verificó el valor saneado en `.next/routes-manifest.json` y `data-dpl-id`/`?dpl=` en los artefactos.
+
 ## 2026-10-13 — `2026-10-13-diagnostico-registro-existente`
 
 - `registerAction` detecta la identidad ofuscada de Supabase mediante `user.identities?.length === 0` y deja de devolver éxito para correos existentes.

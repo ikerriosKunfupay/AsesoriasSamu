@@ -62,6 +62,8 @@ Después puede:
 
 En el acceso se puede mostrar u ocultar la contraseña mediante el icono del propio campo.
 
+Si se publica una versión nueva mientras alguien mantiene abierto el acceso, la web identifica el cambio de versión para evitar enviar el formulario al despliegue equivocado. Si una pestaña muy antigua no pudiera recuperarse automáticamente, muestra una pantalla propia con la opción **Recargar acceso**; la cuenta no queda bloqueada y basta con volver a introducir los datos.
+
 La foto de perfil admite JPG, PNG o WebP de hasta 2 MB y se mantiene privada. Puede pulsarse para verla ampliada o eliminarse para volver a mostrar las iniciales.
 
 El correo no se edita directamente. Al solicitar el cambio, Team Ortega envía un enlace al correo actual para comprobar la identidad; al abrirlo aparece un formulario emergente para indicar la nueva dirección. Cuando se guarda, Ajustes muestra automáticamente el correo actualizado. El cambio de contraseña sigue el mismo principio: primero se recibe un enlace seguro en el correo actual y después se elige la nueva contraseña en un formulario emergente. Ambos correos conservan el diseño y el emblema de Team Ortega. El entrenador puede consultar la foto y los datos de contacto actualizados desde la ficha del cliente.
