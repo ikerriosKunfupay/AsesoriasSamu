@@ -1,11 +1,16 @@
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { AssignmentForm } from "@/components/forms/admin-forms";
+import {
+  AssignmentForm,
+  ClientAdminNotesForm,
+  ClientStatusSwitch,
+} from "@/components/forms/admin-forms";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { PageHeading } from "@/components/layout/page-heading";
+import { getClientReturnDestination } from "@/lib/admin/client-navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate, statusLabel } from "@/lib/format";
 import {
@@ -14,19 +19,28 @@ import {
   parseSocialProfiles,
 } from "@/lib/forms/social-networks";
 
-export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function ClientDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ returnTo?: string | string[] }>;
+}) {
+  const [{ id }, { returnTo }] = await Promise.all([params, searchParams]);
+  const returnDestination = getClientReturnDestination(returnTo);
   const supabase = createAdminClient();
-  const [profileResult, authResult, onboardingResult, workoutResult, nutritionResult, checkInsResult] = await Promise.all([
+  const [profileResult, authResult, onboardingResult, workoutResult, nutritionResult, checkInsResult, adminNotesResult] = await Promise.all([
     supabase.from("profiles").select("id, full_name, phone, avatar_path, status, onboarding_complete, created_at").eq("id", id).eq("role", "client").single(),
     supabase.auth.admin.getUserById(id),
     supabase.from("onboarding_submissions").select("*").eq("user_id", id).maybeSingle(),
     supabase.from("workout_assignments").select("id, title, status, starts_on, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
     supabase.from("nutrition_assignments").select("id, title, status, starts_on, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
     supabase.from("check_ins").select("id, weight_kg, energy_level, adherence_level, notes, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
+    supabase.from("client_admin_notes").select("notes").eq("client_id", id).maybeSingle(),
   ]);
   const profile = profileResult.data;
   if (!profile) notFound();
+  const clientName = profile.full_name || "Cliente";
   const onboarding = onboardingResult.data;
   const socialProfiles = parseSocialProfiles(onboarding?.social_networks);
   const { data: avatarData } = profile.avatar_path
@@ -34,11 +48,16 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     : { data: null };
   const email = authResult.data.user?.email;
   return <>
-    <ButtonLink href="/admin/clientes" variant="outline" size="sm" className="mb-5">
+    <ButtonLink href={returnDestination.href} variant="outline" size="sm" className="mb-5">
       <ArrowLeft className="size-4" aria-hidden="true" />
-      Volver a clientes
+      {returnDestination.label}
     </ButtonLink>
-    <PageHeading eyebrow="Ficha del cliente" title={profile.full_name || "Cliente"} description={`Alta: ${formatDate(profile.created_at)}`} action={<Badge tone={profile.status === "active" ? "success" : "warning"}>{statusLabel(profile.status)}</Badge>} />
+    <PageHeading
+      eyebrow="Ficha del cliente"
+      title={clientName}
+      description={`Alta: ${formatDate(profile.created_at)}`}
+      action={<ClientStatusSwitch clientId={id} clientName={clientName} status={profile.status} />}
+    />
     <Card className="mb-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
         <ProfileAvatar name={profile.full_name || "Cliente"} src={avatarData?.signedUrl} className="size-24 text-2xl" />
@@ -48,6 +67,10 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
           <div className="sm:col-span-2"><dt className="font-bold text-muted">Correo electrónico</dt><dd className="mt-1 break-all">{email ? <a className="hover:text-primary hover:underline" href={`mailto:${email}`}>{email}</a> : "No disponible"}</dd></div>
         </dl>
       </div>
+    </Card>
+    <Card className="mb-6">
+      <h2 className="mb-4 text-xl font-black">Notas internas</h2>
+      <ClientAdminNotesForm clientId={id} initialNotes={adminNotesResult.data?.notes ?? ""} />
     </Card>
     <div className="grid gap-6 xl:grid-cols-2">
       <Card id="cuestionario" className="scroll-mt-24 target:ring-2 target:ring-primary"><h2 className="text-xl font-black">Cuestionario inicial</h2>{onboarding ? <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2"><div><dt className="font-bold text-muted">Edad</dt><dd>{onboarding.age} años</dd></div><div><dt className="font-bold text-muted">Peso / altura</dt><dd>{onboarding.weight_kg} kg · {onboarding.height_cm} cm</dd></div><div className="sm:col-span-2"><dt className="font-bold text-muted">Objetivos</dt><dd className="mt-1 whitespace-pre-wrap">{onboarding.goals}</dd></div><div className="sm:col-span-2"><dt className="font-bold text-muted">Rutina y horarios</dt><dd className="mt-1 whitespace-pre-wrap">{onboarding.occupation_schedule}</dd></div><div><dt className="font-bold text-muted">Lesiones o condiciones</dt><dd className="mt-1 whitespace-pre-wrap">{onboarding.conditions_injuries || "No indicadas"}</dd></div><div><dt className="font-bold text-muted">Alergias o intolerancias</dt><dd className="mt-1 whitespace-pre-wrap">{onboarding.allergies_intolerances || "No indicadas"}</dd></div><div className="sm:col-span-2"><dt className="font-bold text-muted">Redes sociales</dt><dd className="mt-2 flex flex-wrap gap-2">{socialProfiles.length > 0 ? socialProfiles.map((socialProfile, index) => <a key={`${socialProfile.platform}-${socialProfile.username}-${index}`} href={getSocialProfileUrl(socialProfile)} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-2 border border-border px-3 font-bold transition-colors hover:border-primary hover:text-primary">{getSocialPlatformLabel(socialProfile.platform)} · @{socialProfile.username}<ExternalLink aria-hidden="true" className="size-4" /></a>) : <span className="text-muted">No indicadas</span>}</dd></div></dl> : <p className="mt-4 rounded-xl bg-warning-soft p-4 text-sm text-warning">El cliente todavía no ha completado el cuestionario.</p>}</Card>

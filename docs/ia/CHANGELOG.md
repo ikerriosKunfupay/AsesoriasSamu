@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-navegacion-notas-estado-clientes`
+
+- Centralizada la construcción de fichas y la resolución de `returnTo` en `client-navigation.ts`, mediante una lista cerrada de destinos y alternativa segura a `/admin/clientes`.
+- La migración `202610130004_client_admin_notes.sql` separa las notas administrativas del perfil legible por el cliente y aplica RLS administrativa, límite de 5000 caracteres y privilegios servidor explícitos.
+- La migración se aplicó correctamente en el proyecto productivo `team-ortega`; la consulta terminó sin errores y sin modificar perfiles existentes.
+- `saveClientAdminNoteAction` comparte persistencia entre tabla y ficha; `setClientStatusAction` limita el cambio a `active`/`archived`, actúa solo sobre perfiles cliente y no registra contenido libre.
+- `ClientsTable` y `client-table.ts` implementan búsqueda normalizada y ordenación trivalente estable sobre todas las columnas de datos visibles.
+- Añadidas validaciones de navegación, notas, estado, búsqueda y orden; `pnpm lint`, `pnpm typecheck`, 75 pruebas y `pnpm build` terminaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-volver-ficha-cliente`
 
 - `/admin/clientes/[id]` incorpora un `ButtonLink` con `ArrowLeft` dirigido a `/admin/clientes`, sin depender del historial del navegador.

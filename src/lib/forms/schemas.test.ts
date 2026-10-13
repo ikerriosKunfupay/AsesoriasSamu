@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  clientAdminNoteSchema,
+  clientStatusSchema,
   leadSchema,
   onboardingSchema,
   profileSettingsSchema,
@@ -100,6 +102,15 @@ describe("validación de formularios", () => {
   it("rechaza un correo nuevo inválido", () => {
     const result = updateEmailSchema.safeParse({ newEmail: "correo-invalido" });
     expect(result.success).toBe(false);
+  });
+
+  it("valida las notas internas y el alta o baja de un cliente", () => {
+    const clientId = "11111111-1111-4111-8111-111111111111";
+
+    expect(clientAdminNoteSchema.safeParse({ clientId, notes: "Llamar el viernes." }).success)
+      .toBe(true);
+    expect(clientStatusSchema.safeParse({ clientId, nextStatus: "archived" }).success).toBe(true);
+    expect(clientStatusSchema.safeParse({ clientId, nextStatus: "admin" }).success).toBe(false);
   });
 
   it("valida los límites físicos del cuestionario", () => {

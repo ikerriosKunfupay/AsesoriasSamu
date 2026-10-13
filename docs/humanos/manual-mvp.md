@@ -10,7 +10,7 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 
 - **Resumen:** cinco indicadores compactos con acceso a sus últimos movimientos.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
-- **Clientes:** cuentas registradas o invitadas, estado, cuestionario y ficha completa.
+- **Clientes:** cuentas registradas o invitadas, alta o baja, notas internas, cuestionario y ficha completa.
 - **Entrenamientos y nutrición:** histórico de planes.
 - **Seguimientos:** revisiones enviadas por clientes.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
@@ -35,7 +35,9 @@ El entrenador también puede iniciar el alta desde el panel:
 4. Al entrar, completa el cuestionario inicial.
 5. Desde su ficha, el entrenador publica entrenamiento y nutrición.
 
-La ficha de cada cliente incluye **Volver a clientes** antes del título para regresar siempre a la lista, incluso cuando la ficha se haya abierto desde un enlace directo.
+La lista y la ficha permiten dar de alta o de baja a cada cliente mediante un interruptor. Un cliente dado de baja conserva su información, pero no puede acceder al área privada hasta que el entrenador vuelva a activarlo. El entrenador también puede guardar una nota interna desde la propia fila de la tabla o desde la ficha; ambas zonas muestran y editan la misma nota, que nunca aparece en la cuenta del cliente. La tabla puede filtrarse por cliente, estado, cuestionario o texto de la nota; cada cabecera recorre orden ascendente, descendente y orden original al pulsarla sucesivamente.
+
+La ficha adapta su botón **Volver** al lugar desde el que se abrió: regresa a Resumen cuando se accedió desde un indicador, a Clientes desde la tabla y a Entrenamientos, Nutrición o Seguimientos desde esas secciones. Si se abre un enlace directo sin origen reconocido, vuelve a Clientes como destino seguro.
 
 En ambos casos la cuenta se crea siempre con rol de cliente. El formulario público no permite solicitar ni escoger el rol de administrador.
 

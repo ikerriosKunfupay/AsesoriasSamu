@@ -1,5 +1,6 @@
 import { DashboardKpis, type DashboardKpi } from "@/components/admin/dashboard-kpis";
 import { PageHeading } from "@/components/layout/page-heading";
+import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import { formatDate, formatMoney, statusLabel } from "@/lib/format";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -70,7 +71,7 @@ export default async function AdminDashboardPage() {
         title: client.full_name,
         detail: `${statusLabel(client.status)} · ${client.onboarding_complete ? "Cuestionario completado" : "Cuestionario pendiente"}`,
         date: formatDate(client.created_at),
-        href: `/admin/clientes/${client.id}`,
+        href: getClientDetailHref(client.id, "/admin"),
       })),
     },
     {
@@ -100,7 +101,7 @@ export default async function AdminDashboardPage() {
         title: namesById.get(questionnaire.user_id) ?? "Cliente",
         detail: "Cuestionario inicial recibido",
         date: formatDate(questionnaire.updated_at || questionnaire.submitted_at),
-        href: `/admin/clientes/${questionnaire.user_id}#cuestionario`,
+        href: getClientDetailHref(questionnaire.user_id, "/admin", "cuestionario"),
       })),
     },
     {

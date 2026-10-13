@@ -65,6 +65,16 @@ export const inviteSchema = z.object({
   email: z.string().trim().email("Introduce un correo válido."),
 });
 
+export const clientAdminNoteSchema = z.object({
+  clientId: z.string().uuid("Cliente no válido."),
+  notes: z.string().trim().max(5000, "La nota no puede superar los 5000 caracteres."),
+});
+
+export const clientStatusSchema = z.object({
+  clientId: z.string().uuid("Cliente no válido."),
+  nextStatus: z.enum(["active", "archived"]),
+});
+
 export const onboardingSchema = z.object({
   age: z.preprocess(
     parseUnsignedInteger,

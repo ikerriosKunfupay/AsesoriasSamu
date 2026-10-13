@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/lib/forms/action-state";
 import {
   assignmentSchema,
+  clientAdminNoteSchema,
+  clientStatusSchema,
   feeSchema,
   fieldErrors,
   formValues,
@@ -111,4 +113,73 @@ export async function saveFeeAction(
   if (error) return { status: "error", message: "No se pudo guardar la cuota." };
   revalidatePath("/admin/cuotas");
   return { status: "success", message: "Cuota actualizada." };
+}
+
+export async function saveClientAdminNoteAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = clientAdminNoteSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa la nota.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const admin = createAdminClient();
+  const { error } = await admin.from("client_admin_notes").upsert(
+    {
+      client_id: parsed.data.clientId,
+      notes: parsed.data.notes,
+      updated_by: adminUser.id,
+    },
+    { onConflict: "client_id" },
+  );
+
+  if (error) return { status: "error", message: "No se pudo guardar la nota." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "client.note_updated",
+    entity_type: "profile",
+    entity_id: parsed.data.clientId,
+  });
+  revalidatePath("/admin/clientes");
+  revalidatePath(`/admin/clientes/${parsed.data.clientId}`);
+  return { status: "success", message: "Nota guardada." };
+}
+
+export async function setClientStatusAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = clientStatusSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "No se pudo cambiar el estado." };
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("profiles")
+    .update({ status: parsed.data.nextStatus })
+    .eq("id", parsed.data.clientId)
+    .eq("role", "client")
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo cambiar el estado." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: parsed.data.nextStatus === "active" ? "client.activated" : "client.archived",
+    entity_type: "profile",
+    entity_id: parsed.data.clientId,
+  });
+  revalidatePath("/admin");
+  revalidatePath("/admin/clientes");
+  revalidatePath(`/admin/clientes/${parsed.data.clientId}`);
+  return {
+    status: "success",
+    message: parsed.data.nextStatus === "active" ? "Cliente dado de alta." : "Cliente dado de baja.",
+  };
 }

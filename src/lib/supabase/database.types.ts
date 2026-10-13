@@ -28,6 +28,25 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
         Relationships: [];
       };
+      client_admin_notes: {
+        Row: {
+          client_id: string;
+          notes: string;
+          updated_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          client_id: string;
+          notes?: string;
+          updated_by: string;
+        };
+        Update: {
+          notes?: string;
+          updated_by?: string;
+        };
+        Relationships: [];
+      };
       leads: {
         Row: {
           id: string;

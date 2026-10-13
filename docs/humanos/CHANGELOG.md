@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-navegacion-notas-estado-clientes`
+
+- El botón de vuelta de una ficha lleva ahora al lugar real desde el que se abrió: Resumen, Clientes, Entrenamientos, Nutrición o Seguimientos.
+- Añadidas notas privadas del entrenador, editables tanto en la tabla de Clientes como dentro de cada ficha.
+- Incorporado un interruptor de alta o baja en ambos lugares; una baja conserva la información pero impide el acceso del cliente hasta reactivarlo.
+- La tabla permite buscar en todo su contenido y ordenar cada columna en ascendente, descendente u orden original.
+- El análisis de código, los tipos, las 75 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-volver-ficha-cliente`
 
 - Añadido un botón visible para volver desde la ficha individual a la lista de clientes.
