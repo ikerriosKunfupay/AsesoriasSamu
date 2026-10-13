@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-minimo-contrasena-ocho`
+
+- El registro, la recuperación y el cambio de contraseña aceptan ahora claves desde 8 caracteres.
+- Los textos de ayuda y los controles muestran el mismo mínimo en todos los formularios.
+- Añadidas pruebas para aceptar exactamente 8 caracteres y rechazar 7; las 52 pruebas, el análisis de código, los tipos y la compilación finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-ajustes-prefijo-avisos`
 
 - El teléfono de Ajustes incorpora un selector de prefijo integrado en el propio campo, sin recurrir al menú externo del navegador.

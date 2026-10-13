@@ -60,18 +60,33 @@ describe("validación de formularios", () => {
     expect(result.success).toBe(false);
   });
 
-  it("rechaza ambas contraseñas cuando no llegan a 10 caracteres", () => {
+  it("acepta una contraseña de exactamente 8 caracteres", () => {
     const result = registerSchema.safeParse({
       fullName: "María López",
       email: "maria@example.com",
-      password: "123456789",
-      confirmation: "123456789",
+      password: "12345678",
+      confirmation: "12345678",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rechaza ambas contraseñas cuando no llegan a 8 caracteres", () => {
+    const result = registerSchema.safeParse({
+      fullName: "María López",
+      email: "maria@example.com",
+      password: "1234567",
+      confirmation: "1234567",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.password).toBeDefined();
       expect(result.error.flatten().fieldErrors.confirmation).toBeDefined();
     }
+  });
+
+  it("aplica el mínimo de 8 caracteres al cambio de contraseña", () => {
+    expect(updatePasswordSchema.safeParse({ password: "12345678", confirmation: "12345678" }).success).toBe(true);
+    expect(updatePasswordSchema.safeParse({ password: "1234567", confirmation: "1234567" }).success).toBe(false);
   });
 
   it("valida los datos básicos editables del cliente", () => {

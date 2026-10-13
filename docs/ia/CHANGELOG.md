@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-minimo-contrasena-ocho`
+
+- Centralizado el mínimo de contraseña en `PASSWORD_MIN_LENGTH = 8` y reutilizado en los esquemas Zod, atributos `minLength` y mensajes de interfaz.
+- Aplicada la política común al login, registro, alta/recuperación y cambio de contraseña desde Ajustes.
+- Ampliadas las pruebas de esquemas con los límites de 8 caracteres aceptados y 7 rechazados; `pnpm check` superó lint, tipos, 52 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-ajustes-prefijo-avisos`
 
 - Extraído `PhonePrefixSelect` de `LeadForm` como listbox reutilizable, con IDs internos únicos, navegación por teclado y helpers para separar y recomponer teléfonos persistidos.

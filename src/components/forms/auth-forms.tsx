@@ -12,6 +12,7 @@ import {
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
+import { PASSWORD_MIN_LENGTH } from "@/lib/forms/password-policy";
 import { FormErrorToast } from "./form-error-toast";
 import { FormMessage } from "./form-message";
 import { PasswordInput } from "./password-input";
@@ -70,11 +71,11 @@ export function RegisterForm({ compact = false }: { compact?: boolean }) {
         <Field label="Correo electrónico" htmlFor="email" required error={state.fieldErrors?.email?.[0]}>
           <Input id="email" name="email" type="email" autoComplete="email" required aria-invalid={Boolean(state.fieldErrors?.email?.[0])} />
         </Field>
-        <Field label="Contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]} hint="Mínimo 10 caracteres.">
+        <Field label="Contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]} hint={`Mínimo ${PASSWORD_MIN_LENGTH} caracteres.`}>
           <PasswordInput
             id="password"
             name="password"
-            minLength={10}
+            minLength={PASSWORD_MIN_LENGTH}
             error={state.fieldErrors?.password?.[0]}
             describedBy={state.fieldErrors?.password?.[0] ? "password-error" : "password-hint"}
           />
@@ -83,7 +84,7 @@ export function RegisterForm({ compact = false }: { compact?: boolean }) {
           <PasswordInput
             id="confirmation"
             name="confirmation"
-            minLength={10}
+            minLength={PASSWORD_MIN_LENGTH}
             error={state.fieldErrors?.confirmation?.[0]}
             describedBy={state.fieldErrors?.confirmation?.[0] ? "confirmation-error" : undefined}
           />
@@ -124,11 +125,11 @@ export function UpdatePasswordForm() {
   return (
     <form action={action} className="grid gap-5">
       <FormMessage state={state} />
-      <Field label="Nueva contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]} hint="Mínimo 10 caracteres.">
-        <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={10} />
+      <Field label="Nueva contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]} hint={`Mínimo ${PASSWORD_MIN_LENGTH} caracteres.`}>
+        <Input id="password" name="password" type="password" autoComplete="new-password" required minLength={PASSWORD_MIN_LENGTH} />
       </Field>
       <Field label="Repite la contraseña" htmlFor="confirmation" required error={state.fieldErrors?.confirmation?.[0]}>
-        <Input id="confirmation" name="confirmation" type="password" autoComplete="new-password" required minLength={10} />
+        <Input id="confirmation" name="confirmation" type="password" autoComplete="new-password" required minLength={PASSWORD_MIN_LENGTH} />
       </Field>
       <SubmitButton pendingLabel="Actualizando…" className="w-full">Guardar contraseña</SubmitButton>
     </form>

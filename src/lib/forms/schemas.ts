@@ -1,21 +1,22 @@
 import { z } from "zod";
 import { isValidSocialProfilesValue } from "./social-networks";
 import { parseUnsignedDecimal, parseUnsignedInteger } from "./numeric-values";
+import { PASSWORD_MIN_LENGTH } from "./password-policy";
 
 const requiredText = (label: string, min = 2) =>
   z.string().trim().min(min, `${label} es obligatorio.`).max(2000, `${label} es demasiado largo.`);
 
 export const loginSchema = z.object({
   email: z.string().trim().email("Introduce un correo válido."),
-  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
+  password: z.string().min(PASSWORD_MIN_LENGTH, `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres.`),
 });
 
 export const registerSchema = z
   .object({
     fullName: requiredText("El nombre").max(120),
     email: z.string().trim().email("Introduce un correo válido."),
-    password: z.string().min(10, "Usa al menos 10 caracteres."),
-    confirmation: z.string().min(10, "Usa al menos 10 caracteres."),
+    password: z.string().min(PASSWORD_MIN_LENGTH, `Usa al menos ${PASSWORD_MIN_LENGTH} caracteres.`),
+    confirmation: z.string().min(PASSWORD_MIN_LENGTH, `Usa al menos ${PASSWORD_MIN_LENGTH} caracteres.`),
   })
   .refine((value) => value.password === value.confirmation, {
     message: "Las contraseñas no coinciden.",
@@ -37,7 +38,7 @@ export const updateEmailSchema = z.object({
 
 export const updatePasswordSchema = z
   .object({
-    password: z.string().min(10, "Usa al menos 10 caracteres."),
+    password: z.string().min(PASSWORD_MIN_LENGTH, `Usa al menos ${PASSWORD_MIN_LENGTH} caracteres.`),
     confirmation: z.string(),
   })
   .refine((value) => value.password === value.confirmation, {

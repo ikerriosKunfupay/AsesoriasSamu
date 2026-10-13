@@ -7,6 +7,7 @@ import { changeEmailAction, changePasswordAction } from "@/app/actions/account-s
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
+import { PASSWORD_MIN_LENGTH } from "@/lib/forms/password-policy";
 import { FormMessage } from "./form-message";
 import { PasswordInput } from "./password-input";
 import { SubmitButton } from "./submit-button";
@@ -89,16 +90,16 @@ export function ChangePasswordDialog() {
   return (
     <DialogFrame
       title="Nueva contraseña"
-      description="Tu identidad ya está verificada. Elige una contraseña única de al menos 10 caracteres."
+      description={`Tu identidad ya está verificada. Elige una contraseña única de al menos ${PASSWORD_MIN_LENGTH} caracteres.`}
       icon={<KeyRound className="size-6" aria-hidden="true" />}
     >
       <form action={action} className="grid gap-5" noValidate>
         <FormMessage state={state} />
-        <Field label="Nueva contraseña" htmlFor="password" required hint="Mínimo 10 caracteres." error={state.fieldErrors?.password?.[0]}>
+        <Field label="Nueva contraseña" htmlFor="password" required hint={`Mínimo ${PASSWORD_MIN_LENGTH} caracteres.`} error={state.fieldErrors?.password?.[0]}>
           <PasswordInput
             id="password"
             name="password"
-            minLength={10}
+            minLength={PASSWORD_MIN_LENGTH}
             error={state.fieldErrors?.password?.[0]}
             describedBy={state.fieldErrors?.password?.[0] ? "password-error" : "password-hint"}
           />
@@ -107,7 +108,7 @@ export function ChangePasswordDialog() {
           <PasswordInput
             id="confirmation"
             name="confirmation"
-            minLength={10}
+            minLength={PASSWORD_MIN_LENGTH}
             error={state.fieldErrors?.confirmation?.[0]}
             describedBy={state.fieldErrors?.confirmation?.[0] ? "confirmation-error" : undefined}
           />
