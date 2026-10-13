@@ -24,6 +24,11 @@
 - La landing renderiza el carrusel bajo `md` y conserva el listado estático desde `md`.
 - El `h2` de la sección usa `2.625rem` por defecto y recupera `text-6xl` desde `sm` para evitar clipping a 390 px.
 
+## 2026-10-13 — `2026-10-13-modal-registro-login`
+
+- Sustituido el mensaje de éxito insertado en `RegisterForm` por `RegistrationSuccessDialog`, un diálogo modal accesible.
+- El componente navega con `router.replace("/login")` tras 2,5 segundos o al activar el CTA y cuenta con pruebas del botón y del temporizador.
+
 ## 2026-10-13 — `2026-10-13-registro-sin-scroll`
 
 - Añadido a `AuthShell` el modo opcional `fitViewport`, basado en `h-dvh`, contención de overflow y espaciado compacto; solo `/registro` lo activa.

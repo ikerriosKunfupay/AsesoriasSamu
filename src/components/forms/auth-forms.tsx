@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Eye, EyeOff, X } from "lucide-react";
-import { useActionState, useState } from "react";
+import { useActionState, useCallback, useState } from "react";
 import {
   loginAction,
   registerAction,
@@ -13,6 +14,7 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
+import { RegistrationSuccessDialog } from "./registration-success-dialog";
 import { SubmitButton } from "./submit-button";
 
 function FormErrorToast({ message, messageId }: { message?: string; messageId?: string }) {
@@ -106,13 +108,18 @@ export function LoginForm() {
 
 export function RegisterForm({ compact = false }: { compact?: boolean }) {
   const [state, action] = useActionState(registerAction, initialActionState);
+  const router = useRouter();
+  const goToLogin = useCallback(() => router.replace("/login"), [router]);
+
   return (
     <form action={action} className={compact ? "auth-register-compact grid gap-3 sm:gap-4" : "grid gap-5"} noValidate>
       <FormErrorToast
         message={state.status === "error" ? state.message : undefined}
         messageId={state.status === "error" ? state.messageId : undefined}
       />
-      {state.status === "success" ? <FormMessage state={state} /> : null}
+      {state.status === "success" && state.message ? (
+        <RegistrationSuccessDialog message={state.message} onContinue={goToLogin} />
+      ) : null}
       <div className={compact ? "auth-register-fields grid items-start gap-x-5 gap-y-3 sm:grid-cols-2" : "grid items-start gap-5 sm:grid-cols-2"}>
         <Field label="Nombre y apellidos" htmlFor="fullName" required error={state.fieldErrors?.fullName?.[0]}>
           <Input id="fullName" name="fullName" type="text" autoComplete="name" required aria-invalid={Boolean(state.fieldErrors?.fullName?.[0])} />

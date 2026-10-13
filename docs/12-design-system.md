@@ -59,6 +59,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - El registro se ajusta al alto visible del dispositivo sin desplazamiento de página; para conseguirlo compacta únicamente sus separaciones, conserva controles táctiles de al menos 44 px y no altera el resto de vistas de autenticación. En móviles de poca altura, los errores de campo permanecen disponibles para tecnologías de asistencia pero salen del flujo visual, porque el toast y el borde rojo ya comunican el fallo sin recortar las acciones.
 - Los campos que comparten fila se alinean desde arriba; una ayuda o un error bajo un campo no debe desplazar verticalmente el control contiguo.
 - La validación del registro evita los avisos nativos del navegador: muestra el error en un toast cerrable mediante una `X` etiquetada y marca en rojo cada control afectado. Los campos de contraseña incluyen una acción accesible para mostrar u ocultar su contenido.
+- El éxito del registro usa un diálogo modal marfil con acento rojo, mensaje de confirmación, CTA inmediato y redirección automática al login; no permanece como un aviso insertado dentro del formulario.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.
 - Inputs de 16 px en móvil y objetivos táctiles de al menos 44 px.

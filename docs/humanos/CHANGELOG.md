@@ -37,6 +37,11 @@
 
 - Retirado el botón «Acceder» del bloque principal de la portada; el acceso continúa disponible en la cabecera.
 
+## 2026-10-13 — `2026-10-13-modal-registro-login`
+
+- Al crear una cuenta aparece una confirmación emergente con el aviso de revisar el correo.
+- La pantalla lleva automáticamente al login y también permite acceder de inmediato mediante un botón.
+
 ## 2026-10-13 — `2026-10-13-registro-sin-scroll`
 
 - Ajustada la pantalla de creación de cuenta para mostrar todo su contenido dentro de la altura disponible, sin desplazamiento vertical.
