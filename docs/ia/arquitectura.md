@@ -35,7 +35,7 @@ Los cambios de correo y contraseña viven en `account-security.ts`, separados de
 - `admin.ts`: service role, solo servidor.
 - `proxy.ts`: sincronización de sesión.
 
-Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El control de abuso distribuido queda pendiente para una fase posterior.
+Las acciones públicas de leads usan service role porque `anon` no tiene acceso a `leads`. Antes de insertar aplican Zod, honeypot y un umbral temporal. El `insert` solicita de vuelta el UUID creado y solo devuelve éxito cuando recibe esa representación; después invalida `/admin` y `/admin/interesados`. `leadReference()` deriva los primeros ocho caracteres normalizados del UUID para mostrar la misma referencia en el justificante público y en la tabla administrativa. El control de abuso distribuido queda pendiente para una fase posterior.
 
 El formulario de leads compone `phone` en el cliente a partir del prefijo internacional y el número visible antes de enviarlo a la Server Action. El prefijo usa un listbox propio con cierre exterior y navegación por teclado, sin depender del desplegable nativo. `contactPreference` muestra únicamente WhatsApp y llamada mediante radios visibles integrados en una franja lineal. El esquema conserva `email` para poder interpretar registros históricos, pero la interfaz ya no lo envía; el contrato persistido y la tabla `leads` no cambian.
 

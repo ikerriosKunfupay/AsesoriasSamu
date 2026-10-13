@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-trazabilidad-solicitudes`
+
+- `createLeadAction` usa `insert().select("id").single()` y no devuelve éxito sin la representación de la fila creada.
+- Añadidas invalidaciones de `/admin` y `/admin/interesados`, render dinámico explícito de la lista y una referencia compartida derivada del UUID.
+- La tabla administrativa muestra la referencia junto a cada solicitud y una prueba unitaria cubre su formato estable.
+- `pnpm check` superó lint, tipos, 55 pruebas y build.
+
 ## 2026-10-13 — `2026-10-13-orden-interesados-clientes`
 
 - Reordenado `adminItems` en `DashboardShell` para situar `/admin/interesados` antes de `/admin/clientes` tanto en escritorio como en móvil.

@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-trazabilidad-solicitudes`
+
+- El formulario de información solo confirma el envío cuando la solicitud ha quedado guardada en la base de datos.
+- La confirmación incluye una referencia breve que también aparece en Interesados, permitiendo comprobar que ambas vistas hablan de la misma solicitud.
+- Las vistas de Resumen e Interesados se actualizan después de cada alta y la página de Interesados fuerza datos actuales.
+- El análisis de código, los tipos, las 55 pruebas y la compilación finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-orden-interesados-clientes`
 
 - «Interesados» aparece ahora antes que «Clientes» en la navegación del entrenador.
