@@ -95,6 +95,8 @@ La base de datos permite este guardado únicamente mediante el backend privado d
 
 La sección de cuotas solo registra información interna. No cobra, no conecta con bancos y no almacena tarjetas. El responsable actualiza el estado manualmente. **Tarifas** describe el precio y la duración habitual del servicio; **Cuotas** deja constancia de lo que se ha cobrado, está pendiente o se ha eximido en un mes concreto. Esta separación permite que el resumen compare cartera prevista con cobros reales.
 
+La pantalla abre con la tabla ocupando todo el ancho útil. El interruptor **Registrar cuota** muestra u oculta el formulario sin abandonar la lista; sus campos se apilan cuando el espacio es estrecho para que periodo, importe y estado no se solapen. **Filtros** permite buscar por cliente o nota y acotar por periodo, estado e importe mínimo o máximo. Cada fila se puede editar o eliminar, con confirmación antes del borrado. Se muestran como máximo diez cuotas por página y, en móvil, cada registro se transforma en una tarjeta dentro del padding habitual, sin desplazamiento horizontal.
+
 ## Datos sensibles
 
 No se deben pegar analíticas completas ni fotografías en campos de texto. La primera versión omite esos archivos. Antes de abrir el servicio, hay que completar la política de privacidad e identificar al responsable del tratamiento.

@@ -218,6 +218,14 @@ export const feeSchema = z.object({
   notes: z.string().trim().max(500).optional(),
 });
 
+export const feeUpdateSchema = feeSchema.extend({
+  feeId: z.string().uuid("Cuota no válida."),
+});
+
+export const feeDeleteSchema = z.object({
+  feeId: z.string().uuid("Cuota no válida."),
+});
+
 export function formValues(formData: FormData) {
   return Object.fromEntries(formData.entries());
 }

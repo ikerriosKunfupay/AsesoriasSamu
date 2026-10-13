@@ -10,7 +10,9 @@ import {
   clientCommercialQuickUpdateSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
+  feeDeleteSchema,
   feeSchema,
+  feeUpdateSchema,
   fieldErrors,
   formValues,
   inviteSchema,
@@ -120,6 +122,80 @@ export async function saveFeeAction(
   revalidatePath("/admin");
   revalidatePath("/admin/cuotas");
   return { status: "success", message: "Cuota actualizada." };
+}
+
+export async function updateFeeAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = feeUpdateSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa la cuota.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("manual_fee_records")
+    .update({
+      client_id: parsed.data.clientId,
+      period: parsed.data.period,
+      amount_eur: parsed.data.amountEur,
+      status: parsed.data.status,
+      notes: parsed.data.notes || null,
+      recorded_by: adminUser.id,
+    })
+    .eq("id", parsed.data.feeId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    return {
+      status: "error",
+      message: error?.code === "23505"
+        ? "Ya existe una cuota de ese cliente para el periodo elegido."
+        : "No se pudo actualizar la cuota.",
+    };
+  }
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "fee.updated",
+    entity_type: "manual_fee_record",
+    entity_id: data.id,
+  });
+  revalidatePath("/admin");
+  revalidatePath("/admin/cuotas");
+  return { status: "success", message: "Cuota actualizada." };
+}
+
+export async function deleteFeeAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = feeDeleteSchema.safeParse(formValues(formData));
+  if (!parsed.success) return { status: "error", message: "Cuota no válida." };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("manual_fee_records")
+    .delete()
+    .eq("id", parsed.data.feeId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo eliminar la cuota." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "fee.deleted",
+    entity_type: "manual_fee_record",
+    entity_id: data.id,
+  });
+  revalidatePath("/admin");
+  revalidatePath("/admin/cuotas");
+  return { status: "success", message: "Cuota eliminada." };
 }
 
 export async function saveClientAdminNoteAction(

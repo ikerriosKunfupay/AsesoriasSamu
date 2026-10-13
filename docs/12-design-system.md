@@ -42,6 +42,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
 - Los KPI accionables se presentan como botones completos, con foco visible, indicación direccional y `aria-haspopup="dialog"`. Su modal conserva el contexto del filtro, muestra como máximo diez filas, permite cerrar con `Escape` o pulsando el fondo y devuelve el foco a la tarjeta de origen.
 - Los KPI económicos adaptan sus sustantivos y explicaciones a la granularidad elegida: día, semana o mes. **Cobrado** y **Pendiente** deben explicar de forma explícita que se pulsan para identificar personas y cuotas; la ausencia de una cuota mensual se distingue como **Sin registrar**, no como importe pendiente inventado.
+- La gestión de cuotas no depende de una tabla ancha desplazable: en escritorio distribuye columnas dentro del ancho útil y en móvil convierte cada fila en tarjeta. El formulario opcional se apila dentro de su columna y la paginación limita la tabla a diez registros por vista.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.

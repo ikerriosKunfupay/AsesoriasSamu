@@ -3,11 +3,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ClientAdminNotesForm, ClientStatusSwitch } from "./admin-forms";
 
 vi.mock("@/app/actions/admin", () => ({
+  deleteFeeAction: vi.fn(),
   inviteClientAction: vi.fn(),
   saveAssignmentAction: vi.fn(),
   saveClientAdminNoteAction: vi.fn(),
   saveFeeAction: vi.fn(),
   setClientStatusAction: vi.fn(),
+  updateFeeAction: vi.fn(),
 }));
 
 afterEach(cleanup);

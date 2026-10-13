@@ -2,14 +2,18 @@
 
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 import {
+  deleteFeeAction,
   inviteClientAction,
   saveAssignmentAction,
   saveClientAdminNoteAction,
   saveFeeAction,
   setClientStatusAction,
+  updateFeeAction,
 } from "@/app/actions/admin";
 import { Field } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
+import { InternalSelect } from "@/components/ui/internal-select";
+import type { AdminFee } from "@/lib/admin/fees";
 import { initialActionState } from "@/lib/forms/action-state";
 import type { ProfileStatus } from "@/lib/supabase/database.types";
 import { cn } from "@/lib/utils";
@@ -61,36 +65,88 @@ export function AssignmentForm({ clientId, kind }: { clientId: string; kind: "wo
   );
 }
 
-export function FeeForm({ clients }: { clients: Array<{ id: string; full_name: string }> }) {
-  const [state, action] = useActionState(saveFeeAction, initialActionState);
+export function FeeForm({
+  clients,
+  initialFee,
+  compact = false,
+  onSuccess,
+}: {
+  clients: Array<{ id: string; full_name: string }>;
+  initialFee?: AdminFee;
+  compact?: boolean;
+  onSuccess?: () => void;
+}) {
+  const [state, action] = useActionState(initialFee ? updateFeeAction : saveFeeAction, initialActionState);
+  const formId = useId();
   const month = new Date().toISOString().slice(0, 7);
+
+  useEffect(() => {
+    if (state.status === "success") onSuccess?.();
+  }, [onSuccess, state.status]);
+
+  const clientFieldId = `${formId}-client`;
+  const periodFieldId = `${formId}-period`;
+  const amountFieldId = `${formId}-amount`;
+  const statusFieldId = `${formId}-status`;
+  const notesFieldId = `${formId}-notes`;
+
   return (
     <form action={action} className="grid gap-5">
+      {initialFee ? <input type="hidden" name="feeId" value={initialFee.id} /> : null}
       <FormMessage state={state} />
-      <Field label="Cliente" htmlFor="clientId" required error={state.fieldErrors?.clientId?.[0]}>
-        <select id="clientId" name="clientId" required className="min-h-12 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5">
-          <option value="">Selecciona un cliente</option>
-          {clients.map((client) => <option key={client.id} value={client.id}>{client.full_name}</option>)}
-        </select>
+      <Field label="Cliente" htmlFor={clientFieldId} required error={state.fieldErrors?.clientId?.[0]}>
+        <InternalSelect
+          id={clientFieldId}
+          name="clientId"
+          ariaLabel="Cliente de la cuota"
+          placeholder="Selecciona un cliente"
+          defaultValue={initialFee?.clientId ?? ""}
+          options={clients.map((client) => ({ value: client.id, label: client.full_name }))}
+          required
+          invalid={Boolean(state.fieldErrors?.clientId)}
+          menuPortal
+        />
       </Field>
-      <div className="grid gap-5 sm:grid-cols-3">
-        <Field label="Periodo" htmlFor="period" required error={state.fieldErrors?.period?.[0]}>
-          <Input id="period" name="period" type="month" defaultValue={month} required />
+      <div className={cn("grid gap-4", compact ? "grid-cols-1" : "sm:grid-cols-3")}>
+        <Field label="Periodo" htmlFor={periodFieldId} required error={state.fieldErrors?.period?.[0]}>
+          <Input id={periodFieldId} name="period" type="month" defaultValue={initialFee?.period ?? month} required />
         </Field>
-        <Field label="Importe (€)" htmlFor="amountEur" required error={state.fieldErrors?.amountEur?.[0]}>
-          <Input id="amountEur" name="amountEur" type="number" min="0" step="0.01" required />
+        <Field label="Importe (€)" htmlFor={amountFieldId} required error={state.fieldErrors?.amountEur?.[0]}>
+          <Input id={amountFieldId} name="amountEur" type="number" min="0" max="10000" step="0.01" defaultValue={initialFee?.amountEur} required />
         </Field>
-        <Field label="Estado" htmlFor="status" required error={state.fieldErrors?.status?.[0]}>
-          <select id="status" name="status" defaultValue="pending" className="min-h-12 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3.5">
-            <option value="pending">Pendiente</option>
-            <option value="paid">Pagada</option>
-            <option value="waived">Exenta</option>
-          </select>
+        <Field label="Estado" htmlFor={statusFieldId} required error={state.fieldErrors?.status?.[0]}>
+          <InternalSelect
+            id={statusFieldId}
+            name="status"
+            ariaLabel="Estado de la cuota"
+            defaultValue={initialFee?.status ?? "pending"}
+            options={[
+              { value: "pending", label: "Pendiente" },
+              { value: "paid", label: "Pagada" },
+              { value: "waived", label: "Exenta" },
+            ]}
+            required
+            invalid={Boolean(state.fieldErrors?.status)}
+            menuPortal
+          />
         </Field>
       </div>
-      <Field label="Nota interna" htmlFor="notes"><Input id="notes" name="notes" /></Field>
-      <p className="text-xs text-muted">Este registro es solo de control interno. La aplicación no procesa cobros.</p>
-      <SubmitButton pendingLabel="Guardando…">Guardar cuota</SubmitButton>
+      <Field label="Nota interna" htmlFor={notesFieldId} error={state.fieldErrors?.notes?.[0]}>
+        <Input id={notesFieldId} name="notes" defaultValue={initialFee?.notes} maxLength={500} />
+      </Field>
+      <SubmitButton pendingLabel="Guardando…">{initialFee ? "Actualizar cuota" : "Guardar cuota"}</SubmitButton>
+    </form>
+  );
+}
+
+export function DeleteFeeForm({ feeId }: { feeId: string }) {
+  const [state, action] = useActionState(deleteFeeAction, initialActionState);
+
+  return (
+    <form action={action} className="grid gap-4">
+      <input type="hidden" name="feeId" value={feeId} />
+      <FormMessage state={state} />
+      <SubmitButton className="bg-danger hover:opacity-90" pendingLabel="Eliminando…">Eliminar cuota</SubmitButton>
     </form>
   );
 }

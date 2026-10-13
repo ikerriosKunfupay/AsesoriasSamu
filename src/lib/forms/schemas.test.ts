@@ -5,6 +5,9 @@ import {
   clientAdminNoteSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
+  feeDeleteSchema,
+  feeSchema,
+  feeUpdateSchema,
   leadSchema,
   onboardingSchema,
   profileSettingsSchema,
@@ -115,6 +118,18 @@ describe("validación de formularios", () => {
       .toBe(true);
     expect(clientStatusSchema.safeParse({ clientId, nextStatus: "archived" }).success).toBe(true);
     expect(clientStatusSchema.safeParse({ clientId, nextStatus: "admin" }).success).toBe(false);
+  });
+
+  it("valida la creación, edición y eliminación de cuotas", () => {
+    const feeId = "22222222-2222-4222-8222-222222222222";
+    const clientId = "11111111-1111-4111-8111-111111111111";
+    const fee = { clientId, period: "2026-10", amountEur: "250", status: "paid", notes: "" };
+
+    expect(feeSchema.safeParse(fee).success).toBe(true);
+    expect(feeUpdateSchema.safeParse({ ...fee, feeId }).success).toBe(true);
+    expect(feeDeleteSchema.safeParse({ feeId }).success).toBe(true);
+    expect(feeUpdateSchema.safeParse({ ...fee, feeId: "invalida" }).success).toBe(false);
+    expect(feeDeleteSchema.safeParse({ feeId: "invalida" }).success).toBe(false);
   });
 
   it("normaliza importes con coma en las tarifas reutilizables", () => {

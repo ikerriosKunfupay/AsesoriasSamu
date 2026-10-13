@@ -1,5 +1,14 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-cuotas-filtrables-y-editables`
+
+- La página de **Cuotas** abre como tabla completa y un interruptor permite mostrar u ocultar el formulario de registro cuando se necesita.
+- Añadidos filtros por cliente o nota, periodo, estado e intervalo de importe, además de paginación automática cada diez cuotas.
+- Las cuotas existentes ya se pueden editar y eliminar con confirmación; periodo, importe y estado quedan alineados sin solaparse.
+- En móvil, cada cuota se presenta como tarjeta dentro del mismo padding lateral que el resto del panel, sin desplazamiento horizontal.
+- Eliminado del formulario el texto repetido «Este registro es solo de control interno. La aplicación no procesa cobros.».
+- La validación final completó análisis de código, tipos, 110 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-notas-sin-aviso-administrativo`
 
 - Retirado de la ficha del cliente el texto explicativo situado bajo **Notas internas** que indicaba que solo podía verlo la administración.

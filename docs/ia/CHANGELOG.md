@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-cuotas-filtrables-y-editables`
+
+- `FeesManager` incorpora switch de formulario, filtros plegables, paginación cliente de diez elementos y modales accesibles de edición y borrado.
+- `fees.ts` define el DTO y el filtrado normalizado; `.fees-table` elimina el ancho mínimo y cambia a tarjetas móviles sin `overflow-x`.
+- `FeeForm` comparte creación/edición, usa desplegables internos, admite variante compacta y elimina el texto auxiliar repetido.
+- `feeUpdateSchema`, `feeDeleteSchema`, `updateFeeAction` y `deleteFeeAction` validan y mutan por UUID; las acciones exigen administrador, revalidan `/admin` y `/admin/cuotas` y auditan sin contenido libre ni importes.
+- No hay migración: `manual_fee_records` ya tiene RLS administrativa y `service_role` dispone de `update` y `delete`.
+- `pnpm lint`, `pnpm typecheck`, 110 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-notas-sin-aviso-administrativo`
 
 - `ClientAdminNotesForm` elimina el párrafo auxiliar de privacidad en su variante completa y simplifica `aria-describedby` para apuntar solo a la región viva de autoguardado.
