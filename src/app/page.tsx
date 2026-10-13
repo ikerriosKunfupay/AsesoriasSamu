@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { MarketingFooter } from "@/components/layout/marketing-footer";
 import { MarketingHeader } from "@/components/layout/marketing-header";
+import { StepsCarousel } from "@/components/marketing/steps-carousel";
 import { ButtonLink } from "@/components/ui/button";
 
 const benefits = [
@@ -123,7 +124,7 @@ export default function Home() {
           <div className="page-shell grid min-w-0 gap-14 xl:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
             <div className="min-w-0 xl:sticky xl:top-32 xl:self-start">
               <p className="public-kicker text-primary">Cómo funciona</p>
-              <h2 className="font-display mt-7 text-5xl leading-[0.9] font-black uppercase sm:text-6xl">
+              <h2 className="font-display mt-7 text-[2.625rem] leading-[0.9] font-black uppercase sm:text-6xl">
                 Claro desde<br />el primer día.
               </h2>
               <p className="mt-6 max-w-sm leading-7 text-white/58">
@@ -131,7 +132,8 @@ export default function Home() {
                 tus revisiones y tu progreso siempre a mano.
               </p>
             </div>
-            <ol className="min-w-0 border-t border-white/30">
+            <StepsCarousel steps={steps} />
+            <ol className="hidden min-w-0 border-t border-white/30 md:block">
               {steps.map((step, index) => (
                 <li key={step} className="grid gap-5 border-b border-white/20 py-8 sm:grid-cols-[9rem_1fr] sm:items-center sm:py-10">
                   <span className="font-display text-7xl leading-none font-black text-primary">0{index + 1}</span>

@@ -54,6 +54,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - Los CTA públicos usan remate diagonal y las acciones secundarias se presentan como enlaces subrayados. Los controles públicos son lineales; el panel mantiene las primitivas operativas estándar.
 - En la portada, «Acceder» se reserva para la cabecera; el hero muestra únicamente «Quiero información» para evitar duplicar el acceso en la misma pantalla.
 - La sección «Cómo funciona» se apila hasta `xl`; sus columnas usan `minmax(0, …)` y nunca deben generar desplazamiento horizontal.
+- En móvil, los pasos de «Cómo funciona» usan un carrusel con vista parcial de la siguiente tarjeta, contador, paginación y flechas; desde `md` se muestra la lista completa.
 - En las vistas de autenticación, la cabecera móvil comienza cerca del borde superior y presenta la marca antes del formulario; en escritorio, el regreso a Inicio se alinea con el borde izquierdo del formulario.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.

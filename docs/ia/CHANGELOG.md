@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-carrusel-pasos-movil`
+
+- Añadido `StepsCarousel`, componente cliente accesible con scroll snap, navegación táctil, flechas, contador y paginación sincronizada mediante `onScroll`.
+- La landing renderiza el carrusel bajo `md` y conserva el listado estático desde `md`.
+- El `h2` de la sección usa `2.625rem` por defecto y recupera `text-6xl` desde `sm` para evitar clipping a 390 px.
+
 ## 2026-10-13 — `2026-10-13-volver-inicio-formulario-izquierda`
 
 - El contenedor del enlace de retorno en `/solicitar-informacion` cambia de `justify-end` a `justify-start`.

@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-carrusel-pasos-movil`
+
+- Convertidos los pasos de «Cómo funciona» en un carrusel móvil con tarjetas deslizables, contador, puntos y flechas.
+- En pantallas mayores se conserva la lista completa para poder consultar los tres pasos de un vistazo.
+- Ajustado el tamaño del titular móvil para que no se recorte en pantallas estrechas.
+
 ## 2026-10-13 — `2026-10-13-volver-inicio-formulario-izquierda`
 
 - Movido «Volver al inicio» al lado izquierdo del formulario para mantener la navegación alineada con el contenido.
