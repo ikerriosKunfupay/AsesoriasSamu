@@ -80,21 +80,22 @@ export function DashboardShell({
     <div className={`min-h-screen bg-background lg:grid ${isDesktopSidebarOpen ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-1"}`}>
       {isDesktopSidebarOpen ? (
       <aside className="hidden h-dvh self-start border-r border-zinc-800 bg-surface-inverse p-5 text-white lg:sticky lg:top-0 lg:flex lg:flex-col">
-        <div className="mb-8 flex items-center justify-between gap-3">
+        <div className="mb-3">
           <BrandLogo
             href={mode === "admin" ? "/admin" : "/app/inicio"}
             onClick={(event) => guardNavigation(event, "/app/inicio")}
-            className="min-w-0 text-white"
+            className="text-white"
           />
-          <button
-            type="button"
-            aria-label="Ocultar menú lateral"
-            onClick={() => setDesktopSidebar(false)}
-            className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-zinc-700 text-zinc-300 transition hover:border-zinc-500 hover:bg-zinc-800 hover:text-white"
-          >
-            <PanelLeftClose className="size-5" aria-hidden="true" />
-          </button>
         </div>
+        <button
+          type="button"
+          aria-label="Ocultar menú lateral"
+          onClick={() => setDesktopSidebar(false)}
+          className="mb-6 inline-flex min-h-10 w-full items-center gap-2 rounded-[var(--radius-md)] border border-zinc-800 px-3 text-xs font-bold text-zinc-400 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
+        >
+          <PanelLeftClose className="size-4 text-primary" aria-hidden="true" />
+          Ocultar menú
+        </button>
         <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="grid gap-1">
           {items.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white">
