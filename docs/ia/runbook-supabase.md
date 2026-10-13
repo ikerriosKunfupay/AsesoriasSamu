@@ -54,6 +54,8 @@ Configura el SMTP propio en Authentication > Emails > SMTP Settings. Verifica do
 
 El entorno desplegado usa Brevo Free mediante una clave SMTP exclusiva llamada `Team Ortega - Supabase`. Supabase guarda cifrada la credencial; no está en Git ni en Vercel. El remitente configurado ya estaba verificado en Brevo y el nombre visible es `Team Ortega`.
 
+La plantilla **Confirm sign up** está personalizada en Supabase Auth. El asunto y el HTML reproducibles viven en `supabase/email-templates/confirm-sign-up.subject.txt` y `supabase/email-templates/confirm-sign-up.html`; el CTA y el enlace alternativo deben conservar `{{ .ConfirmationURL }}`. El emblema se carga desde `https://team-ortega.vercel.app/brand/team-ortega-mark.png`, por lo que esa ruta pública no debe eliminarse sin actualizar antes la plantilla.
+
 La clave está aislada de las credenciales de otros proyectos, pero el plan, el límite diario y la reputación de envío pertenecen a la cuenta compartida de Brevo. No edites ni reutilices los demás remitentes o claves de esa cuenta.
 
 ## Secretos

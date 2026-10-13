@@ -15,6 +15,8 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 - **Seguimientos:** revisiones enviadas por clientes.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
 
+El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En móvil, el cierre de sesión está dentro del menú superior.
+
 ## Registro y alta de un cliente
 
 Una persona que todavía no tenga cuenta puede pulsar **Regístrate** desde `/login` y completar nombre, correo y contraseña. Cuando la cuenta se crea, aparece una confirmación y la web vuelve automáticamente al acceso; también permite ir al login de inmediato. Recibirá un correo de confirmación y, al abrirlo, accederá al cuestionario inicial. El registro no solicita datos de salud; esos datos se recogen después, dentro de la cuenta y con consentimiento específico.
@@ -38,6 +40,8 @@ El cliente ve únicamente sus datos. Puede:
 - consultar la última pauta nutricional publicada;
 - enviar una revisión con peso opcional, energía, adherencia y comentarios;
 - recuperar o cambiar su contraseña mediante correo.
+
+En el acceso se puede mostrar u ocultar la contraseña mediante el icono del propio campo.
 
 ## Interesados
 

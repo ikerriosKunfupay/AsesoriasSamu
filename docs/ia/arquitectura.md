@@ -12,6 +12,8 @@ La aplicación usa App Router. `src/proxy.ts` refresca cookies de Supabase y no 
 
 Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requireClient()` y están marcados como dinámicos. Las Server Actions vuelven a verificar el rol; no confían en la navegación.
 
+`DashboardShell` mantiene el lateral de escritorio fijado a la altura visible para que `logoutAction` y el usuario no queden fuera del viewport en páginas largas. En móvil, la misma acción permanece en la navegación desplegable. El campo de contraseña del login usa el componente cliente reutilizable `PasswordInput`, con alternancia accesible entre contenido oculto y visible y `autocomplete="current-password"`.
+
 `/registro` usa `registerAction` y `supabase.auth.signUp()` con confirmación por correo. Solo envía `full_name` como metadato y el trigger `handle_new_user()` fuerza siempre `role = client`; el callback conduce al cuestionario inicial. Cuando la acción devuelve éxito sin sesión, `RegistrationSuccessDialog` presenta una confirmación modal y ejecuta `router.replace("/login")` tras 2,5 segundos o al pulsar su CTA. Si el proyecto desactiva la confirmación de correo, una sesión creada durante el registro se redirige directamente al cuestionario y omite el modal.
 
 ## Clientes Supabase

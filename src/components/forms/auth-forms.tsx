@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Eye, EyeOff, X } from "lucide-react";
+import { AlertCircle, X } from "lucide-react";
 import { useActionState, useCallback, useState } from "react";
 import {
   loginAction,
@@ -14,6 +14,7 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
+import { PasswordInput } from "./password-input";
 import { RegistrationSuccessDialog } from "./registration-success-dialog";
 import { SubmitButton } from "./submit-button";
 
@@ -42,45 +43,6 @@ function FormErrorToast({ message, messageId }: { message?: string; messageId?: 
   );
 }
 
-function PasswordInput({
-  id,
-  name,
-  error,
-  describedBy,
-}: {
-  id: string;
-  name: string;
-  error?: string;
-  describedBy?: string;
-}) {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <div className="relative">
-      <Input
-        id={id}
-        name={name}
-        type={visible ? "text" : "password"}
-        autoComplete="new-password"
-        required
-        minLength={10}
-        aria-invalid={Boolean(error)}
-        aria-describedby={describedBy}
-        className="pr-12!"
-      />
-      <button
-        type="button"
-        className="absolute top-1/2 right-0 grid size-11 -translate-y-1/2 place-items-center text-muted transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        onClick={() => setVisible((current) => !current)}
-        aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
-        aria-pressed={visible}
-      >
-        {visible ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
-      </button>
-    </div>
-  );
-}
-
 export function LoginForm() {
   const [state, action] = useActionState(loginAction, initialActionState);
   return (
@@ -90,7 +52,13 @@ export function LoginForm() {
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>
       <Field label="Contraseña" htmlFor="password" required error={state.fieldErrors?.password?.[0]}>
-        <Input id="password" name="password" type="password" autoComplete="current-password" required />
+        <PasswordInput
+          id="password"
+          name="password"
+          autoComplete="current-password"
+          error={state.fieldErrors?.password?.[0]}
+          describedBy={state.fieldErrors?.password?.[0] ? "password-error" : undefined}
+        />
       </Field>
       <SubmitButton pendingLabel="Entrando…" className="w-full">Entrar</SubmitButton>
       <Link className="text-center text-sm font-bold text-primary hover:underline" href="/recuperar-contrasena">
@@ -131,6 +99,7 @@ export function RegisterForm({ compact = false }: { compact?: boolean }) {
           <PasswordInput
             id="password"
             name="password"
+            minLength={10}
             error={state.fieldErrors?.password?.[0]}
             describedBy={state.fieldErrors?.password?.[0] ? "password-error" : "password-hint"}
           />
@@ -139,6 +108,7 @@ export function RegisterForm({ compact = false }: { compact?: boolean }) {
           <PasswordInput
             id="confirmation"
             name="confirmation"
+            minLength={10}
             error={state.fieldErrors?.confirmation?.[0]}
             describedBy={state.fieldErrors?.confirmation?.[0] ? "confirmation-error" : undefined}
           />

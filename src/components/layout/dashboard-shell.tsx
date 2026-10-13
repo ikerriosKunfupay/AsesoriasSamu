@@ -36,7 +36,7 @@ export function DashboardShell({
   const items = mode === "admin" ? adminItems : clientItems;
   return (
     <div className="min-h-screen bg-background lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="hidden border-r border-zinc-800 bg-surface-inverse p-5 text-white lg:flex lg:flex-col">
+      <aside className="hidden h-dvh self-start border-r border-zinc-800 bg-surface-inverse p-5 text-white lg:sticky lg:top-0 lg:flex lg:flex-col">
         <BrandLogo href={mode === "admin" ? "/admin" : "/app/inicio"} className="mb-8 text-white" />
         <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="grid gap-1">
           {items.map(({ href, label, icon: Icon }) => (

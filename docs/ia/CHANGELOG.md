@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-mejoras-acceso-correo`
+
+- `DashboardShell` fija el lateral de escritorio a `100dvh` mediante posición `sticky`, manteniendo accesibles el usuario y el formulario de `logoutAction`.
+- Extraído `PasswordInput` como componente reutilizable; el login lo usa con `current-password` y dispone de una prueba de alternancia visible/oculta.
+- Versionados el asunto y el HTML de **Confirm sign up**; la plantilla usa estilos inline, el emblema público y conserva `{{ .ConfirmationURL }}` como CTA y fallback.
+
 ## 2026-10-13 — `2026-10-13-cerrar-toast-registro`
 
 - Ampliado `ActionState` con `messageId`; `registerAction` genera un UUID nuevo en cada error para que el mismo toast pueda reaparecer tras descartarlo.
