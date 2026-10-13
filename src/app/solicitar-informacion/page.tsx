@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 
 export default function LeadPage() {
   return (
-    <main className="public-page grid min-h-screen lg:grid-cols-[0.72fr_1.28fr]">
-      <aside className="public-dark relative overflow-hidden border-b-[6px] border-primary px-5 py-8 lg:min-h-screen lg:border-r-[6px] lg:border-b-0 lg:px-12 lg:py-10">
+    <main className="lead-page public-page grid min-h-screen lg:h-dvh lg:min-h-0 lg:grid-cols-[0.72fr_1.28fr] lg:overflow-hidden">
+      <aside className="public-dark relative overflow-hidden border-b-[6px] border-primary px-5 py-8 lg:h-dvh lg:min-h-0 lg:border-r-[6px] lg:border-b-0 lg:px-12 lg:py-8">
         <div className="absolute -right-24 bottom-[-42%] size-80 -skew-x-12 bg-primary/85 lg:bottom-[-12%]" />
         <div className="relative mx-auto flex h-full max-w-lg flex-col">
           <BrandLogo className="text-white" />
-          <div className="my-auto py-18 lg:py-24">
+          <div className="my-auto py-18 lg:py-12">
             <p className="public-kicker text-white/60">Primer contacto</p>
             <h1 className="font-display mt-7 text-5xl leading-[0.88] font-black uppercase sm:text-6xl">
               Cuéntanos<br /><span className="text-primary">qué buscas.</span>
@@ -29,20 +29,20 @@ export default function LeadPage() {
           <p className="hidden text-xs font-black tracking-[0.16em] text-white/35 uppercase lg:block">Tu objetivo · Tu ritmo · Tu plan</p>
         </div>
       </aside>
-      <section className="px-5 py-8 sm:px-10 lg:px-16 lg:py-10">
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-14 flex justify-start">
+      <section className="px-5 py-8 sm:px-10 lg:flex lg:h-dvh lg:min-h-0 lg:overflow-hidden lg:px-16 lg:py-5">
+        <div className="mx-auto max-w-3xl lg:flex lg:h-full lg:w-full lg:flex-col lg:justify-center">
+          <div className="mb-8 flex justify-start lg:mb-4">
             <Link href="/" className="inline-flex min-h-11 items-center gap-2 border-b-2 border-foreground/35 text-sm font-black uppercase hover:border-primary">
               <ArrowLeft size={16} aria-hidden="true" /> Volver al inicio
             </Link>
           </div>
-          <p className="mb-10 max-w-xl text-lg leading-8 text-muted">
+          <p className="mb-8 max-w-xl text-lg leading-8 text-muted lg:mb-4 lg:text-base lg:leading-6">
             Déjanos tus datos básicos. Solo se usarán para responderte y preparar una primera conversación útil.
           </p>
-          <div className="public-form">
+          <div className="lead-page__form public-form">
             <LeadForm />
           </div>
-          <div className="mt-10 flex gap-3 border-t-2 border-foreground pt-6 text-xs leading-5 text-muted">
+          <div className="mt-8 flex gap-3 border-t-2 border-foreground pt-5 text-xs leading-5 text-muted lg:mt-4 lg:pt-3">
             <LockKeyhole className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
             <p>Tus datos no se publican ni se comparten con terceros. Consulta la <Link className="font-bold text-foreground hover:underline" href="/privacidad">información de privacidad</Link>.</p>
           </div>

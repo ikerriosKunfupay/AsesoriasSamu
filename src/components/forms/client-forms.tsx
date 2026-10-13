@@ -16,6 +16,36 @@ import { HealthConsentField } from "./health-consent-field";
 import { SubmitButton } from "./submit-button";
 import { SocialNetworksField } from "./social-networks-field";
 
+function OnboardingSection({
+  id,
+  eyebrow,
+  title,
+  description,
+  children,
+}: {
+  id: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      aria-labelledby={`${id}-title`}
+      className="grid min-w-0 gap-5 rounded-[var(--radius-lg)] border border-border bg-surface-muted/45 p-4 sm:p-6"
+    >
+      <div className="grid gap-1.5">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">{eyebrow}</p>
+        <h2 id={`${id}-title`} className="text-xl font-black tracking-tight sm:text-2xl">
+          {title}
+        </h2>
+        <p className="max-w-3xl text-sm leading-relaxed text-muted sm:text-base">{description}</p>
+      </div>
+      {children}
+    </section>
+  );
+}
+
 const sexOptions = [
   { value: "mujer", label: "Mujer" },
   { value: "hombre", label: "Hombre" },
@@ -95,6 +125,10 @@ function sanitizeInput(
 export function OnboardingForm({ initial }: { initial?: Record<string, string | number | null> }) {
   const [state, action] = useActionState(saveOnboardingAction, initialActionState);
   const healthConsentError = state.fieldErrors?.healthConsent?.[0];
+  const heightError = state.fieldErrors?.heightCm?.[0];
+  const heightDescription = [heightError ? "heightCm-error" : null, "heightCm-help"]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <form action={action} className="grid gap-6" noValidate>
@@ -103,100 +137,138 @@ export function OnboardingForm({ initial }: { initial?: Record<string, string | 
         messageId={state.status === "error" ? state.messageId : undefined}
       />
       {state.status === "success" ? <FormMessage state={state} /> : null}
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <Field label="Edad" htmlFor="age" required error={state.fieldErrors?.age?.[0]}>
-          <Input
-            id="age"
-            name="age"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]+"
-            autoComplete="off"
-            defaultValue={initial?.age ?? ""}
-            aria-invalid={Boolean(state.fieldErrors?.age?.[0]) || undefined}
-            aria-describedby={state.fieldErrors?.age?.[0] ? "age-error" : undefined}
-            onInput={(event) => sanitizeInput(event, sanitizeUnsignedIntegerInput)}
-            required
-          />
-        </Field>
-        <Field label="Sexo" htmlFor="sex" required error={state.fieldErrors?.sex?.[0]}>
-          <InternalSelect
-            id="sex"
-            name="sex"
-            options={sexOptions}
-            defaultValue={String(initial?.sex ?? "")}
-            placeholder="Selecciona"
-            ariaLabel="Sexo"
-            required
-            invalid={Boolean(state.fieldErrors?.sex?.[0])}
-          />
-        </Field>
-        <Field label="Peso en ayunas (kg)" htmlFor="weightKg" required error={state.fieldErrors?.weightKg?.[0]}>
-          <Input
-            id="weightKg"
-            name="weightKg"
-            type="text"
-            inputMode="decimal"
-            pattern="[0-9]+([.,][0-9]+)?"
-            autoComplete="off"
-            defaultValue={initial?.weight_kg ?? ""}
-            aria-invalid={Boolean(state.fieldErrors?.weightKg?.[0]) || undefined}
-            aria-describedby={state.fieldErrors?.weightKg?.[0] ? "weightKg-error" : undefined}
-            onInput={(event) => sanitizeInput(event, sanitizeUnsignedDecimalInput)}
-            required
-          />
-        </Field>
-        <Field
-          label="Altura (cm o m)"
-          htmlFor="heightCm"
-          required
-          error={state.fieldErrors?.heightCm?.[0]}
-          hint="Puedes escribir 169 o 1,69. Se guardará siempre en centímetros."
-        >
-          <Input
-            id="heightCm"
-            name="heightCm"
-            type="text"
-            inputMode="decimal"
-            pattern="[0-9]+([.,][0-9]+)?"
-            autoComplete="off"
-            defaultValue={initial?.height_cm ?? ""}
-            aria-invalid={Boolean(state.fieldErrors?.heightCm?.[0]) || undefined}
-            aria-describedby={state.fieldErrors?.heightCm?.[0] ? "heightCm-error" : undefined}
-            onInput={(event) => sanitizeInput(event, sanitizeUnsignedDecimalInput)}
-            required
-          />
-        </Field>
-      </div>
-      <div className="grid min-w-0 gap-5 lg:grid-cols-2">
-        <Field label="Trabajo, horarios y rutina semanal" htmlFor="occupationSchedule" required error={state.fieldErrors?.occupationSchedule?.[0]} help={onboardingFieldHelp.occupationSchedule}>
-          <Textarea id="occupationSchedule" name="occupationSchedule" rows={5} defaultValue={String(initial?.occupation_schedule ?? "")} required />
-        </Field>
-        <Field label="Prioridad y disponibilidad para entrenar" htmlFor="trainingPriority" required error={state.fieldErrors?.trainingPriority?.[0]} help={onboardingFieldHelp.trainingPriority}>
-          <Textarea id="trainingPriority" name="trainingPriority" rows={5} defaultValue={String(initial?.training_priority ?? "")} required />
-        </Field>
-      </div>
-      <div className="grid min-w-0 gap-5 lg:grid-cols-2">
-        <Field label="Horarios y disponibilidad para las comidas" htmlFor="mealAvailability" required error={state.fieldErrors?.mealAvailability?.[0]} help={onboardingFieldHelp.mealAvailability}>
-          <Textarea id="mealAvailability" name="mealAvailability" rows={5} defaultValue={String(initial?.meal_availability ?? "")} required />
-        </Field>
-        <Field label="Objetivos" htmlFor="goals" required error={state.fieldErrors?.goals?.[0]} help={onboardingFieldHelp.goals}>
-          <Textarea id="goals" name="goals" rows={5} defaultValue={String(initial?.goals ?? "")} required />
-        </Field>
-      </div>
-      <div className="grid min-w-0 gap-5 lg:grid-cols-2">
-        <Field label="Enfermedades, lesiones o limitaciones" htmlFor="conditionsInjuries" error={state.fieldErrors?.conditionsInjuries?.[0]} hint="Si no tienes ninguna, puedes dejarlo en blanco." help={onboardingFieldHelp.conditionsInjuries}>
-          <Textarea id="conditionsInjuries" name="conditionsInjuries" rows={5} defaultValue={String(initial?.conditions_injuries ?? "")} />
-        </Field>
-        <Field label="Alergias o intolerancias" htmlFor="allergiesIntolerances" error={state.fieldErrors?.allergiesIntolerances?.[0]} hint="Si no tienes ninguna, puedes dejarlo en blanco." help={onboardingFieldHelp.allergiesIntolerances}>
-          <Textarea id="allergiesIntolerances" name="allergiesIntolerances" rows={5} defaultValue={String(initial?.allergies_intolerances ?? "")} />
-        </Field>
-      </div>
-      <SocialNetworksField
-        initialValue={String(initial?.social_networks ?? "")}
-        error={state.fieldErrors?.socialNetworks?.[0]}
-      />
-      <HealthConsentField error={healthConsentError} />
+      <OnboardingSection
+        id="physical-data"
+        eyebrow="01 · Datos básicos"
+        title="Datos físicos"
+        description="Indica tus datos actuales. Se utilizarán como punto de partida para adaptar y revisar tu planificación."
+      >
+        <div className="grid items-start gap-5 sm:grid-cols-2">
+          <Field label="Edad" htmlFor="age" required error={state.fieldErrors?.age?.[0]}>
+            <Input
+              id="age"
+              name="age"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]+"
+              autoComplete="off"
+              defaultValue={initial?.age ?? ""}
+              aria-invalid={Boolean(state.fieldErrors?.age?.[0]) || undefined}
+              aria-describedby={state.fieldErrors?.age?.[0] ? "age-error" : undefined}
+              onInput={(event) => sanitizeInput(event, sanitizeUnsignedIntegerInput)}
+              required
+            />
+          </Field>
+          <Field label="Sexo" htmlFor="sex" required error={state.fieldErrors?.sex?.[0]}>
+            <InternalSelect
+              id="sex"
+              name="sex"
+              options={sexOptions}
+              defaultValue={String(initial?.sex ?? "")}
+              placeholder="Selecciona"
+              ariaLabel="Sexo"
+              required
+              invalid={Boolean(state.fieldErrors?.sex?.[0])}
+            />
+          </Field>
+          <Field label="Peso en ayunas (kg)" htmlFor="weightKg" required error={state.fieldErrors?.weightKg?.[0]}>
+            <Input
+              id="weightKg"
+              name="weightKg"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]+([.,][0-9]+)?"
+              autoComplete="off"
+              defaultValue={initial?.weight_kg ?? ""}
+              aria-invalid={Boolean(state.fieldErrors?.weightKg?.[0]) || undefined}
+              aria-describedby={state.fieldErrors?.weightKg?.[0] ? "weightKg-error" : undefined}
+              onInput={(event) => sanitizeInput(event, sanitizeUnsignedDecimalInput)}
+              required
+            />
+          </Field>
+          <Field label="Altura (cm o m)" htmlFor="heightCm" required error={heightError}>
+            <Input
+              id="heightCm"
+              name="heightCm"
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]+([.,][0-9]+)?"
+              autoComplete="off"
+              defaultValue={initial?.height_cm ?? ""}
+              aria-invalid={Boolean(heightError) || undefined}
+              aria-describedby={heightDescription}
+              onInput={(event) => sanitizeInput(event, sanitizeUnsignedDecimalInput)}
+              required
+            />
+          </Field>
+        </div>
+        <p id="heightCm-help" className="text-sm leading-relaxed text-muted">
+          Puedes escribir la altura como <strong className="text-foreground">169 cm</strong> o
+          como <strong className="text-foreground">1,69 m</strong>; se guardará siempre en
+          centímetros.
+        </p>
+      </OnboardingSection>
+
+      <OnboardingSection
+        id="daily-routine"
+        eyebrow="02 · Organización"
+        title="Rutina y disponibilidad"
+        description="Cuéntanos cómo es tu semana para construir un plan que encaje de verdad en tus horarios."
+      >
+        <div className="grid min-w-0 gap-5 lg:grid-cols-2">
+          <Field label="Trabajo, horarios y rutina semanal" htmlFor="occupationSchedule" required error={state.fieldErrors?.occupationSchedule?.[0]} help={onboardingFieldHelp.occupationSchedule}>
+            <Textarea id="occupationSchedule" name="occupationSchedule" rows={5} defaultValue={String(initial?.occupation_schedule ?? "")} required />
+          </Field>
+          <Field label="Prioridad y disponibilidad para entrenar" htmlFor="trainingPriority" required error={state.fieldErrors?.trainingPriority?.[0]} help={onboardingFieldHelp.trainingPriority}>
+            <Textarea id="trainingPriority" name="trainingPriority" rows={5} defaultValue={String(initial?.training_priority ?? "")} required />
+          </Field>
+        </div>
+      </OnboardingSection>
+
+      <OnboardingSection
+        id="nutrition-goals"
+        eyebrow="03 · Planificación"
+        title="Alimentación y objetivos"
+        description="Describe tus horarios de comida y el resultado que quieres conseguir para definir prioridades realistas."
+      >
+        <div className="grid min-w-0 gap-5 lg:grid-cols-2">
+          <Field label="Horarios y disponibilidad para las comidas" htmlFor="mealAvailability" required error={state.fieldErrors?.mealAvailability?.[0]} help={onboardingFieldHelp.mealAvailability}>
+            <Textarea id="mealAvailability" name="mealAvailability" rows={5} defaultValue={String(initial?.meal_availability ?? "")} required />
+          </Field>
+          <Field label="Objetivos" htmlFor="goals" required error={state.fieldErrors?.goals?.[0]} help={onboardingFieldHelp.goals}>
+            <Textarea id="goals" name="goals" rows={5} defaultValue={String(initial?.goals ?? "")} required />
+          </Field>
+        </div>
+      </OnboardingSection>
+
+      <OnboardingSection
+        id="health-adaptations"
+        eyebrow="04 · Adaptaciones"
+        title="Salud y necesidades específicas"
+        description="Comparte solo la información práctica imprescindible para adaptar el entrenamiento y la alimentación con seguridad."
+      >
+        <div className="grid min-w-0 gap-5 lg:grid-cols-2">
+          <Field label="Enfermedades, lesiones o limitaciones" htmlFor="conditionsInjuries" error={state.fieldErrors?.conditionsInjuries?.[0]} hint="Si no tienes ninguna, puedes dejarlo en blanco." help={onboardingFieldHelp.conditionsInjuries}>
+            <Textarea id="conditionsInjuries" name="conditionsInjuries" rows={5} defaultValue={String(initial?.conditions_injuries ?? "")} />
+          </Field>
+          <Field label="Alergias o intolerancias" htmlFor="allergiesIntolerances" error={state.fieldErrors?.allergiesIntolerances?.[0]} hint="Si no tienes ninguna, puedes dejarlo en blanco." help={onboardingFieldHelp.allergiesIntolerances}>
+            <Textarea id="allergiesIntolerances" name="allergiesIntolerances" rows={5} defaultValue={String(initial?.allergies_intolerances ?? "")} />
+          </Field>
+        </div>
+      </OnboardingSection>
+
+      <OnboardingSection
+        id="additional-data"
+        eyebrow="05 · Finalizar"
+        title="Información adicional y consentimiento"
+        description="Añade tus redes solo si quieres compartirlas y confirma el tratamiento de los datos necesarios para prestar el servicio."
+      >
+        <SocialNetworksField
+          initialValue={String(initial?.social_networks ?? "")}
+          error={state.fieldErrors?.socialNetworks?.[0]}
+        />
+        <HealthConsentField error={healthConsentError} />
+      </OnboardingSection>
       <SubmitButton pendingLabel="Guardando…">Guardar cuestionario</SubmitButton>
     </form>
   );

@@ -1,5 +1,20 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-cuestionario-estructurado`
+
+- `OnboardingForm` incorpora secciones semánticas etiquetadas mediante `aria-labelledby`, con encabezado, descripción y numeración visual compartidos.
+- El bloque físico usa `sm:grid-cols-2`; la ayuda de altura se extrae de la celda individual, conserva `heightCm-help` y se combina con el error mediante `aria-describedby` cuando corresponde.
+- Rutina, alimentación, salud, redes y consentimiento mantienen sus contratos `FormData`, validación y persistencia, pero quedan agrupados por propósito sin cambios de base de datos.
+- La primera prueba dirigida falló al incluir el asterisco con `aria-hidden` en el nombre accesible esperado; se ajustó la consulta a la semántica real del control.
+- `pnpm check` superó lint, tipos, 100 pruebas y el build Webpack; `git diff --check` no detectó errores.
+
+## 2026-10-14 — `2026-10-14-solicitud-sin-scroll-escritorio`
+
+- `/solicitar-informacion` usa `h-dvh`, `min-h-0` y `overflow-hidden` únicamente desde `lg`; la columna del formulario centra verticalmente el contenido y reduce separaciones sin afectar al contrato de `LeadForm`.
+- `lead-page__form` compacta el `gap` y limita el alto del `textarea` en escritorio; por debajo de `lg` se mantiene el flujo vertical desplazable.
+- La prueba de página fija la regresión responsiva y la medición del navegador devolvió `documentScrollHeight = innerHeight = 724` a `1470 px` de ancho.
+- `pnpm check` superó lint, tipos, 100 pruebas y el build Webpack; `git diff --check` no detectó errores.
+
 ## 2026-10-14 — `2026-10-14-variantes-y-vistas-tarifas`
 
 - `202610140001_pricing_plan_service_details.sql` añade `service_modality` y `days_per_week` a `pricing_plans` y sustituye la unicidad por nombre por una variante compuesta.

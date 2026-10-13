@@ -59,6 +59,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - No introducir colores, radios o sombras arbitrarios dentro de features.
 - En páginas públicas, evitar encerrar cada bloque en una tarjeta o contenedor redondeado; priorizar ritmo tipográfico, líneas, contraste y composición a sangre.
 - Todo el contenido público usa `page-shell` con un margen interior lateral constante: `1.5rem` en móvil y `3rem` desde tableta, aunque los fondos de sección continúen a sangre.
+- El formulario público de captación debe encajar en un viewport de escritorio sin scroll de página; el ajuste de altura y espaciado se limita a `lg` para no cortar contenido en móvil.
 - El hero de entrada debe dejar visibles la propuesta, la explicación y las acciones principales sin ocupar de forma agobiante toda la primera pantalla; reservar los tamaños extremos para acentos puntuales.
 - El emblema de marca debe seguir visible en el hero móvil como un recurso compacto y secundario, sin desplazar el contenido principal ni competir con los CTA.
 - Los CTA públicos usan remate diagonal y las acciones secundarias se presentan como enlaces subrayados. Los controles públicos son lineales; el panel mantiene las primitivas operativas estándar.
@@ -73,7 +74,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - El control para mostrar u ocultar la contraseña se reutiliza también en el login y conserva el propósito de autocompletado propio de cada formulario.
 - En escritorio, el menú privado ocupa la altura visible y mantiene el usuario y **Cerrar sesión** accesibles al pie, independientemente de la longitud del contenido.
 - En la cabecera privada móvil, el menú se sitúa a la izquierda y el emblema compacto a la derecha.
-- El cuestionario del cliente usa una cuadrícula responsiva: cuatro datos físicos en escritorio amplio, dos columnas para respuestas narrativas y una sola columna en móvil. Las áreas de texto de una misma fila conservan la misma altura y las ayudas equivalentes reservan el mismo espacio.
+- El cuestionario del cliente se estructura en bloques numerados con título y descripción. Los cuatro datos físicos usan una cuadrícula de dos columnas desde `sm`, las respuestas narrativas forman pares desde `lg` y todo vuelve a una sola columna en móvil. Las ayudas que afectan solo a un campo pero rompen la alineación de la fila deben colocarse bajo el grupo y conservar su asociación ARIA.
 - Los campos narrativos del cuestionario muestran ayuda contextual mediante `FieldHelp`. La explicación siempre relaciona el nivel de detalle con una mejor adaptación del plan; en salud debe pedir solo información práctica y prohibir informes completos.
 - Las redes sociales del cuestionario se recogen como perfiles estructurados, nunca como un textarea libre. En móvil cada perfil apila selector, usuario y acción; en escritorio mantiene una sola fila.
 - Los campos físicos no dependen de `type="number"`: edad filtra a enteros sin signo; peso y altura usan teclado decimal, aceptan coma o punto y delegan la normalización definitiva al esquema del servidor.

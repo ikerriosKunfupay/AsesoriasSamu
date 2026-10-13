@@ -1,5 +1,20 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-cuestionario-estructurado`
+
+- El cuestionario inicial se divide en cinco bloques numerados: datos físicos, rutina, alimentación y objetivos, salud e información adicional.
+- Edad, sexo, peso y altura se presentan en una cuadrícula de dos columnas en pantallas medianas y grandes, en lugar de quedar comprimidos en una única fila.
+- La explicación de la altura pasa debajo de todo el bloque físico para mantener los cuatro controles alineados y continúa asociada al campo para lectores de pantalla.
+- La primera prueba dirigida buscó por error el asterisco visual dentro del nombre accesible de los campos; se corrigió la expectativa para respetar que dicho símbolo está oculto a tecnologías de asistencia.
+- La validación final completó análisis de código, tipos, 100 pruebas y compilación de producción.
+
+## 2026-10-14 — `2026-10-14-solicitud-sin-scroll-escritorio`
+
+- La página **Solicitar información** compacta sus espacios y el área de objetivo en escritorio para mostrar el formulario completo sin scroll vertical.
+- En móvil conserva el desplazamiento normal para no recortar campos ni controles cuando la pantalla o el teclado reducen el espacio disponible.
+- La comprobación visual en un viewport de `1470 × 724` confirmó una altura de contenido exacta de `724 px`, sin desbordamiento.
+- La validación final completó análisis de código, tipos, 100 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-variantes-y-vistas-tarifas`
 
 - Cada plantilla de tarifa incluye modalidad y días por semana, por lo que un plan mensual presencial puede diferenciarse de uno virtual.
