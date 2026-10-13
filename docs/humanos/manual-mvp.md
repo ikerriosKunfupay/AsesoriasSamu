@@ -16,7 +16,9 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 - **Tarifas:** precios habituales reutilizables para asignar las condiciones de cada asesoría.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
 
-El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, el botón de la cabecera del propio lateral permite ocultarlo para ampliar el espacio de trabajo; mientras está cerrado aparece **Mostrar menú** y la elección se recuerda en ese navegador. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la navegación desplegable.
+El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, una barra compacta sobre el contenido mantiene siempre en el mismo lugar la acción **Ocultar menú** o **Mostrar menú**, sin tapar el logo ni mezclarse con los enlaces; la elección se recuerda en ese navegador. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la navegación desplegable.
+
+La misma barra permite alternar entre **Modo claro** y **Modo oscuro**. La elección afecta a todo el panel privado, incluidas tablas, formularios, avisos y gráficas, se conserva en ese navegador y parte de la preferencia del sistema la primera vez. Las páginas públicas mantienen la identidad marfil y negra propia de Team Ortega.
 
 El panel se ejecuta en la misma región europea que la base de datos para evitar esperas innecesarias. Durante una navegación interna, la estructura de la siguiente vista aparece inmediatamente y muestra un estado de carga hasta que llegan los datos. El resumen diferencia **Clientes registrados**, **Interesados nuevos**, **Cuestionarios recibidos**, **Seguimientos** y **Cuotas pendientes** en una sola fila compacta de escritorio. Al pulsar un indicador se abre un resumen con sus diez registros más recientes; cada fila lleva al registro concreto y, cuando existen más de diez, **Ver más** abre la sección completa. No se muestran respuestas de salud dentro de estos resúmenes.
 

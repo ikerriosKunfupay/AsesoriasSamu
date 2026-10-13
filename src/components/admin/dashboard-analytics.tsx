@@ -41,8 +41,9 @@ import {
 import { initialActionState } from "@/lib/forms/action-state";
 import { formatMoney } from "@/lib/format";
 
-const chartColors = ["#ef2d32", "#111214", "#6b7280", "#f59e0b", "#16a34a", "#2563eb"];
+const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
 const selectClassName = "min-h-11 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold";
+const tooltipStyle = { background: "var(--surface)", borderColor: "var(--border)", borderRadius: 12, color: "var(--foreground)" };
 
 function compactMoney(value: number) {
   return new Intl.NumberFormat("es-ES", {
@@ -216,13 +217,13 @@ export function DashboardAnalytics({
           <div className="h-80 min-w-0" role="img" aria-label="Gráfica de evolución de ingresos cobrados, cartera mensual y objetivo">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={analytics.revenueSeries} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="4 4" vertical={false} />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} />
-                <YAxis tickFormatter={compactMoney} tickLine={false} axisLine={false} width={70} />
-                <Tooltip formatter={(value) => formatMoney(Number(value))} />
+                <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" vertical={false} />
+                <XAxis stroke="var(--muted)" dataKey="label" tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--muted)" tickFormatter={compactMoney} tickLine={false} axisLine={false} width={70} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatMoney(Number(value))} />
                 <Legend />
                 <Area type="monotone" dataKey="collected" name="Cobrado" stroke="#ef2d32" fill="#fee2e2" strokeWidth={3} />
-                <Line type="monotone" dataKey="recurring" name="Cartera mensual" stroke="#111214" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="recurring" name="Cartera mensual" stroke="var(--foreground)" strokeWidth={3} dot={false} />
                 <Line type="monotone" dataKey="goal" name="Objetivo" stroke="#16a34a" strokeDasharray="6 5" strokeWidth={2} dot={false} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -249,10 +250,10 @@ export function DashboardAnalytics({
           <div className="h-72 min-w-0" role="img" aria-label="Gráfica del valor mensual por tarifa">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analytics.planDistribution} layout="vertical" margin={{ left: 5, right: 15 }}>
-                <CartesianGrid strokeDasharray="4 4" horizontal={false} />
-                <XAxis type="number" tickFormatter={compactMoney} tickLine={false} axisLine={false} />
-                <YAxis type="category" dataKey="name" width={95} tickLine={false} axisLine={false} />
-                <Tooltip formatter={(value) => formatMoney(Number(value))} />
+                <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" horizontal={false} />
+                <XAxis stroke="var(--muted)" type="number" tickFormatter={compactMoney} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--muted)" type="category" dataKey="name" width={95} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatMoney(Number(value))} />
                 <Bar dataKey="monthlyValue" name="Valor mensual" fill="#ef2d32" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -268,7 +269,7 @@ export function DashboardAnalytics({
                 <Pie data={analytics.modalityDistribution} dataKey="value" nameKey="name" innerRadius={58} outerRadius={92} paddingAngle={4}>
                   {analytics.modalityDistribution.map((item, index) => <Cell key={item.key} fill={chartColors[index % chartColors.length]} />)}
                 </Pie>
-                <Tooltip formatter={(value) => `${Number(value)} clientes`} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${Number(value)} clientes`} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -281,11 +282,11 @@ export function DashboardAnalytics({
           <div className="h-72 min-w-0" role="img" aria-label="Gráfica de altas de clientes por mes">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analytics.clientGrowth}>
-                <CartesianGrid strokeDasharray="4 4" vertical={false} />
-                <XAxis dataKey="label" tickLine={false} axisLine={false} />
-                <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={30} />
-                <Tooltip formatter={(value) => `${Number(value)} altas`} />
-                <Bar dataKey="newClients" name="Altas" fill="#111214" radius={[8, 8, 0, 0]} />
+                <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" vertical={false} />
+                <XAxis stroke="var(--muted)" dataKey="label" tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--muted)" allowDecimals={false} tickLine={false} axisLine={false} width={30} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(value) => `${Number(value)} altas`} />
+                <Bar dataKey="newClients" name="Altas" fill="var(--foreground)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-tema-y-control-sidebar`
+
+- `ThemeToggle` aplica `light`/`dark` mediante `data-theme`, persiste `team-ortega:theme` y expone etiquetas accesibles; el bootstrap previo a hidratación respeta primero almacenamiento y después el sistema.
+- `globals.css` incorpora tokens oscuros completos y acota los tokens claros de `.public-page`; las series, rejillas, ejes y tooltips de Recharts consumen colores compatibles con ambos temas.
+- `DashboardShell` mueve el control del lateral a una barra superior estable del contenido, reutilizada tanto al mostrar como al ocultar el menú.
+- Añadida prueba de alternancia/persistencia del tema; `pnpm lint`, `pnpm typecheck`, 81 pruebas y `pnpm build` terminaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-tarifas-analitica-asesorias`
 
 - `202610130005_commercial_terms.sql` crea `pricing_plans` y `client_commercial_terms`, conserva acuerdos mediante snapshot del importe, retira tarifas con borrado lógico y aplica RLS administrativa.

@@ -27,6 +27,29 @@
   --shadow-md: 0 14px 40px rgb(17 18 20 / 0.09);
 }
 
+:root[data-theme="dark"] {
+  --background: #0b0c0e;
+  --foreground: #f4f5f7;
+  --surface: #15171a;
+  --surface-muted: #202329;
+  --surface-inverse: #0f1012;
+  --primary: #f03a3f;
+  --primary-hover: #ff5055;
+  --primary-soft: #3a171a;
+  --border: #2c3037;
+  --border-strong: #4a505a;
+  --muted: #aeb4bf;
+  --success: #67dda9;
+  --success-soft: #12382a;
+  --warning: #f2b85b;
+  --warning-soft: #3b2b0e;
+  --danger: #ff7e89;
+  --danger-soft: #40171e;
+  --focus: #ff5b60;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-md: 0 14px 40px rgb(0 0 0 / 0.32);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -98,7 +121,22 @@ textarea {
 }
 
 .public-page {
+  --background: #f1efe9;
+  --foreground: #121316;
+  --surface: #ffffff;
+  --surface-muted: #eceef1;
+  --primary-soft: #fff0f0;
+  --border: #dfe2e7;
+  --border-strong: #bdc2ca;
+  --muted: #626873;
+  --success: #147a52;
+  --success-soft: #e8f8f0;
+  --warning: #a66100;
+  --warning-soft: #fff4dc;
+  --danger: #b4232f;
+  --danger-soft: #ffeaed;
   background: #f1efe9;
+  color: #121316;
 }
 
 .public-dark {

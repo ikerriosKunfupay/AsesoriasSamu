@@ -33,6 +33,8 @@ La experiencia pública evita composiciones basadas en una sucesión de tarjetas
 
 Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, cada uno con una superficie suave asociada.
 
+El producto privado dispone de temas claro y oscuro mediante `data-theme` en `<html>`. Ambos reutilizan los mismos tokens semánticos; no se deben introducir variantes `dark:` aisladas en cada feature. La preferencia se guarda como `team-ortega:theme`, se aplica antes de hidratar para evitar parpadeos y, si todavía no existe, respeta la preferencia del sistema. La identidad editorial pública conserva su paleta marfil y negra independientemente de la elección del panel.
+
 ## Componentes
 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
@@ -45,7 +47,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
-- `DashboardShell`: navegación diferenciada para entrenador y cliente.
+- `DashboardShell`: navegación diferenciada para entrenador y cliente, control lateral estable en la barra superior y selector de tema.
 - `public-action`, `public-kicker`, `hero-mark` y `public-form`: lenguaje editorial compartido por landing, captación, acceso y páginas legales.
 
 ## Reglas de uso

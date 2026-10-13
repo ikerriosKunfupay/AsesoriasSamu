@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-tema-y-control-sidebar`
+
+- Añadidos modos claro y oscuro para todo el panel privado, con elección persistente y adaptación de tablas, formularios, avisos y gráficas.
+- El control para esconder el menú sale del sidebar y permanece en una barra superior compacta del contenido, sin tapar el logo.
+- La web pública conserva su combinación marfil y negra para no alterar la identidad visual de acceso y captación.
+- El análisis de código, los tipos, las 81 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-tarifas-analitica-asesorias`
 
 - Añadidas tarifas reutilizables Mensual, Semestral, Anual o personalizadas, con precio habitual y duración; el entrenador puede crearlas, modificarlas o retirarlas desde su propia sección.

@@ -10,6 +10,8 @@ import { DashboardShell } from "./dashboard-shell";
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
+  delete document.documentElement.dataset.theme;
+  document.documentElement.style.colorScheme = "";
 });
 
 describe("DashboardShell", () => {
@@ -55,5 +57,23 @@ describe("DashboardShell", () => {
     fireEvent.click(screen.getByRole("button", { name: "Mostrar menú lateral" }));
     expect(screen.getByRole("button", { name: "Ocultar menú lateral" })).toBeInTheDocument();
     expect(window.localStorage.getItem("team-ortega:sidebar-open")).toBe("true");
+  });
+
+  it("alterna y recuerda el modo claro u oscuro", () => {
+    document.documentElement.dataset.theme = "light";
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Resumen</p>
+      </DashboardShell>,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Activar modo oscuro" })[0]);
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(document.documentElement.style.colorScheme).toBe("dark");
+    expect(window.localStorage.getItem("team-ortega:theme")).toBe("dark");
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Activar modo claro" })[0]);
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(window.localStorage.getItem("team-ortega:theme")).toBe("light");
   });
 });

@@ -7,6 +7,7 @@ import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -88,16 +89,7 @@ export function DashboardShell({
             className="text-white"
           />
         </div>
-        <button
-          type="button"
-          aria-label="Ocultar menú lateral"
-          onClick={() => setDesktopSidebar(false)}
-          className="mb-6 inline-flex min-h-10 w-full items-center gap-2 rounded-[var(--radius-md)] border border-zinc-800 px-3 text-xs font-bold text-zinc-400 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
-        >
-          <PanelLeftClose className="size-4 text-primary" aria-hidden="true" />
-          Ocultar menú
-        </button>
-        <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="grid gap-1">
+        <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="mt-6 grid gap-1">
           {items.map(({ href, label, icon: Icon }) => (
             <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-zinc-300 hover:bg-zinc-800 hover:text-white">
               <Icon className="size-5 text-primary" aria-hidden="true" />
@@ -130,6 +122,7 @@ export function DashboardShell({
                   <Icon className="size-5 text-primary" aria-hidden="true" /> {label}
                 </Link>
               ))}
+              <ThemeToggle className="w-full" />
               <form action={logoutAction} className="border-t border-border pt-1">
                 <Button type="submit" variant="ghost" className="w-full justify-start"><LogOut className="size-4" /> Cerrar sesión</Button>
               </form>
@@ -137,19 +130,18 @@ export function DashboardShell({
           </details>
           <BrandLogo compact href={mode === "admin" ? "/admin" : "/app/inicio"} onClick={(event) => guardNavigation(event, "/app/inicio")} />
         </header>
-        {!isDesktopSidebarOpen ? (
-          <div className="sticky top-0 z-20 hidden min-h-16 items-center border-b border-border bg-surface/95 px-4 backdrop-blur lg:flex lg:px-8">
+        <div className="sticky top-0 z-20 hidden min-h-16 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur lg:flex lg:px-8">
             <button
               type="button"
-              aria-label="Mostrar menú lateral"
-              onClick={() => setDesktopSidebar(true)}
-              className="inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-md)] border border-border-strong bg-surface px-3 text-sm font-bold text-foreground transition hover:bg-surface-muted"
+              aria-label={isDesktopSidebarOpen ? "Ocultar menú lateral" : "Mostrar menú lateral"}
+              onClick={() => setDesktopSidebar(!isDesktopSidebarOpen)}
+              className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-2.5 text-sm font-bold text-muted transition hover:bg-surface-muted hover:text-foreground"
             >
-              <PanelLeftOpen className="size-5 text-primary" aria-hidden="true" />
-              Mostrar menú
+              {isDesktopSidebarOpen ? <PanelLeftClose className="size-5 text-primary" aria-hidden="true" /> : <PanelLeftOpen className="size-5 text-primary" aria-hidden="true" />}
+              {isDesktopSidebarOpen ? "Ocultar menú" : "Mostrar menú"}
             </button>
-          </div>
-        ) : null}
+            <ThemeToggle />
+        </div>
         <main className="p-4 sm:p-6 lg:p-8">{children}</main>
       </div>
       {showOnboardingNotice ? (
