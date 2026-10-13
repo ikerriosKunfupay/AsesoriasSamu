@@ -30,6 +30,8 @@ Los cambios de correo y contraseña viven en `account-security.ts`, separados de
 
 `/reenviar-confirmacion` permite repetir exclusivamente el correo de alta mediante `auth.resend({ type: "signup" })`, conservando el mismo callback al cuestionario. La respuesta es deliberadamente genérica para no revelar si una identidad existe; solo distingue el límite temporal `429` para pedir que se espere al menos un minuto. Repetir `signUp()` no se considera un mecanismo de reenvío, porque Supabase puede devolver una identidad ofuscada cuando el correo ya existe.
 
+`registerAction` detecta esa respuesta ofuscada mediante `user.identities.length === 0` y evita presentar un alta o un correo inexistentes. Los eventos `auth.signup_existing_identity`, `auth.signup_created` y `auth.signup_failed` se escriben sin correo, UUID ni otros datos personales; el fallo conserva únicamente `code` y `status` de Supabase para poder diagnosticar SMTP y límites desde Vercel.
+
 `loginAction` conserva la autorización por `profiles.role` y consulta el perfil inmediatamente después de autenticar. Una cuenta designada que ya sea administradora evita cualquier escritura redundante y entra directamente en `/admin`; como bootstrap de recuperación, el cliente `service role` solo intenta promover ese perfil cuando todavía tiene rol `client`. No se compara ni almacena ninguna contraseña fuera de Supabase. Los demás registros permanecen sujetos al rol `client` forzado por el trigger.
 
 ## Clientes Supabase

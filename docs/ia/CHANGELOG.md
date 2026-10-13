@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-diagnostico-registro-existente`
+
+- `registerAction` detecta la identidad ofuscada de Supabase mediante `user.identities?.length === 0` y deja de devolver éxito para correos existentes.
+- Añadidos mensajes diferenciados para límite `429` y fallo real del alta, además de observabilidad sin PII mediante eventos estructurados de creación, duplicado y error.
+- Los registros de Vercel mostraron tres `POST /registro` con estado 200 mientras la consulta administrativa seguía sin perfiles cliente; esto es coherente con intentos sobre una identidad Auth ya existente.
+- Añadidas pruebas de regresión para una identidad ofuscada y un alta nueva con confirmación solicitada.
+- `pnpm check` superó lint, tipos, 61 pruebas y build Webpack.
+
 ## 2026-10-13 — `2026-10-13-reenvio-confirmacion-registro`
 
 - Añadidos `/reenviar-confirmacion`, `ResendConfirmationForm` y `resendConfirmationAction` sobre `auth.resend({ type: "signup" })`, reutilizando el callback del registro.

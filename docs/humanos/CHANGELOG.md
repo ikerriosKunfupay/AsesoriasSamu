@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-diagnostico-registro-existente`
+
+- Corregido el falso «Cuenta creada» que podía aparecer al intentar registrarse con un correo ya utilizado.
+- La pantalla explica ahora que no se ha generado otra cuenta y dirige al acceso, recuperación o reenvío según corresponda.
+- La investigación de producción encontró tres envíos correctos del formulario pero ningún perfil de cliente nuevo, descartando que esos intentos fueran altas pendientes de recibir correo.
+- El análisis de código, los tipos, las 61 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-reenvio-confirmacion-registro`
 
 - Añadida en el acceso la opción «No he recibido el correo de confirmación» para solicitar un enlace nuevo sin volver a registrarse.

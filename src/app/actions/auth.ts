@@ -94,14 +94,33 @@ export async function registerAction(
   });
 
   if (error) {
+    console.error("auth.signup_failed", {
+      code: error.code,
+      status: error.status,
+    });
     return {
       status: "error",
-      message: "No se pudo crear la cuenta. Revisa los datos o prueba con otro correo.",
+      message: error.status === 429 || error.code === "over_email_send_rate_limit"
+        ? "Espera al menos un minuto antes de volver a solicitar el correo."
+        : "No se pudo crear la cuenta ni enviar la confirmación. Inténtalo de nuevo en unos minutos.",
+      messageId: crypto.randomUUID(),
+    };
+  }
+
+  if (!data.user || data.user.identities?.length === 0) {
+    console.info("auth.signup_existing_identity");
+    return {
+      status: "error",
+      message: "Ese registro no ha generado una cuenta nueva. Si ya usaste ese correo, inicia sesión, recupera la contraseña o reenvía la confirmación.",
       messageId: crypto.randomUUID(),
     };
   }
 
   if (data.session) redirect("/app/cuestionario");
+
+  console.info("auth.signup_created", {
+    confirmationRequested: Boolean(data.user.confirmation_sent_at),
+  });
 
   return {
     status: "success",

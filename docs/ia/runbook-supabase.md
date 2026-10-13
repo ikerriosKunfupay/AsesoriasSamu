@@ -51,6 +51,8 @@ En el entorno desplegado, correo + contraseña está activo y la confirmación d
 
 Si una persona no recibe la confirmación, debe usar `/reenviar-confirmacion` desde el acceso y esperar al menos 60 segundos entre solicitudes. No debe repetir el alta para forzar el envío: Supabase protege contra la enumeración de cuentas y un `signUp()` repetido puede aparentar éxito sin crear otra identidad ni reenviar el mensaje. Si tampoco llega el reenvío, revisa primero spam/promociones y después los registros SMTP de Brevo y Auth de Supabase.
 
+Para separar una identidad existente de un fallo real del correo, revisa los eventos de Vercel: `auth.signup_existing_identity` significa que Supabase no creó usuario ni intentó un alta nueva; `auth.signup_created` confirma una identidad nueva y señala si se solicitó confirmación; `auth.signup_failed` conserva solo código y estado. Nunca se registra la dirección introducida.
+
 ## SMTP
 
 Configura el SMTP propio en Authentication > Emails > SMTP Settings. Verifica dominio/remitente y desactiva el seguimiento de enlaces del proveedor para no modificar los enlaces de Auth. Prueba invitación y recuperación con una cuenta de prueba antes de usar correos de clientes.

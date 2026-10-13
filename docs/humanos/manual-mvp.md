@@ -25,6 +25,8 @@ La cuenta inicial designada para el entrenador está provisionada como administr
 
 Una persona que todavía no tenga cuenta puede pulsar **Regístrate** desde `/login` y completar nombre, correo y una contraseña de al menos 8 caracteres. Cuando la cuenta se crea, aparece una confirmación y la web vuelve automáticamente al acceso; también permite ir al login de inmediato. Recibirá un correo de confirmación y, al abrirlo, accederá al cuestionario inicial. Si el mensaje no llega, desde el acceso puede abrir **No he recibido el correo de confirmación** y solicitar un nuevo enlace sin repetir el registro. Debe esperar al menos un minuto entre intentos y revisar también spam y promociones. El registro no solicita datos de salud; esos datos se recogen después, dentro de la cuenta y con consentimiento específico.
 
+Un correo que ya pertenece a una cuenta —incluida la cuenta administradora— no puede registrarse de nuevo como cliente. En ese caso la web ya no muestra «Cuenta creada»: indica que no se ha generado una identidad nueva y ofrece iniciar sesión, recuperar la contraseña o reenviar la confirmación si todavía estuviera pendiente.
+
 El entrenador también puede iniciar el alta desde el panel:
 
 1. En **Clientes**, pulsa **Invitar cliente**.
