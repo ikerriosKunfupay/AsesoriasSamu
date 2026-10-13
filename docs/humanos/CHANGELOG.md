@@ -1,5 +1,17 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-ajustes-prefijo-avisos`
+
+- El teléfono de Ajustes incorpora un selector de prefijo integrado en el propio campo, sin recurrir al menú externo del navegador.
+- Los avisos de perfil y seguridad pueden cerrarse con una X; los mensajes de éxito desaparecen también de forma automática a los cinco segundos.
+- La validación añadió pruebas para el selector, la normalización del teléfono y el cierre automático o manual de los avisos; lint, tipos, 50 pruebas y compilación finalizaron correctamente.
+
+## 2026-10-13 — `2026-10-13-plantillas-correos-seguridad`
+
+- Los correos para verificar un cambio de dirección y restablecer la contraseña usan ahora la misma identidad visual que la confirmación de cuenta.
+- Ambos incluyen el emblema de Team Ortega, textos específicos, un botón de acción y el enlace completo como alternativa.
+- Las dos plantillas quedaron publicadas en Supabase y versionadas en el proyecto.
+
 ## 2026-10-13 — `2026-10-13-seguridad-cuenta-y-admin`
 
 - La foto de perfil puede ampliarse al pulsarla y eliminarse para recuperar las iniciales por defecto.

@@ -20,6 +20,6 @@ Ya están completados la organización y el proyecto Supabase exclusivos, la reg
 
 Para unas 20 personas, Supabase Free tiene capacidad suficiente en condiciones normales, pero puede pausar proyectos con poca actividad y no incluye las garantías del plan de pago. Brevo Free aporta 300 envíos diarios; Team Ortega usa una clave SMTP propia, aunque la cuota y la reputación se comparten con los demás usos de esa cuenta de Brevo.
 
-El correo de confirmación de alta usa la identidad visual de Team Ortega, incluye el emblema alojado en la web y ofrece tanto un botón como el enlace completo de confirmación. Si se cambia desde Supabase, su fuente de referencia debe mantenerse sincronizada en `supabase/email-templates/confirm-sign-up.html`.
+Los correos de confirmación de alta, verificación del cambio de dirección y recuperación de contraseña usan la identidad visual de Team Ortega, incluyen el emblema alojado en la web y ofrecen tanto un botón como el enlace completo de confirmación. Si se cambian desde Supabase, sus fuentes de referencia deben mantenerse sincronizadas en `supabase/email-templates/`.
 
 La ausencia de pagos dentro de la web no convierte el uso de Vercel en no comercial; el portal apoya un servicio profesional.

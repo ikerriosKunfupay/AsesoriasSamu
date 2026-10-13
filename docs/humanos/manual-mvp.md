@@ -60,7 +60,9 @@ En el acceso se puede mostrar u ocultar la contraseña mediante el icono del pro
 
 La foto de perfil admite JPG, PNG o WebP de hasta 2 MB y se mantiene privada. Puede pulsarse para verla ampliada o eliminarse para volver a mostrar las iniciales.
 
-El correo no se edita directamente. Al solicitar el cambio, Team Ortega envía un enlace al correo actual para comprobar la identidad; al abrirlo aparece un formulario emergente para indicar la nueva dirección. Cuando se guarda, Ajustes muestra automáticamente el correo actualizado. El cambio de contraseña sigue el mismo principio: primero se recibe un enlace seguro en el correo actual y después se elige la nueva contraseña en un formulario emergente. El entrenador puede consultar la foto y los datos de contacto actualizados desde la ficha del cliente.
+El correo no se edita directamente. Al solicitar el cambio, Team Ortega envía un enlace al correo actual para comprobar la identidad; al abrirlo aparece un formulario emergente para indicar la nueva dirección. Cuando se guarda, Ajustes muestra automáticamente el correo actualizado. El cambio de contraseña sigue el mismo principio: primero se recibe un enlace seguro en el correo actual y después se elige la nueva contraseña en un formulario emergente. Ambos correos conservan el diseño y el emblema de Team Ortega. El entrenador puede consultar la foto y los datos de contacto actualizados desde la ficha del cliente.
+
+El teléfono de Ajustes separa el prefijo internacional y el número dentro de un único control. El prefijo se elige mediante el desplegable propio de Team Ortega, no mediante el selector nativo del navegador. Los avisos pueden cerrarse con la X y, cuando informan de una operación correcta, desaparecen solos después de cinco segundos.
 
 ## Interesados
 

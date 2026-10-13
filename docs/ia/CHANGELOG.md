@@ -1,5 +1,18 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-ajustes-prefijo-avisos`
+
+- Extraído `PhonePrefixSelect` de `LeadForm` como listbox reutilizable, con IDs internos únicos, navegación por teclado y helpers para separar y recomponer teléfonos persistidos.
+- `ProfileSettingsForm` conserva prefijo y número como estados separados, envía el valor canónico mediante `phone` oculto y reutiliza el control propio dentro del borde redondeado del campo.
+- `FormMessage` incorpora cierre manual y temporizador de cinco segundos para éxitos, identificando el objeto de estado descartado para que una respuesta posterior pueda volver a mostrarse.
+- Añadidas pruebas de apertura/selección, normalización de teléfono y cierre temporizado/manual; `pnpm check` superó lint, tipos, 50 pruebas y build.
+
+## 2026-10-13 — `2026-10-13-plantillas-correos-seguridad`
+
+- Versionados asunto y HTML de **Magic link or OTP** y **Reset password** en `supabase/email-templates/`.
+- Ambas plantillas comparten estructura compatible con clientes de correo, estilos inline, el PNG público de marca y `{{ .ConfirmationURL }}` como CTA y enlace alternativo.
+- Publicadas y verificadas las dos plantillas en Supabase Auth; la URL pública del logo respondió `200 image/png`.
+
 ## 2026-10-13 — `2026-10-13-seguridad-cuenta-y-admin`
 
 - `ProfileAvatar` incorpora visor modal, cierre por botón/fondo/Escape y restauración del foco; `updateProfileAction` permite anular `avatar_path` y retirar el objeto privado.

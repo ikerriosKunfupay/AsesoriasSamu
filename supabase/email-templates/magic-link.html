@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verifica el cambio de correo | Team Ortega</title>
+  </head>
+  <body style="margin:0;padding:0;background:#e9eaef;color:#111214;font-family:Arial,Helvetica,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Verifica tu identidad para cambiar el correo de acceso a Team Ortega.</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#e9eaef;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#f4f1eb;border-collapse:collapse;">
+            <tr>
+              <td style="padding:24px 32px;background:#111214;border-bottom:4px solid #ef2b2d;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding-right:16px;vertical-align:middle;">
+                      <img src="https://team-ortega.vercel.app/brand/team-ortega-email.png" width="56" height="56" alt="Team Ortega" style="display:block;width:56px;height:56px;border:0;">
+                    </td>
+                    <td style="vertical-align:middle;font-size:24px;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:-0.5px;color:#ffffff;">
+                      TEAM <span style="color:#ef2b2d;">ORTEGA</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:44px 32px 36px;">
+                <p style="margin:0 0 18px;color:#ef2b2d;font-size:12px;font-weight:800;line-height:1.4;letter-spacing:3px;text-transform:uppercase;">Seguridad de tu cuenta</p>
+                <h1 style="margin:0 0 20px;color:#111214;font-size:36px;font-weight:900;line-height:1.05;letter-spacing:-1px;text-transform:uppercase;">Verifica que eres tú</h1>
+                <p style="margin:0 0 12px;color:#545a66;font-size:17px;line-height:1.65;">Has solicitado cambiar el correo con el que accedes a Team Ortega.</p>
+                <p style="margin:0 0 28px;color:#545a66;font-size:17px;line-height:1.65;">Confirma tu identidad desde este correo. Después volverás a Team Ortega para indicar la nueva dirección.</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 30px;">
+                  <tr>
+                    <td bgcolor="#ef2b2d" style="background:#ef2b2d;">
+                      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:16px 28px;color:#ffffff;font-size:15px;font-weight:800;line-height:1;text-decoration:none;text-transform:uppercase;letter-spacing:0.6px;">Verificar mi identidad&nbsp;&nbsp;→</a>
+                    </td>
+                  </tr>
+                </table>
+                <div style="border-top:1px solid #c9cbd1;padding-top:22px;">
+                  <p style="margin:0 0 8px;color:#111214;font-size:13px;font-weight:700;line-height:1.5;">Si el botón no funciona, copia este enlace en tu navegador:</p>
+                  <p style="margin:0;word-break:break-all;font-size:12px;line-height:1.6;"><a href="{{ .ConfirmationURL }}" style="color:#ef2b2d;text-decoration:underline;">{{ .ConfirmationURL }}</a></p>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:22px 32px;background:#111214;color:#aeb1b8;font-size:12px;line-height:1.6;">
+                <p style="margin:0 0 4px;color:#ffffff;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Disciplina · Progreso · Equipo</p>
+                <p style="margin:0;">Si no has solicitado cambiar tu correo, ignora este mensaje y tu cuenta seguirá igual.</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

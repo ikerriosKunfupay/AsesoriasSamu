@@ -1,15 +1,16 @@
 "use client";
 
 import { KeyRound, Mail } from "lucide-react";
-import { useActionState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import { requestAccountChangeAction } from "@/app/actions/account-security";
 import { updateProfileAction } from "@/app/actions/profile";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
-import { initialActionState } from "@/lib/forms/action-state";
+import { initialActionState, type ActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
+import { formatPhoneValue, PhonePrefixSelect, splitPhoneValue } from "./phone-prefix-select";
 import { SubmitButton } from "./submit-button";
 
 export function ProfileSettingsForm({
@@ -25,19 +26,19 @@ export function ProfileSettingsForm({
 }) {
   const [profileState, profileAction] = useActionState(updateProfileAction, initialActionState);
   const [securityState, securityAction] = useActionState(requestAccountChangeAction, initialActionState);
+  const [{ prefix: initialPhonePrefix, phoneNumber: initialPhoneNumber }] = useState(() => splitPhoneValue(initial.phone));
+  const [phonePrefix, setPhonePrefix] = useState<string>(initialPhonePrefix);
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  const normalizedPhone = formatPhoneValue(phonePrefix, phoneNumber);
+  const noticeState = useMemo<ActionState>(() => (
+    notice
+      ? { status: noticeTone === "error" ? "error" : "success", message: notice }
+      : initialActionState
+  ), [notice, noticeTone]);
 
   return (
     <div className="grid max-w-3xl gap-8">
-      {notice ? (
-        <p
-          role={noticeTone === "error" ? "alert" : "status"}
-          className={`rounded-[var(--radius-md)] px-4 py-3 text-sm font-bold ${
-            noticeTone === "error" ? "bg-danger-soft text-danger" : "bg-success-soft text-success"
-          }`}
-        >
-          {notice}
-        </p>
-      ) : null}
+      <FormMessage state={noticeState} />
       <form action={profileAction} className="grid gap-6" noValidate>
         <FormMessage state={profileState} />
         <div className="flex flex-col gap-5 rounded-[var(--radius-lg)] bg-surface-muted p-5 sm:flex-row sm:items-center">
@@ -77,8 +78,22 @@ export function ProfileSettingsForm({
           <Field label="Nombre y apellidos" htmlFor="fullName" required error={profileState.fieldErrors?.fullName?.[0]}>
             <Input id="fullName" name="fullName" type="text" autoComplete="name" defaultValue={initial.fullName} required />
           </Field>
-          <Field label="Teléfono" htmlFor="phone" error={profileState.fieldErrors?.phone?.[0]}>
-            <Input id="phone" name="phone" type="tel" autoComplete="tel" defaultValue={initial.phone} />
+          <Field label="Teléfono" htmlFor="profilePhoneNumber" error={profileState.fieldErrors?.phone?.[0]}>
+            <input type="hidden" name="phone" value={normalizedPhone} />
+            <div className="flex min-h-12 rounded-[var(--radius-md)] border border-border-strong bg-surface focus-within:border-primary">
+              <PhonePrefixSelect value={phonePrefix} onChange={setPhonePrefix} />
+              <input
+                id="profilePhoneNumber"
+                name="phoneNumber"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel-national"
+                value={phoneNumber}
+                onChange={(event) => setPhoneNumber(event.target.value)}
+                placeholder="600 000 000"
+                className="min-h-12 min-w-0 flex-1 rounded-r-[var(--radius-md)] border-0 bg-transparent px-3.5 text-base text-foreground placeholder:text-muted/70"
+              />
+            </div>
           </Field>
         </div>
         <SubmitButton pendingLabel="Guardando…" className="w-full sm:w-fit">
