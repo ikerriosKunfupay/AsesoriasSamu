@@ -43,10 +43,10 @@ where id = '<UUID_VERIFICADO>';
 
 - Site URL: URL canónica del despliegue.
 - Redirect URLs: añade `/auth/callback` para producción y `http://localhost:3000/auth/callback` en desarrollo.
-- Desactiva el registro público desde la configuración de proveedores.
+- Mantén habilitado el registro por correo para que funcione `/registro`.
 - Mantén correo + contraseña activo.
 
-En el entorno desplegado, correo + contraseña está activo y la confirmación de correo está habilitada. El registro público continúa pendiente de desactivación hasta confirmar el cambio de acceso con el propietario.
+En el entorno desplegado, correo + contraseña está activo y la confirmación de correo está habilitada. El registro público debe permanecer activo; la aplicación fuerza el rol `client` mediante el trigger de base de datos.
 
 ## SMTP
 

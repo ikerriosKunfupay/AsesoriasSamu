@@ -8,6 +8,18 @@ export const loginSchema = z.object({
   password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
 });
 
+export const registerSchema = z
+  .object({
+    fullName: requiredText("El nombre").max(120),
+    email: z.string().trim().email("Introduce un correo válido."),
+    password: z.string().min(10, "Usa al menos 10 caracteres."),
+    confirmation: z.string(),
+  })
+  .refine((value) => value.password === value.confirmation, {
+    message: "Las contraseñas no coinciden.",
+    path: ["confirmation"],
+  });
+
 export const emailSchema = z.object({
   email: z.string().trim().email("Introduce un correo válido."),
 });

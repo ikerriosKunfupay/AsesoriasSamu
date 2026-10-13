@@ -18,7 +18,7 @@
 
 ## Roles
 
-`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos. El primer administrador se promociona manualmente desde el SQL Editor después de comprobar su UUID.
+`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos, tanto en registros públicos como en invitaciones. El primer administrador se promociona manualmente desde el SQL Editor después de comprobar su UUID. El formulario de registro solo recoge nombre, correo y contraseña; los datos de salud permanecen en el onboarding autenticado.
 
 ## RLS
 
@@ -35,5 +35,5 @@ Lesiones y alergias se almacenan únicamente en `onboarding_submissions`, detrá
 1. Cliente A no puede consultar perfil, planes, onboarding o check-ins de B.
 2. Un cliente no puede insertar un plan ni leer cuotas.
 3. Un usuario suspendido no llega al área privada.
-4. Una invitación nunca puede crear un administrador.
+4. Un registro o una invitación nunca puede crear un administrador.
 5. El bundle del navegador no contiene la service role.

@@ -1,5 +1,11 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-registro-publico-clientes`
+
+- Añadida una opción visible para registrarse desde la pantalla de acceso cuando la persona todavía no tiene cuenta.
+- El nuevo formulario solicita nombre, correo y contraseña, enlaza la política de privacidad y pide confirmar el correo antes de comenzar el cuestionario.
+- Las cuentas creadas desde este formulario son siempre cuentas de cliente.
+
 ## 2026-10-13 — `2026-10-13-carrusel-pasos-movil`
 
 - Convertidos los pasos de «Cómo funciona» en un carrusel móvil con tarjetas deslizables, contador, puntos y flechas.

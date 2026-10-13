@@ -1,5 +1,11 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-registro-publico-clientes`
+
+- Añadidos `/registro`, `RegisterForm`, `registerSchema` y `registerAction` sobre `supabase.auth.signUp()`.
+- El registro envía únicamente `full_name` como metadato, usa el callback a `/app/cuestionario` y conserva la asignación forzada de `client` en `handle_new_user()`.
+- Añadidas pruebas de validación para registros correctos y contraseñas no coincidentes; no se requiere migración de base de datos.
+
 ## 2026-10-13 — `2026-10-13-carrusel-pasos-movil`
 
 - Añadido `StepsCarousel`, componente cliente accesible con scroll snap, navegación táctil, flechas, contador y paginación sincronizada mediante `onScroll`.

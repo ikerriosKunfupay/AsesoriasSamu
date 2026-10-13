@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { leadSchema, onboardingSchema, updatePasswordSchema } from "./schemas";
+import { leadSchema, onboardingSchema, registerSchema, updatePasswordSchema } from "./schemas";
 
 describe("validación de formularios", () => {
   it("acepta una solicitud pública válida", () => {
@@ -30,6 +30,26 @@ describe("validación de formularios", () => {
 
   it("exige contraseñas coincidentes", () => {
     const result = updatePasswordSchema.safeParse({ password: "una-clave-segura", confirmation: "otra-clave-segura" });
+    expect(result.success).toBe(false);
+  });
+
+  it("valida un registro de cliente completo", () => {
+    const result = registerSchema.safeParse({
+      fullName: "María López",
+      email: "maria@example.com",
+      password: "una-clave-segura",
+      confirmation: "una-clave-segura",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rechaza un registro con contraseñas diferentes", () => {
+    const result = registerSchema.safeParse({
+      fullName: "María López",
+      email: "maria@example.com",
+      password: "una-clave-segura",
+      confirmation: "otra-clave-segura",
+    });
     expect(result.success).toBe(false);
   });
 

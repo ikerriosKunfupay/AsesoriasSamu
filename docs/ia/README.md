@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Team Ortega es un portal de entrenamiento personal con dos roles: `admin` y `client`. El alta es exclusivamente por invitación. El público solo puede ver la landing y enviar un lead sin datos sanitarios.
+Team Ortega es un portal de entrenamiento personal con dos roles: `admin` y `client`. Los clientes pueden registrarse con confirmación por correo o llegar mediante una invitación del administrador. El público puede ver la landing, enviar un lead sin datos sanitarios y crear una cuenta de cliente.
 
 ## Mapa rápido
 

@@ -13,7 +13,7 @@ export default async function LoginPage() {
   if (user?.role === "client") redirect(user.onboardingComplete ? "/app/inicio" : "/app/cuestionario");
 
   return (
-    <AuthShell title="Acceso privado" description="Entra con la cuenta que te ha proporcionado Team Ortega.">
+    <AuthShell title="Acceso privado" description="Entra con tu cuenta de Team Ortega.">
       <LoginForm />
     </AuthShell>
   );

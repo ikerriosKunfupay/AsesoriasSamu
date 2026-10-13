@@ -4,12 +4,12 @@
 
 El MVP está implementado, validado y publicado en `https://team-ortega.vercel.app`. El proyecto Vercel `team-ortega` usa el repositorio exclusivo `ikerriosKunfupay/AsesoriasSamu`. Supabase está creado en una organización propia, en región europea, con la migración aplicada y las URLs de autenticación configuradas.
 
-Todavía no deben invitarse clientes reales: falta crear la cuenta administradora del entrenador, cerrar el registro público, completar una prueba real de invitación y sustituir la información legal provisional.
+Todavía no deben incorporarse clientes reales: falta crear la cuenta administradora del entrenador, completar una prueba real de registro e invitación y sustituir la información legal provisional.
 
 ## Lista previa a producción
 
 1. Crear la cuenta inicial del entrenador y promocionarla a `admin` siguiendo el runbook técnico.
-2. Desactivar el registro público de usuarios; las altas deben proceder únicamente de invitaciones del administrador.
+2. Probar el registro público con confirmación de correo y comprobar que la cuenta creada solo recibe el rol `client`.
 3. Sustituir el texto provisional de privacidad por la información legal real.
 4. Probar invitación, recuperación, aislamiento entre dos clientes y cierre de sesión.
 5. Elegir un alojamiento compatible antes del uso comercial. El despliegue actual en Vercel Hobby es gratuito, pero el plan no permite uso comercial.

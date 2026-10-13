@@ -7,6 +7,7 @@ import {
   fieldErrors,
   formValues,
   loginSchema,
+  registerSchema,
   updatePasswordSchema,
 } from "@/lib/forms/schemas";
 import { createClient } from "@/lib/supabase/server";
@@ -46,6 +47,41 @@ export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
+}
+
+export async function registerAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const parsed = registerSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa los datos.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const supabase = await createClient();
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const { data, error } = await supabase.auth.signUp({
+    email: parsed.data.email,
+    password: parsed.data.password,
+    options: {
+      data: { full_name: parsed.data.fullName },
+      emailRedirectTo: `${origin}/auth/callback?next=/app/cuestionario`,
+    },
+  });
+
+  if (error) {
+    return {
+      status: "error",
+      message: "No se pudo crear la cuenta. Revisa los datos o prueba con otro correo.",
+    };
+  }
+
+  if (data.session) redirect("/app/cuestionario");
+
+  return {
+    status: "success",
+    message: "Cuenta creada. Revisa tu correo para confirmarla y comenzar el cuestionario.",
+  };
 }
 
 export async function requestPasswordResetAction(

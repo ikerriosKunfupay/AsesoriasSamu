@@ -15,7 +15,11 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 - **Seguimientos:** revisiones enviadas por clientes.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
 
-## Alta de un cliente
+## Registro y alta de un cliente
+
+Una persona que todavía no tenga cuenta puede pulsar **Regístrate** desde `/login` y completar nombre, correo y contraseña. Recibirá un correo de confirmación y, al abrirlo, accederá al cuestionario inicial. El registro no solicita datos de salud; esos datos se recogen después, dentro de la cuenta y con consentimiento específico.
+
+El entrenador también puede iniciar el alta desde el panel:
 
 1. En **Clientes**, pulsa **Invitar cliente**.
 2. Indica nombre y correo.
@@ -23,7 +27,7 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 4. Al entrar, completa el cuestionario inicial.
 5. Desde su ficha, el entrenador publica entrenamiento y nutrición.
 
-No existe registro abierto: todas las cuentas de cliente parten de una invitación.
+En ambos casos la cuenta se crea siempre con rol de cliente. El formulario público no permite solicitar ni escoger el rol de administrador.
 
 ## Experiencia del cliente
 
