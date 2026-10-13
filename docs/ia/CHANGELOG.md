@@ -1,5 +1,12 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-ayudas-contextuales-cuestionario`
+
+- Añadidos `FieldHelp` y `FieldHelpContent`; `Field` puede renderizar un disparador `?` junto a la etiqueta sin alterar el control ni su contrato de datos.
+- El diálogo contextual incluye etiquetado ARIA, cierre exterior, `Escape`, restauración del foco y contenido específico para los seis campos narrativos del onboarding.
+- Los textos sensibles aplican minimización de datos y desaconsejan diagnósticos, historiales e informes completos.
+- Incorporadas pruebas de apertura, contenido, cierre y retorno del foco.
+
 ## 2026-10-13 — `2026-10-13-controles-cuestionario-interno`
 
 - Añadido `numeric-values.ts` para sanear enteros y decimales sin signo y convertir `,` o `.` a un `number` canónico antes del `upsert` de onboarding.

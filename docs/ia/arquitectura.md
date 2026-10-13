@@ -39,6 +39,8 @@ En el onboarding, `numeric-values.ts` comparte el saneamiento de escritura y la 
 
 El sexo usa la primitiva cliente `InternalSelect`: un combobox/listbox con campo oculto para conservar el contrato `FormData`, selección por teclado, foco restaurado y cierre exterior. El resto del cuestionario agrupa las áreas narrativas en pares responsivos de igual altura; en móvil vuelve a una sola columna.
 
+`Field` acepta opcionalmente un contrato `FieldHelpContent` y delega su interacción en `FieldHelp`. Esta primitiva cliente abre un diálogo modal etiquetado, cerrable mediante botón, fondo o Escape, y restaura el foco al disparador. `OnboardingForm` aporta contenido específico para rutina, entrenamiento, comidas, objetivos, limitaciones y alergias. La ayuda es puramente informativa: no modifica el `FormData`, la validación ni el esquema persistido, y en campos sanitarios refuerza la minimización de datos.
+
 ## Planes
 
 `workout_assignments` y `nutrition_assignments` comparten contrato: cliente, título, contenido, estado, versión, fecha de inicio y autor. El cliente solo puede leer filas propias con estado `published`. En el MVP se crea una fila nueva por revisión, preservando histórico.

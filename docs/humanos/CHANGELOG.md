@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-ayudas-contextuales-cuestionario`
+
+- Añadido un botón `?` junto a cada campo de respuesta desarrollada del cuestionario.
+- Cada ayuda explica para qué sirve el campo, propone ejemplos y aclara que cuanto más concreta sea la respuesta, mejor podrá adaptarse el plan.
+- Las ayudas de lesiones y alergias recuerdan que no se deben compartir diagnósticos ni informes médicos completos.
+- El diálogo puede cerrarse con la `X`, pulsando fuera o mediante Escape.
+
 ## 2026-10-13 — `2026-10-13-controles-cuestionario-interno`
 
 - La edad solo admite números enteros positivos; peso y altura admiten decimales con coma o punto y se guardan como un único valor numérico normalizado.

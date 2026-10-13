@@ -37,6 +37,8 @@ El cliente ve únicamente sus datos. Antes de consultar el resto del área perso
 
 El cuestionario se presenta en una cuadrícula regular: los campos de una misma fila conservan el mismo ancho y las áreas de texto emparejadas tienen la misma altura. La edad solo permite números enteros positivos y mantiene el rango de 16 a 90 años. Peso y altura aceptan decimales escritos con coma o punto, pero se guardan como valores numéricos normalizados. El sexo se elige mediante un desplegable propio de Team Ortega, no mediante el menú visual del navegador.
 
+Los campos que requieren una respuesta desarrollada muestran un `?` junto a su título. Al pulsarlo aparece una explicación específica, ejemplos de información útil y el recordatorio de que una respuesta más concreta permite adaptar mejor el plan. Las ayudas de lesiones y alergias solicitan solo información práctica y recuerdan que no se deben copiar diagnósticos, historiales ni informes médicos completos.
+
 En móvil, el botón de navegación queda a la izquierda de la cabecera privada y el emblema de Team Ortega a la derecha.
 
 Después puede:

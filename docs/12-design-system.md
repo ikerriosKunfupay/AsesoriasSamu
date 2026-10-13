@@ -38,6 +38,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
+- `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
 - `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
@@ -64,6 +65,7 @@ Los estados semánticos tienen tokens propios: `success`, `warning` y `danger`, 
 - En escritorio, el menú privado ocupa la altura visible y mantiene el usuario y **Cerrar sesión** accesibles al pie, independientemente de la longitud del contenido.
 - En la cabecera privada móvil, el menú se sitúa a la izquierda y el emblema compacto a la derecha.
 - El cuestionario del cliente usa una cuadrícula responsiva: cuatro datos físicos en escritorio amplio, dos columnas para respuestas narrativas y una sola columna en móvil. Las áreas de texto de una misma fila conservan la misma altura y las ayudas equivalentes reservan el mismo espacio.
+- Los campos narrativos del cuestionario muestran ayuda contextual mediante `FieldHelp`. La explicación siempre relaciona el nivel de detalle con una mejor adaptación del plan; en salud debe pedir solo información práctica y prohibir informes completos.
 - Los campos físicos no dependen de `type="number"`: edad filtra a enteros sin signo; peso y altura usan teclado decimal, aceptan coma o punto y delegan la normalización definitiva al esquema del servidor.
 - El éxito del registro usa un diálogo modal marfil con acento rojo, mensaje de confirmación, CTA inmediato y redirección automática al login; no permanece como un aviso insertado dentro del formulario.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
