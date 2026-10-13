@@ -3,6 +3,7 @@ import { ClientsTable } from "@/components/admin/clients-table";
 import { PageHeading } from "@/components/layout/page-heading";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import type { PricingPlanOption } from "@/lib/admin/commercial-terms";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function ClientsPage() {
@@ -13,10 +14,26 @@ export default async function ClientsPage() {
     .eq("role", "client")
     .order("created_at", { ascending: false });
   const clientIds = clients?.map((client) => client.id) ?? [];
-  const { data: noteRows } = clientIds.length
-    ? await supabase.from("client_admin_notes").select("client_id, notes").in("client_id", clientIds)
-    : { data: [] };
+  const [{ data: noteRows }, { data: commercialRows }, { data: pricingRows }] = await Promise.all([
+    clientIds.length
+      ? supabase.from("client_admin_notes").select("client_id, notes").in("client_id", clientIds)
+      : Promise.resolve({ data: [] }),
+    clientIds.length
+      ? supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur").in("client_id", clientIds)
+      : Promise.resolve({ data: [] }),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, default_amount_eur, active").order("name"),
+  ]);
   const notesByClientId = new Map(noteRows?.map((row) => [row.client_id, row.notes]));
+  const commercialByClientId = new Map(commercialRows?.map((row) => [row.client_id, row]));
+  const pricingPlans: PricingPlanOption[] = (pricingRows ?? []).map((plan) => ({
+    id: plan.id,
+    name: plan.name,
+    billingCycle: plan.billing_cycle,
+    durationMonths: plan.duration_months,
+    defaultAmountEur: plan.default_amount_eur,
+    active: plan.active,
+  }));
+  const pricingById = new Map(pricingPlans.map((plan) => [plan.id, plan]));
 
   return (
     <>
@@ -31,13 +48,25 @@ export default async function ClientsPage() {
         )}
       />
       {clients?.length ? (
-        <ClientsTable clients={clients.map((client) => ({
-          id: client.id,
-          name: client.full_name || "Sin nombre",
-          status: client.status,
-          onboardingComplete: client.onboarding_complete,
-          notes: notesByClientId.get(client.id) ?? "",
-        }))} />
+        <ClientsTable
+          pricingPlans={pricingPlans}
+          clients={clients.map((client) => {
+            const terms = commercialByClientId.get(client.id);
+            const pricingPlan = terms?.pricing_plan_id ? pricingById.get(terms.pricing_plan_id) : undefined;
+            return {
+              id: client.id,
+              name: client.full_name || "Sin nombre",
+              status: client.status,
+              onboardingComplete: client.onboarding_complete,
+              notes: notesByClientId.get(client.id) ?? "",
+              modality: terms?.modality ?? null,
+              pricingPlanId: terms?.pricing_plan_id ?? null,
+              pricingPlanName: pricingPlan?.name ?? "",
+              billingCycle: pricingPlan?.billingCycle ?? null,
+              agreedAmountEur: terms?.agreed_amount_eur ?? null,
+            };
+          })}
+        />
       ) : (
         <EmptyState
           icon={UserPlus}

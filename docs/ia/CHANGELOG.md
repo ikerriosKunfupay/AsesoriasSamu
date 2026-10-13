@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-tarifas-analitica-asesorias`
+
+- `202610130005_commercial_terms.sql` crea `pricing_plans` y `client_commercial_terms`, conserva acuerdos mediante snapshot del importe, retira tarifas con borrado lógico y aplica RLS administrativa.
+- `202610130006_admin_dashboard_settings.sql` persiste objetivos por administrador con RLS ligada a `auth.uid()`; ambas migraciones quedan preparadas para aplicarse en orden en `team-ortega`.
+- `ClientCommercialTermsForm` se reutiliza en tabla y ficha; `/admin/tarifas` administra el catálogo y `ClientsTable` amplía búsqueda y orden trivalente a modalidad, tarifa y precio.
+- Incorporado Recharts para el panel `DashboardAnalytics`; `dashboard-analytics.ts` prorratea por meses, agrega cuotas pagadas/pendientes y calcula la previsión combinando tendencia reciente y cartera activa.
+- Los filtros de 3, 6 o 12 meses, modalidad y tarifa recalculan todas las métricas y gráficas sin nuevas lecturas; no se entregan respuestas sanitarias al componente.
+- `pnpm lint`, `pnpm typecheck`, 80 pruebas y `pnpm build` terminaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-navegacion-notas-estado-clientes`
 
 - Centralizada la construcción de fichas y la resolución de `returnTo` en `client-navigation.ts`, mediante una lista cerrada de destinos y alternativa segura a `/admin/clientes`.

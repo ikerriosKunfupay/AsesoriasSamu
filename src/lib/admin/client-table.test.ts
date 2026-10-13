@@ -6,9 +6,9 @@ import {
 } from "./client-table";
 
 const clients: ClientTableItem[] = [
-  { id: "1", name: "Álvaro", status: "active", onboardingComplete: true, notes: "Llamar el viernes" },
-  { id: "2", name: "Bea", status: "archived", onboardingComplete: false, notes: "Prefiere las mañanas" },
-  { id: "3", name: "Carlos", status: "active", onboardingComplete: false, notes: "" },
+  { id: "1", name: "Álvaro", status: "active", onboardingComplete: true, notes: "Llamar el viernes", modality: "in_person", pricingPlanId: "p1", pricingPlanName: "Mensual", billingCycle: "monthly", agreedAmountEur: 65 },
+  { id: "2", name: "Bea", status: "archived", onboardingComplete: false, notes: "Prefiere las mañanas", modality: "online", pricingPlanId: "p2", pricingPlanName: "Semestral", billingCycle: "semiannual", agreedAmountEur: 300 },
+  { id: "3", name: "Carlos", status: "active", onboardingComplete: false, notes: "", modality: null, pricingPlanId: null, pricingPlanName: "", billingCycle: null, agreedAmountEur: null },
 ];
 
 describe("filtro y orden de clientes", () => {
@@ -16,12 +16,17 @@ describe("filtro y orden de clientes", () => {
     expect(filterAndSortClients(clients, "alvaro", null).map((client) => client.id)).toEqual(["1"]);
     expect(filterAndSortClients(clients, "inactivo", null).map((client) => client.id)).toEqual(["2"]);
     expect(filterAndSortClients(clients, "mananas", null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, "presencial", null).map((client) => client.id)).toEqual(["1"]);
+    expect(filterAndSortClients(clients, "semestral", null).map((client) => client.id)).toEqual(["2"]);
+    expect(filterAndSortClients(clients, "300", null).map((client) => client.id)).toEqual(["2"]);
   });
 
   it("ordena en ambos sentidos y conserva el orden original sin criterio", () => {
     expect(filterAndSortClients(clients, "", { key: "name", direction: "desc" }).map((client) => client.id))
       .toEqual(["3", "2", "1"]);
     expect(filterAndSortClients(clients, "", null).map((client) => client.id)).toEqual(["1", "2", "3"]);
+    expect(filterAndSortClients(clients, "", { key: "amount", direction: "desc" }).map((client) => client.id))
+      .toEqual(["2", "1", "3"]);
   });
 
   it("recorre ascendente, descendente y orden original", () => {

@@ -8,16 +8,21 @@ La portada, el formulario de información, el acceso, la recuperación de contra
 
 La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el menú puede consultar:
 
-- **Resumen:** cinco indicadores compactos con acceso a sus últimos movimientos.
+- **Resumen:** cinco indicadores compactos y un panel filtrable con ingresos, previsión, objetivos y composición de la cartera.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
-- **Clientes:** cuentas registradas o invitadas, alta o baja, notas internas, cuestionario y ficha completa.
+- **Clientes:** cuentas registradas o invitadas, alta o baja, modalidad, tarifa, precio, notas internas, cuestionario y ficha completa.
 - **Entrenamientos y nutrición:** histórico de planes.
 - **Seguimientos:** revisiones enviadas por clientes.
+- **Tarifas:** precios habituales reutilizables para asignar las condiciones de cada asesoría.
 - **Cuotas:** registro manual de pendiente, pagada o exenta.
 
 El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En escritorio, el botón de la cabecera del propio lateral permite ocultarlo para ampliar el espacio de trabajo; mientras está cerrado aparece **Mostrar menú** y la elección se recuerda en ese navegador. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la navegación desplegable.
 
-El panel se ejecuta en la misma región europea que la base de datos para evitar esperas innecesarias. Durante una navegación interna, la estructura de la siguiente vista aparece inmediatamente y muestra un estado de carga hasta que llegan los datos. El resumen diferencia **Clientes registrados**, **Interesados nuevos**, **Cuestionarios recibidos**, **Seguimientos** y **Cuotas pendientes** en una sola fila compacta de escritorio. Al pulsar un indicador se abre un resumen con sus diez registros más recientes; cada fila lleva al registro concreto y, cuando existen más de diez, **Ver más** abre la sección completa. No se muestran respuestas de salud dentro de estos resúmenes. La lista de **Interesados** carga primero las 100 solicitudes más recientes; una futura paginación permitirá consultar el histórico cuando se supere ese volumen.
+El panel se ejecuta en la misma región europea que la base de datos para evitar esperas innecesarias. Durante una navegación interna, la estructura de la siguiente vista aparece inmediatamente y muestra un estado de carga hasta que llegan los datos. El resumen diferencia **Clientes registrados**, **Interesados nuevos**, **Cuestionarios recibidos**, **Seguimientos** y **Cuotas pendientes** en una sola fila compacta de escritorio. Al pulsar un indicador se abre un resumen con sus diez registros más recientes; cada fila lleva al registro concreto y, cuando existen más de diez, **Ver más** abre la sección completa. No se muestran respuestas de salud dentro de estos resúmenes.
+
+Debajo aparece el bloque **Valor de las asesorías**. Muestra lo cobrado y pendiente del mes, el valor recurrente mensual de la cartera, el ticket medio, los clientes activos y una previsión del mes siguiente. Las gráficas comparan ingresos, cartera y objetivo, distribuyen el valor por tarifa, separan presencial y virtual y enseñan las altas por mes. El entrenador puede filtrar simultáneamente todo el bloque por 3, 6 o 12 meses, modalidad y tarifa, y modificar sus propios objetivos de ingresos y clientes. “Cobrado” depende de las cuotas marcadas manualmente como pagadas; “cartera” prorratea el precio entre los meses de la tarifa; la previsión combina esa cartera con la tendencia reciente. Se habla de ingresos y no de beneficio neto porque la aplicación no registra gastos.
+
+La lista de **Interesados** carga primero las 100 solicitudes más recientes; una futura paginación permitirá consultar el histórico cuando se supere ese volumen.
 
 La cuenta inicial designada para el entrenador está provisionada como administradora activa. El acceso comprueba primero el rol persistido y entra directamente al panel; el mecanismo de preparación inicial solo actúa si esa identidad todavía figura como cliente. El resto de registros continúa entrando siempre como cliente y la contraseña del administrador no se guarda en el código ni en las tablas de la aplicación.
 
@@ -35,7 +40,9 @@ El entrenador también puede iniciar el alta desde el panel:
 4. Al entrar, completa el cuestionario inicial.
 5. Desde su ficha, el entrenador publica entrenamiento y nutrición.
 
-La lista y la ficha permiten dar de alta o de baja a cada cliente mediante un interruptor. Un cliente dado de baja conserva su información, pero no puede acceder al área privada hasta que el entrenador vuelva a activarlo. El entrenador también puede guardar una nota interna desde la propia fila de la tabla o desde la ficha; ambas zonas muestran y editan la misma nota, que nunca aparece en la cuenta del cliente. La tabla puede filtrarse por cliente, estado, cuestionario o texto de la nota; cada cabecera recorre orden ascendente, descendente y orden original al pulsarla sucesivamente.
+La lista y la ficha permiten dar de alta o de baja a cada cliente mediante un interruptor. Un cliente dado de baja conserva su información, pero no puede acceder al área privada hasta que el entrenador vuelva a activarlo. El entrenador también puede guardar una nota interna desde la propia fila de la tabla o desde la ficha; ambas zonas muestran y editan la misma nota, que nunca aparece en la cuenta del cliente.
+
+Cada cliente admite condiciones comerciales privadas: modalidad **Presencial** o **Virtual**, una tarifa y el precio realmente acordado. Al elegir una tarifa se propone su precio habitual, pero puede cambiarse solo para esa persona. Las tarifas Mensual, Semestral y Anual se prorratean en el resumen; una tarifa personalizada indica además cuántos meses cubre. El menú **Tarifas** permite crear, modificar o retirar opciones del selector sin borrar la asignación histórica de clientes que ya la utilizaban. La tabla de Clientes muestra modalidad, tarifa y precio y puede buscar y ordenar por cualquiera de estos datos, además de cliente, estado, cuestionario y nota. Cada cabecera recorre orden ascendente, descendente y orden original al pulsarla sucesivamente.
 
 La ficha adapta su botón **Volver** al lugar desde el que se abrió: regresa a Resumen cuando se accedió desde un indicador, a Clientes desde la tabla y a Entrenamientos, Nutrición o Seguimientos desde esas secciones. Si se abre un enlace directo sin origen reconocido, vuelve a Clientes como destino seguro.
 
@@ -82,7 +89,7 @@ La base de datos permite este guardado únicamente mediante el backend privado d
 
 ## Cuotas
 
-La sección de cuotas solo registra información interna. No cobra, no conecta con bancos y no almacena tarjetas. El responsable actualiza el estado manualmente.
+La sección de cuotas solo registra información interna. No cobra, no conecta con bancos y no almacena tarjetas. El responsable actualiza el estado manualmente. **Tarifas** describe el precio y la duración habitual del servicio; **Cuotas** deja constancia de lo que se ha cobrado, está pendiente o se ha eximido en un mes concreto. Esta separación permite que el resumen compare cartera prevista con cobros reales.
 
 ## Datos sensibles
 

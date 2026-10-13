@@ -14,6 +14,9 @@
 | `workout_logs` | futuro registro de sesiones | lectura/inserción propia |
 | `check_ins` | revisiones periódicas | lectura/inserción propia |
 | `manual_fee_records` | control interno sin cobro | ninguno |
+| `pricing_plans` | catálogo interno de tarifas y duración | ninguno |
+| `client_commercial_terms` | modalidad, tarifa y precio acordado por cliente | ninguno |
+| `admin_dashboard_settings` | objetivos privados de ingresos y clientes del administrador | ninguno |
 | `audit_events` | trazabilidad administrativa | ninguno |
 
 ## Roles
@@ -25,6 +28,8 @@
 La migración activa RLS en todas las tablas. `is_admin()` es `security definer`, usa `search_path = ''` y solo devuelve verdadero para perfil `admin` activo. Las políticas de cliente siempre comparan con `auth.uid()`.
 
 `anon` no recibe permisos de tabla. Los leads se insertan mediante una Server Action con service role. El service role se reserva para administración validada y nunca se construye en un Client Component. El cliente solo tiene `UPDATE` de columna sobre `full_name`, `phone` y `avatar_path`; no puede editar `role`, `status` ni `onboarding_complete` aunque actúe directamente contra la API.
+
+Tarifas y condiciones comerciales solo admiten operaciones de administradores activos. Los objetivos del resumen añaden además `admin_id = auth.uid()`, de modo que una cuenta administrativa no puede leer ni cambiar los objetivos personales de otra. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago.
 
 ## Avatares
 

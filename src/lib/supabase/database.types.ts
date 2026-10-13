@@ -1,5 +1,7 @@
 export type UserRole = "admin" | "client";
 export type ProfileStatus = "invited" | "active" | "suspended" | "archived";
+export type BillingCycle = "monthly" | "semiannual" | "annual" | "custom";
+export type ServiceModality = "in_person" | "online";
 
 export type Database = {
   public: {
@@ -44,6 +46,80 @@ export type Database = {
         Update: {
           notes?: string;
           updated_by?: string;
+        };
+        Relationships: [];
+      };
+      pricing_plans: {
+        Row: {
+          id: string;
+          name: string;
+          billing_cycle: BillingCycle;
+          duration_months: number;
+          default_amount_eur: number;
+          active: boolean;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          billing_cycle: BillingCycle;
+          duration_months?: number;
+          default_amount_eur: number;
+          active?: boolean;
+          created_by: string;
+        };
+        Update: {
+          name?: string;
+          billing_cycle?: BillingCycle;
+          duration_months?: number;
+          default_amount_eur?: number;
+          active?: boolean;
+        };
+        Relationships: [];
+      };
+      client_commercial_terms: {
+        Row: {
+          client_id: string;
+          modality: ServiceModality;
+          pricing_plan_id: string | null;
+          agreed_amount_eur: number;
+          updated_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          client_id: string;
+          modality: ServiceModality;
+          pricing_plan_id?: string | null;
+          agreed_amount_eur: number;
+          updated_by: string;
+        };
+        Update: {
+          modality?: ServiceModality;
+          pricing_plan_id?: string | null;
+          agreed_amount_eur?: number;
+          updated_by?: string;
+        };
+        Relationships: [];
+      };
+      admin_dashboard_settings: {
+        Row: {
+          admin_id: string;
+          monthly_revenue_goal_eur: number;
+          active_clients_goal: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          admin_id: string;
+          monthly_revenue_goal_eur?: number;
+          active_clients_goal?: number;
+        };
+        Update: {
+          monthly_revenue_goal_eur?: number;
+          active_clients_goal?: number;
         };
         Relationships: [];
       };
@@ -283,6 +359,8 @@ export type Database = {
     Enums: {
       user_role: UserRole;
       profile_status: ProfileStatus;
+      billing_cycle: BillingCycle;
+      service_modality: ServiceModality;
     };
     CompositeTypes: Record<string, never>;
   };

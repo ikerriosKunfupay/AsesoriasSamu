@@ -1,4 +1,12 @@
-import type { ProfileStatus } from "@/lib/supabase/database.types";
+import {
+  billingCycleLabel,
+  serviceModalityLabel,
+} from "@/lib/admin/commercial-terms";
+import type {
+  BillingCycle,
+  ProfileStatus,
+  ServiceModality,
+} from "@/lib/supabase/database.types";
 
 export type ClientTableItem = {
   id: string;
@@ -6,9 +14,14 @@ export type ClientTableItem = {
   status: ProfileStatus;
   onboardingComplete: boolean;
   notes: string;
+  modality: ServiceModality | null;
+  pricingPlanId: string | null;
+  pricingPlanName: string;
+  billingCycle: BillingCycle | null;
+  agreedAmountEur: number | null;
 };
 
-export type ClientTableSortKey = "name" | "status" | "questionnaire" | "notes";
+export type ClientTableSortKey = "name" | "status" | "questionnaire" | "modality" | "pricingPlan" | "amount" | "notes";
 export type ClientTableSort = { key: ClientTableSortKey; direction: "asc" | "desc" } | null;
 
 function normalize(value: string) {
@@ -27,6 +40,9 @@ function sortValue(item: ClientTableItem, key: ClientTableSortKey) {
   if (key === "name") return item.name;
   if (key === "status") return statusLabel(item);
   if (key === "questionnaire") return questionnaireLabel(item);
+  if (key === "modality") return serviceModalityLabel(item.modality);
+  if (key === "pricingPlan") return `${item.pricingPlanName} ${billingCycleLabel(item.billingCycle)}`;
+  if (key === "amount") return item.agreedAmountEur == null ? "" : String(item.agreedAmountEur);
   return item.notes;
 }
 
@@ -41,6 +57,10 @@ export function filterAndSortClients(
         client.name,
         statusLabel(client),
         questionnaireLabel(client),
+        serviceModalityLabel(client.modality),
+        client.pricingPlanName,
+        billingCycleLabel(client.billingCycle),
+        client.agreedAmountEur == null ? "" : String(client.agreedAmountEur).replace(".", ","),
         client.notes,
       ].join(" ")).includes(normalizedQuery))
     : clients;

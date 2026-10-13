@@ -75,6 +75,73 @@ export const clientStatusSchema = z.object({
   nextStatus: z.enum(["active", "archived"]),
 });
 
+export const dashboardGoalsSchema = z.object({
+  monthlyRevenueGoalEur: z.preprocess(
+    parseUnsignedDecimal,
+    z.number({ error: "Introduce un objetivo de ingresos válido." }).min(0).max(1000000),
+  ),
+  activeClientsGoal: z.preprocess(
+    parseUnsignedInteger,
+    z.number({ error: "Introduce un objetivo de clientes válido." }).int().min(0).max(100000),
+  ),
+});
+
+const euroAmount = z.preprocess(
+  parseUnsignedDecimal,
+  z.number({ error: "Introduce un importe válido." }).min(0).max(100000),
+);
+
+export const pricingPlanSchema = z.object({
+  pricingPlanId: z.union([z.string().uuid("Tarifa no válida."), z.literal("")]).optional(),
+  name: requiredText("El nombre").max(80),
+  billingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]),
+  durationMonths: z.coerce.number().int().min(1).max(120).optional(),
+  amountEur: euroAmount,
+}).superRefine((value, context) => {
+  if (value.billingCycle === "custom" && !value.durationMonths) {
+    context.addIssue({ code: "custom", path: ["durationMonths"], message: "Indica cuántos meses cubre." });
+  }
+});
+
+export const archivePricingPlanSchema = z.object({
+  pricingPlanId: z.string().uuid("Tarifa no válida."),
+});
+
+export const clientCommercialTermsSchema = z
+  .object({
+    clientId: z.string().uuid("Cliente no válido."),
+    modality: z.enum(["in_person", "online"]),
+    pricingPlanId: z.union([z.string().uuid("Tarifa no válida."), z.literal("new")]),
+    amountEur: euroAmount,
+    newPlanName: z.string().trim().max(80).optional(),
+    newBillingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]).optional(),
+    newDurationMonths: z.coerce.number().int().min(1).max(120).optional(),
+  })
+  .superRefine((value, context) => {
+    if (value.pricingPlanId !== "new") return;
+    if (!value.newPlanName || value.newPlanName.length < 2) {
+      context.addIssue({
+        code: "custom",
+        path: ["newPlanName"],
+        message: "Indica el nombre de la nueva tarifa.",
+      });
+    }
+    if (!value.newBillingCycle) {
+      context.addIssue({
+        code: "custom",
+        path: ["newBillingCycle"],
+        message: "Selecciona la periodicidad.",
+      });
+    }
+    if (value.newBillingCycle === "custom" && !value.newDurationMonths) {
+      context.addIssue({
+        code: "custom",
+        path: ["newDurationMonths"],
+        message: "Indica cuántos meses cubre.",
+      });
+    }
+  });
+
 export const onboardingSchema = z.object({
   age: z.preprocess(
     parseUnsignedInteger,

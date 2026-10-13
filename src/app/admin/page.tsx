@@ -1,6 +1,9 @@
+import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
 import { DashboardKpis, type DashboardKpi } from "@/components/admin/dashboard-kpis";
 import { PageHeading } from "@/components/layout/page-heading";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
+import type { AnalyticsClient, AnalyticsFee } from "@/lib/admin/dashboard-analytics";
+import { requireAdmin } from "@/lib/auth/current-user";
 import { formatDate, formatMoney, statusLabel } from "@/lib/format";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -14,14 +17,18 @@ function contactPreferenceLabel(value: string) {
 }
 
 export default async function AdminDashboardPage() {
+  const adminUser = await requireAdmin();
   const supabase = createAdminClient();
-  const [clients, leads, questionnaires, checkIns, fees] = await Promise.all([
+  const now = new Date();
+  const referencePeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const analyticsStart = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+  const analyticsStartPeriod = `${analyticsStart.getFullYear()}-${String(analyticsStart.getMonth() + 1).padStart(2, "0")}`;
+  const [clients, leads, questionnaires, checkIns, fees, commercialTerms, pricingPlans, analyticsFees, dashboardSettings] = await Promise.all([
     supabase
       .from("profiles")
       .select("id, full_name, status, onboarding_complete, created_at", { count: "exact" })
       .eq("role", "client")
-      .order("created_at", { ascending: false })
-      .limit(MAX_MODAL_ITEMS),
+      .order("created_at", { ascending: false }),
     supabase
       .from("leads")
       .select("id, full_name, contact_preference, status, created_at", { count: "exact" })
@@ -44,6 +51,18 @@ export default async function AdminDashboardPage() {
       .eq("status", "pending")
       .order("updated_at", { ascending: false })
       .limit(MAX_MODAL_ITEMS),
+    supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur"),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months"),
+    supabase
+      .from("manual_fee_records")
+      .select("id, client_id, period, amount_eur, status")
+      .gte("period", analyticsStartPeriod)
+      .order("period"),
+    supabase
+      .from("admin_dashboard_settings")
+      .select("monthly_revenue_goal_eur, active_clients_goal")
+      .eq("admin_id", adminUser.id)
+      .maybeSingle(),
   ]);
 
   const relatedClientIds = Array.from(
@@ -66,7 +85,7 @@ export default async function AdminDashboardPage() {
       viewAllHref: "/admin/clientes",
       hasMore: (clients.count ?? 0) > MAX_MODAL_ITEMS,
       emptyMessage: "Todavía no hay clientes registrados.",
-      items: (clients.data ?? []).map((client) => ({
+      items: (clients.data ?? []).slice(0, MAX_MODAL_ITEMS).map((client) => ({
         id: client.id,
         title: client.full_name,
         detail: `${statusLabel(client.status)} · ${client.onboarding_complete ? "Cuestionario completado" : "Cuestionario pendiente"}`,
@@ -136,10 +155,41 @@ export default async function AdminDashboardPage() {
     },
   ];
 
+  const termsByClientId = new Map((commercialTerms.data ?? []).map((terms) => [terms.client_id, terms]));
+  const plansById = new Map((pricingPlans.data ?? []).map((plan) => [plan.id, plan]));
+  const analyticsClients: AnalyticsClient[] = (clients.data ?? []).map((client) => {
+    const terms = termsByClientId.get(client.id);
+    const plan = terms?.pricing_plan_id ? plansById.get(terms.pricing_plan_id) : undefined;
+    return {
+      id: client.id,
+      name: client.full_name || "Cliente",
+      status: client.status,
+      createdAt: client.created_at,
+      modality: terms?.modality ?? null,
+      pricingPlanId: terms?.pricing_plan_id ?? null,
+      pricingPlanName: plan?.name ?? "",
+      billingCycle: plan?.billing_cycle ?? null,
+      durationMonths: plan?.duration_months ?? null,
+      agreedAmountEur: terms?.agreed_amount_eur ?? null,
+    };
+  });
+  const dashboardFees: AnalyticsFee[] = (analyticsFees.data ?? []).map((fee) => ({
+    id: fee.id,
+    clientId: fee.client_id,
+    period: fee.period,
+    amountEur: fee.amount_eur,
+    status: fee.status,
+  }));
+  const goals = {
+    monthlyRevenueGoalEur: dashboardSettings.data?.monthly_revenue_goal_eur ?? 0,
+    activeClientsGoal: dashboardSettings.data?.active_clients_goal ?? 0,
+  };
+
   return (
     <>
-      <PageHeading eyebrow="Panel privado" title="Resumen" description="Pulsa cualquier indicador para consultar sus últimos movimientos." />
+      <PageHeading eyebrow="Panel privado" title="Resumen" description="Consulta la actividad, el valor de tus asesorías, las previsiones y el avance de tus objetivos." />
       <DashboardKpis kpis={kpis} />
+      <DashboardAnalytics clients={analyticsClients} fees={dashboardFees} goals={goals} referencePeriod={referencePeriod} />
     </>
   );
 }

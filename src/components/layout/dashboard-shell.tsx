@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type MouseEvent } from "react";
-import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
+import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ const adminItems: NavItem[] = [
   { href: "/admin/entrenamientos", label: "Entrenamientos", icon: Dumbbell },
   { href: "/admin/nutricion", label: "Nutrición", icon: Salad },
   { href: "/admin/seguimientos", label: "Seguimientos", icon: TrendingUp },
+  { href: "/admin/tarifas", label: "Tarifas", icon: Tags },
   { href: "/admin/cuotas", label: "Cuotas", icon: WalletCards },
 ];
 

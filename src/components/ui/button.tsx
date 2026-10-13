@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
 import Link, { type LinkProps } from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -31,15 +31,17 @@ export function buttonStyles({ variant = "primary", size = "md", className }: St
   );
 }
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  className,
-  type = "button",
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & StyleProps) {
-  return <button type={type} className={buttonStyles({ variant, size, className })} {...props} />;
-}
+export const Button = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & StyleProps>(
+  function Button({
+    variant = "primary",
+    size = "md",
+    className,
+    type = "button",
+    ...props
+  }, ref) {
+    return <button ref={ref} type={type} className={buttonStyles({ variant, size, className })} {...props} />;
+  },
+);
 
 export function ButtonLink({
   variant = "primary",

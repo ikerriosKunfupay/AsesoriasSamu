@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowDown, ArrowUp, ArrowUpDown, Search, X } from "lucide-react";
+import { ClientCommercialTermsEditor } from "@/components/admin/client-commercial-terms-editor";
 import {
   ClientAdminNotesForm,
   ClientStatusSwitch,
@@ -12,17 +13,26 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import {
+  billingCycleLabel,
+  serviceModalityLabel,
+  type PricingPlanOption,
+} from "@/lib/admin/commercial-terms";
+import {
   filterAndSortClients,
   nextClientTableSort,
   type ClientTableItem,
   type ClientTableSort,
   type ClientTableSortKey,
 } from "@/lib/admin/client-table";
+import { formatMoney } from "@/lib/format";
 
 const columnLabels: Record<ClientTableSortKey, string> = {
   name: "Cliente",
   status: "Alta / baja",
   questionnaire: "Cuestionario",
+  modality: "Modalidad",
+  pricingPlan: "Tarifa",
+  amount: "Precio",
   notes: "Notas internas",
 };
 
@@ -54,7 +64,13 @@ function SortableHeader({
   );
 }
 
-export function ClientsTable({ clients }: { clients: ClientTableItem[] }) {
+export function ClientsTable({
+  clients,
+  pricingPlans,
+}: {
+  clients: ClientTableItem[];
+  pricingPlans: PricingPlanOption[];
+}) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<ClientTableSort>(null);
   const visibleClients = useMemo(
@@ -76,7 +92,7 @@ export function ClientsTable({ clients }: { clients: ClientTableItem[] }) {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por cliente, estado, cuestionario o notas…"
+            placeholder="Buscar por cliente, estado, modalidad, tarifa, precio o notas…"
             aria-label="Filtrar clientes"
             className="pl-11"
           />
@@ -98,6 +114,9 @@ export function ClientsTable({ clients }: { clients: ClientTableItem[] }) {
               <SortableHeader column="name" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
               <SortableHeader column="status" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
               <SortableHeader column="questionnaire" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
+              <SortableHeader column="modality" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
+              <SortableHeader column="pricingPlan" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
+              <SortableHeader column="amount" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
               <SortableHeader column="notes" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
               <th><span className="sr-only">Acciones</span></th>
             </tr>
@@ -117,17 +136,41 @@ export function ClientsTable({ clients }: { clients: ClientTableItem[] }) {
                     <ClientStatusSwitch clientId={client.id} clientName={client.name} status={client.status} />
                   </td>
                   <td>{client.onboardingComplete ? "Completado" : "Pendiente"}</td>
+                  <td>{serviceModalityLabel(client.modality)}</td>
+                  <td>
+                    {client.pricingPlanName ? (
+                      <span className="grid gap-0.5">
+                        <b>{client.pricingPlanName}</b>
+                        <small className="text-muted">{billingCycleLabel(client.billingCycle)}</small>
+                      </span>
+                    ) : "Sin asignar"}
+                  </td>
+                  <td className="whitespace-nowrap font-bold">
+                    {client.agreedAmountEur == null ? "—" : formatMoney(client.agreedAmountEur)}
+                  </td>
                   <td>
                     <ClientAdminNotesForm clientId={client.id} initialNotes={client.notes} compact />
                   </td>
-                  <td className="text-right">
-                    <ButtonLink href={detailHref} size="sm" variant="outline">Ver ficha</ButtonLink>
+                  <td>
+                    <div className="flex justify-end gap-2">
+                      <ClientCommercialTermsEditor
+                        clientId={client.id}
+                        clientName={client.name}
+                        pricingPlans={pricingPlans}
+                        initialTerms={client.modality && client.agreedAmountEur != null ? {
+                          modality: client.modality,
+                          pricingPlanId: client.pricingPlanId,
+                          agreedAmountEur: client.agreedAmountEur,
+                        } : null}
+                      />
+                      <ButtonLink href={detailHref} size="sm" variant="outline">Ver ficha</ButtonLink>
+                    </div>
                   </td>
                 </tr>
               );
             }) : (
               <tr>
-                <td colSpan={5} className="py-10 text-center text-muted">
+                <td colSpan={8} className="py-10 text-center text-muted">
                   No hay clientes que coincidan con el filtro.
                 </td>
               </tr>

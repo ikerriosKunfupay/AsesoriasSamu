@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  clientCommercialTermsSchema,
   clientAdminNoteSchema,
   clientStatusSchema,
+  dashboardGoalsSchema,
   leadSchema,
   onboardingSchema,
   profileSettingsSchema,
+  pricingPlanSchema,
   registerSchema,
   updateEmailSchema,
   updatePasswordSchema,
@@ -111,6 +114,54 @@ describe("validación de formularios", () => {
       .toBe(true);
     expect(clientStatusSchema.safeParse({ clientId, nextStatus: "archived" }).success).toBe(true);
     expect(clientStatusSchema.safeParse({ clientId, nextStatus: "admin" }).success).toBe(false);
+  });
+
+  it("normaliza importes con coma en las tarifas reutilizables", () => {
+    const result = pricingPlanSchema.safeParse({
+      pricingPlanId: "",
+      name: "Semestral",
+      billingCycle: "semiannual",
+      amountEur: "299,90",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.amountEur).toBe(299.9);
+  });
+
+  it("exige duración en las tarifas personalizadas y valida objetivos", () => {
+    expect(pricingPlanSchema.safeParse({
+      pricingPlanId: "",
+      name: "Trimestral",
+      billingCycle: "custom",
+      amountEur: "150",
+    }).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({
+      pricingPlanId: "",
+      name: "Trimestral",
+      billingCycle: "custom",
+      durationMonths: "3",
+      amountEur: "150",
+    }).success).toBe(true);
+    expect(dashboardGoalsSchema.safeParse({
+      monthlyRevenueGoalEur: "2500,50",
+      activeClientsGoal: "30",
+    }).success).toBe(true);
+  });
+
+  it("exige nombre y periodicidad al crear una tarifa desde un cliente", () => {
+    const base = {
+      clientId: "11111111-1111-4111-8111-111111111111",
+      modality: "online",
+      pricingPlanId: "new",
+      amountEur: "49.90",
+    };
+
+    expect(clientCommercialTermsSchema.safeParse(base).success).toBe(false);
+    expect(clientCommercialTermsSchema.safeParse({
+      ...base,
+      newPlanName: "Anual",
+      newBillingCycle: "annual",
+    }).success).toBe(true);
   });
 
   it("valida los límites físicos del cuestionario", () => {

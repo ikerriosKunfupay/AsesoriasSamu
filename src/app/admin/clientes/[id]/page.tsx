@@ -5,12 +5,14 @@ import {
   ClientAdminNotesForm,
   ClientStatusSwitch,
 } from "@/components/forms/admin-forms";
+import { ClientCommercialTermsForm } from "@/components/forms/commercial-terms-forms";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { PageHeading } from "@/components/layout/page-heading";
 import { getClientReturnDestination } from "@/lib/admin/client-navigation";
+import type { PricingPlanOption } from "@/lib/admin/commercial-terms";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatDate, statusLabel } from "@/lib/format";
 import {
@@ -29,7 +31,7 @@ export default async function ClientDetailPage({
   const [{ id }, { returnTo }] = await Promise.all([params, searchParams]);
   const returnDestination = getClientReturnDestination(returnTo);
   const supabase = createAdminClient();
-  const [profileResult, authResult, onboardingResult, workoutResult, nutritionResult, checkInsResult, adminNotesResult] = await Promise.all([
+  const [profileResult, authResult, onboardingResult, workoutResult, nutritionResult, checkInsResult, adminNotesResult, commercialResult, pricingResult] = await Promise.all([
     supabase.from("profiles").select("id, full_name, phone, avatar_path, status, onboarding_complete, created_at").eq("id", id).eq("role", "client").single(),
     supabase.auth.admin.getUserById(id),
     supabase.from("onboarding_submissions").select("*").eq("user_id", id).maybeSingle(),
@@ -37,6 +39,8 @@ export default async function ClientDetailPage({
     supabase.from("nutrition_assignments").select("id, title, status, starts_on, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
     supabase.from("check_ins").select("id, weight_kg, energy_level, adherence_level, notes, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
     supabase.from("client_admin_notes").select("notes").eq("client_id", id).maybeSingle(),
+    supabase.from("client_commercial_terms").select("modality, pricing_plan_id, agreed_amount_eur").eq("client_id", id).maybeSingle(),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, default_amount_eur, active").order("name"),
   ]);
   const profile = profileResult.data;
   if (!profile) notFound();
@@ -47,6 +51,19 @@ export default async function ClientDetailPage({
     ? await supabase.storage.from("profile-avatars").createSignedUrl(profile.avatar_path, 3600)
     : { data: null };
   const email = authResult.data.user?.email;
+  const pricingPlans: PricingPlanOption[] = (pricingResult.data ?? []).map((plan) => ({
+    id: plan.id,
+    name: plan.name,
+    billingCycle: plan.billing_cycle,
+    durationMonths: plan.duration_months,
+    defaultAmountEur: plan.default_amount_eur,
+    active: plan.active,
+  }));
+  const commercialTerms = commercialResult.data ? {
+    modality: commercialResult.data.modality,
+    pricingPlanId: commercialResult.data.pricing_plan_id,
+    agreedAmountEur: commercialResult.data.agreed_amount_eur,
+  } : null;
   return <>
     <ButtonLink href={returnDestination.href} variant="outline" size="sm" className="mb-5">
       <ArrowLeft className="size-4" aria-hidden="true" />
@@ -67,6 +84,13 @@ export default async function ClientDetailPage({
           <div className="sm:col-span-2"><dt className="font-bold text-muted">Correo electrónico</dt><dd className="mt-1 break-all">{email ? <a className="hover:text-primary hover:underline" href={`mailto:${email}`}>{email}</a> : "No disponible"}</dd></div>
         </dl>
       </div>
+    </Card>
+    <Card className="mb-6">
+      <h2 className="text-xl font-black">Condiciones comerciales</h2>
+      <p className="mb-5 mt-1 text-sm text-muted">
+        Asigna modalidad, tarifa y precio acordado. Es información interna y no procesa cobros.
+      </p>
+      <ClientCommercialTermsForm clientId={id} pricingPlans={pricingPlans} initialTerms={commercialTerms} />
     </Card>
     <Card className="mb-6">
       <h2 className="mb-4 text-xl font-black">Notas internas</h2>

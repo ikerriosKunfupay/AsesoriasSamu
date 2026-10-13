@@ -1,5 +1,14 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-tarifas-analitica-asesorias`
+
+- Añadidas tarifas reutilizables Mensual, Semestral, Anual o personalizadas, con precio habitual y duración; el entrenador puede crearlas, modificarlas o retirarlas desde su propia sección.
+- Cada cliente puede marcarse como Presencial o Virtual, asignarle una tarifa y conservar un precio acordado distinto; la tabla muestra estos campos y permite buscarlos y ordenarlos.
+- El Resumen incorpora métricas de cobros, cartera mensual, previsión, pendientes, ticket medio y clientes activos, además de gráficas filtrables por periodo, modalidad y tarifa.
+- El entrenador puede definir objetivos propios de ingresos mensuales y clientes activos y consultar su progreso.
+- Se distingue expresamente ingreso bruto de beneficio neto y no se incorporan pagos, bancos ni datos de tarjeta.
+- El análisis de código, los tipos, las 80 pruebas y la compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-navegacion-notas-estado-clientes`
 
 - El botón de vuelta de una ficha lleva ahora al lugar real desde el que se abrió: Resumen, Clientes, Entrenamientos, Nutrición o Seguimientos.
