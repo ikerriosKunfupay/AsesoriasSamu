@@ -27,13 +27,13 @@
 
 La migración activa RLS en todas las tablas. `is_admin()` es `security definer`, usa `search_path = ''` y solo devuelve verdadero para perfil `admin` activo. Las políticas de cliente siempre comparan con `auth.uid()`.
 
-`anon` no recibe permisos de tabla. Los leads se insertan mediante una Server Action con service role. El service role se reserva para administración validada y nunca se construye en un Client Component. El cliente solo tiene `UPDATE` de columna sobre `full_name`, `phone` y `avatar_path`; no puede editar `role`, `status` ni `onboarding_complete` aunque actúe directamente contra la API.
+`anon` no recibe permisos de tabla. Los leads se insertan mediante una Server Action con service role. El service role se reserva para administración validada y nunca se construye en un Client Component. Un usuario autenticado solo tiene `UPDATE` de columna sobre `full_name`, `phone` y `avatar_path` en su propia fila; no puede editar `role`, `status` ni `onboarding_complete` aunque actúe directamente contra la API. `updateAdminProfileAction` exige además `requireAdmin()` y deriva el UUID de la sesión.
 
 Tarifas y condiciones comerciales solo admiten operaciones de administradores activos. Los objetivos del resumen añaden además `admin_id = auth.uid()`, de modo que una cuenta administrativa no puede leer ni cambiar los objetivos personales de otra. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago.
 
 ## Avatares
 
-`profile-avatars` es un bucket privado con límite de 2 MB y MIME restringido a JPG, PNG o WebP. Cada objeto vive bajo el UUID de su propietario. Las políticas de `storage.objects` limitan inserción, sustitución y borrado al cliente propietario; la lectura se permite al propietario y al administrador. La web no persiste URLs públicas: firma cada lectura durante una hora y conserva únicamente `profiles.avatar_path`.
+`profile-avatars` es un bucket privado con límite de 2 MB y MIME restringido a JPG, PNG o WebP. Cada objeto vive bajo el UUID de su propietario. Las políticas de `storage.objects` limitan inserción, sustitución y borrado al propietario autenticado, sea cliente o administrador; la lectura se permite al propietario y a cualquier administrador activo. La web no persiste URLs públicas: firma cada lectura durante una hora y conserva únicamente `profiles.avatar_path`. El distintivo visual **Cuenta verificada** no se persiste ni se puede editar: representa que la sesión ya superó `requireAdmin()` y tiene rol administrativo activo.
 
 ## Cambios sensibles de cuenta
 
@@ -52,4 +52,4 @@ Lesiones y alergias se almacenan únicamente en `onboarding_submissions`, detrá
 3. Un usuario suspendido no llega al área privada.
 4. Un registro o una invitación nunca puede crear un administrador.
 5. El bundle del navegador no contiene la service role.
-6. Un cliente no puede leer ni sustituir el avatar de otro cliente; el administrador sí puede visualizarlo mediante URL firmada.
+6. Un usuario no puede sustituir el avatar de otra cuenta; el administrador puede visualizar avatares mediante URL firmada y solo modificar el propio.

@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-perfil-admin-y-ajustes-resumen`
+
+- Añadida `/admin/perfil` detrás de `requireAdmin()`, con `ProfileSettingsForm` en variante administrativa y `updateAdminProfileAction` compartiendo la actualización propia sin aceptar UUID externos.
+- `AdminLayout` firma durante una hora el avatar privado y `DashboardShell` enlaza la identidad administrativa en escritorio y móvil, muestra `BadgeCheck`, evita controles interactivos anidados y marca el perfil activo con `aria-current`.
+- El distintivo verificado se deriva del rol administrativo autorizado; no se añade ningún campo mutable ni migración. Las políticas existentes limitan avatar y columnas básicas a la cuenta propietaria.
+- `DashboardGoalsForm` reutiliza los saneadores numéricos para texto decimal y entero; `dashboardGoalsSchema` mantiene la validación autoritativa y rechaza signos o símbolos si se elude el navegador.
+- Eliminado el párrafo auxiliar al pie de `DashboardAnalytics` sin modificar sus datos ni cálculos.
+- `pnpm lint`, `pnpm typecheck`, 117 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-sidebar-y-creacion-de-planes`
 
 - `DashboardShell` sustituye la lista plana del administrador por grupos compartidos entre navegación de escritorio y móvil, conservando el cálculo activo y las guardas existentes.

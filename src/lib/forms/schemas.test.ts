@@ -168,6 +168,14 @@ describe("validación de formularios", () => {
       monthlyRevenueGoalEur: "2500,50",
       activeClientsGoal: "30",
     }).success).toBe(true);
+    expect(dashboardGoalsSchema.safeParse({
+      monthlyRevenueGoalEur: "-250",
+      activeClientsGoal: "30",
+    }).success).toBe(false);
+    expect(dashboardGoalsSchema.safeParse({
+      monthlyRevenueGoalEur: "+?250",
+      activeClientsGoal: "-3",
+    }).success).toBe(false);
   });
 
   it("exige nombre y periodicidad al crear una tarifa desde un cliente", () => {

@@ -145,4 +145,26 @@ describe("DashboardAnalytics", () => {
     expect(screen.getByText(/^sin cuota registrada en octubre de 2026$/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /iker ríos navarro/i })).toHaveAttribute("href", "/admin/cuotas");
   });
+
+  it("elimina signos y caracteres inválidos de los objetivos mientras se escriben", () => {
+    render(
+      <DashboardAnalytics
+        clients={clients}
+        fees={fees}
+        goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
+        referenceDate="2026-10-14"
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Modificar objetivos"));
+    const revenueGoal = screen.getByRole("textbox", { name: "Objetivo mensual de ingresos (€)" });
+    const clientsGoal = screen.getByRole("textbox", { name: "Objetivo de clientes activos" });
+
+    fireEvent.input(revenueGoal, { target: { value: "-+?250,5e0" } });
+    fireEvent.input(clientsGoal, { target: { value: "-1+2e?" } });
+
+    expect(revenueGoal).toHaveValue("250,50");
+    expect(clientsGoal).toHaveValue("12");
+    expect(screen.queryByText(/las cifras son internas y orientativas/i)).not.toBeInTheDocument();
+  });
 });

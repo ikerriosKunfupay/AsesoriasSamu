@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
-import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
+import { type LucideIcon, AlertCircle, BadgeCheck, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -134,6 +134,32 @@ export function DashboardShell({
     ));
   }
 
+  function adminProfileIdentity(surface: "sidebar" | "mobile") {
+    const active = pathname === "/admin/perfil";
+    const activeClass = surface === "sidebar"
+      ? "bg-sidebar-hover text-sidebar-foreground"
+      : "bg-surface-muted text-foreground";
+    const idleClass = surface === "sidebar"
+      ? "text-sidebar-foreground hover:bg-sidebar-hover"
+      : "text-foreground hover:bg-surface-muted";
+
+    return (
+      <Link
+        href="/admin/perfil"
+        aria-label={`Editar perfil de ${userName}`}
+        aria-current={active ? "page" : undefined}
+        className={`flex min-h-12 min-w-0 items-center gap-3 rounded-[var(--radius-md)] px-2 transition-colors ${active ? activeClass : idleClass}`}
+      >
+        <ProfileAvatar name={userName} src={userAvatarUrl} className="size-10 text-xs" enlargeable={false} />
+        <span className="min-w-0 flex-1 truncate text-sm font-bold">{userName}</span>
+        <span className="shrink-0 text-primary" title="Cuenta verificada">
+          <BadgeCheck className="size-5" aria-hidden="true" />
+          <span className="sr-only">Cuenta verificada</span>
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <div className={`min-h-screen bg-background lg:grid ${isDesktopSidebarOpen ? "lg:grid-cols-[260px_1fr]" : "lg:grid-cols-1"}`}>
       {isDesktopSidebarOpen ? (
@@ -149,10 +175,14 @@ export function DashboardShell({
           {navigationGroups("sidebar")}
         </nav>
         <div className="mt-auto border-t border-sidebar-border pt-5">
-          <div className="mb-3 flex min-w-0 items-center gap-3">
+          {mode === "admin" ? (
+            <div className="mb-3">{adminProfileIdentity("sidebar")}</div>
+          ) : (
+          <div className="mb-3 flex min-w-0 items-center gap-3 px-2">
             <ProfileAvatar name={userName} src={userAvatarUrl} className="size-10 text-xs" />
             <p className="min-w-0 truncate text-sm font-bold text-sidebar-foreground">{userName}</p>
           </div>
+          )}
           <form action={logoutAction}>
             <Button variant="ghost" className="w-full justify-start text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground" type="submit">
               <LogOut className="size-4" /> Cerrar sesión
@@ -169,6 +199,9 @@ export function DashboardShell({
             </summary>
             <nav className="absolute left-0 mt-2 w-72 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
               {navigationGroups("mobile")}
+              {mode === "admin" ? (
+                <div className="mt-2 border-t border-border pt-2">{adminProfileIdentity("mobile")}</div>
+              ) : null}
               <ThemeToggle className="w-full" />
               <form action={logoutAction} className="border-t border-border pt-1">
                 <Button type="submit" variant="ghost" className="w-full justify-start"><LogOut className="size-4" /> Cerrar sesión</Button>

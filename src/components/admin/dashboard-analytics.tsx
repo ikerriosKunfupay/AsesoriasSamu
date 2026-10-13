@@ -48,6 +48,10 @@ import {
 } from "@/lib/admin/dashboard-analytics";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import { initialActionState } from "@/lib/forms/action-state";
+import {
+  sanitizeUnsignedDecimalInput,
+  sanitizeUnsignedIntegerInput,
+} from "@/lib/forms/numeric-values";
 import { formatMoney } from "@/lib/format";
 
 const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
@@ -223,8 +227,12 @@ function DashboardGoalsForm({ goals }: { goals: DashboardGoals }) {
           Objetivo mensual de ingresos (€)
           <Input
             name="monthlyRevenueGoalEur"
+            type="text"
             inputMode="decimal"
             defaultValue={String(goals.monthlyRevenueGoalEur).replace(".", ",")}
+            onInput={(event) => {
+              event.currentTarget.value = sanitizeUnsignedDecimalInput(event.currentTarget.value);
+            }}
             aria-invalid={Boolean(state.fieldErrors?.monthlyRevenueGoalEur)}
           />
           {state.fieldErrors?.monthlyRevenueGoalEur?.[0] ? <span className="text-xs text-danger">{state.fieldErrors.monthlyRevenueGoalEur[0]}</span> : null}
@@ -233,10 +241,12 @@ function DashboardGoalsForm({ goals }: { goals: DashboardGoals }) {
           Objetivo de clientes activos
           <Input
             name="activeClientsGoal"
-            type="number"
-            min={0}
-            step={1}
+            type="text"
+            inputMode="numeric"
             defaultValue={goals.activeClientsGoal}
+            onInput={(event) => {
+              event.currentTarget.value = sanitizeUnsignedIntegerInput(event.currentTarget.value);
+            }}
             aria-invalid={Boolean(state.fieldErrors?.activeClientsGoal)}
           />
           {state.fieldErrors?.activeClientsGoal?.[0] ? <span className="text-xs text-danger">{state.fieldErrors.activeClientsGoal[0]}</span> : null}
@@ -576,10 +586,6 @@ export function DashboardAnalytics({
           </div>
         </Card>
       </div>
-
-      <p className="mt-4 text-xs leading-relaxed text-muted">
-        Las cifras son internas y orientativas. En la vista mensual, “cobrado” usa el periodo contable de la cuota; en día y semana usa su última actualización manual. “Cartera” y “objetivo” se prorratean a la escala seleccionada. La previsión combina la cartera con la tendencia de hasta seis periodos completos. No representa beneficio neto porque no se registran gastos.
-      </p>
 
       {activeMetric ? (
         <div

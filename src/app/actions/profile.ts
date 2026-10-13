@@ -3,18 +3,36 @@
 import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/lib/forms/action-state";
 import { fieldErrors, profileSettingsSchema } from "@/lib/forms/schemas";
-import { requireCompletedClient } from "@/lib/auth/current-user";
+import {
+  requireAdmin,
+  requireCompletedClient,
+  type CurrentUser,
+} from "@/lib/auth/current-user";
 import { createClient } from "@/lib/supabase/server";
 
 const AVATAR_BUCKET = "profile-avatars";
 const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
 const AVATAR_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-export async function updateProfileAction(
-  _previous: ActionState,
+type ProfileSurface = "admin" | "client";
+
+function revalidateProfileSurfaces(userId: string, surface: ProfileSurface) {
+  if (surface === "admin") {
+    revalidatePath("/admin", "layout");
+    revalidatePath("/admin/perfil");
+    return;
+  }
+
+  revalidatePath("/app", "layout");
+  revalidatePath("/app/ajustes");
+  revalidatePath(`/admin/clientes/${userId}`);
+}
+
+async function updateOwnProfile(
+  user: CurrentUser,
+  surface: ProfileSurface,
   formData: FormData,
 ): Promise<ActionState> {
-  const user = await requireCompletedClient();
   const supabase = await createClient();
 
   if (formData.get("intent") === "removeAvatar") {
@@ -32,9 +50,7 @@ export async function updateProfileAction(
     }
 
     await supabase.storage.from(AVATAR_BUCKET).remove([user.avatarPath]);
-    revalidatePath("/app", "layout");
-    revalidatePath("/app/ajustes");
-    revalidatePath(`/admin/clientes/${user.id}`);
+    revalidateProfileSurfaces(user.id, surface);
 
     return { status: "success", message: "Foto eliminada. Volvemos a mostrar tus iniciales." };
   }
@@ -105,9 +121,23 @@ export async function updateProfileAction(
     return { status: "error", message: "No se pudieron guardar los datos del perfil." };
   }
 
-  revalidatePath("/app", "layout");
-  revalidatePath("/app/ajustes");
-  revalidatePath(`/admin/clientes/${user.id}`);
+  revalidateProfileSurfaces(user.id, surface);
 
   return { status: "success", message: "Perfil actualizado correctamente." };
+}
+
+export async function updateProfileAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const user = await requireCompletedClient();
+  return updateOwnProfile(user, "client", formData);
+}
+
+export async function updateAdminProfileAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const user = await requireAdmin();
+  return updateOwnProfile(user, "admin", formData);
 }

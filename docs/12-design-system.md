@@ -49,11 +49,11 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
 - `InternalSelect`: selector visual propio con semántica combobox/listbox, navegación por teclado y valor compatible con `FormData`; evita los menús nativos cuando el producto necesita una presentación interna consistente. Admite apertura superior, renderizado flotante en `document.body` para escapar de contenedores con scroll y una altura compacta mediante clases del consumidor. El disparador conserva separación entre texto y flecha y padding derecho suficiente para que el icono nunca toque el borde.
 - `SocialNetworksField`: bloque desplegable, compacto y redondeado que compone `InternalSelect` con icono, prefijo de URL, usuario y acciones de añadir o eliminar. Los perfiles opcionales no deben ocupar altura cuando no se editan ni repetir instrucciones dentro del panel.
-- `ProfileAvatar`: avatar circular con borde de marca, imagen privada mediante URL firmada e iniciales como estado de respaldo.
+- `ProfileAvatar`: avatar circular con borde de marca, imagen privada mediante URL firmada e iniciales como estado de respaldo. Dentro de un enlace de perfil debe desactivar la ampliación para evitar controles interactivos anidados.
 - Los teléfonos usan un control compuesto con prefijo integrado y campo `tel`; el prefijo se abre en un menú propio negro y rojo, nunca en el selector gris nativo del sistema. Las elecciones cortas y excluyentes se presentan como radios visibles.
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
-- `DashboardShell`: navegación diferenciada para entrenador y cliente, sección actual remarcada en escritorio y móvil mediante `aria-current`, control lateral estable en la barra superior y selector de tema.
+- `DashboardShell`: navegación diferenciada para entrenador y cliente, sección actual remarcada en escritorio y móvil mediante `aria-current`, control lateral estable en la barra superior y selector de tema. La identidad administrativa enlaza al perfil propio y acompaña el nombre con el icono de cuenta verificada.
 - `PricingPlansCatalog`: selector segmentado de tabla, lista y galería; todas las vistas resumen la misma plantilla y abren un único editor modal para mantener coherencia funcional.
 - `public-action`, `public-kicker`, `hero-mark` y `public-form`: lenguaje editorial compartido por landing, captación, acceso y páginas legales.
 
@@ -82,6 +82,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - Los campos narrativos del cuestionario muestran ayuda contextual mediante `FieldHelp`. La explicación siempre relaciona el nivel de detalle con una mejor adaptación del plan; en salud debe pedir solo información práctica y prohibir informes completos.
 - Las redes sociales del cuestionario se recogen como perfiles estructurados, nunca como un textarea libre. En móvil cada perfil apila selector, usuario y acción; en escritorio mantiene una sola fila.
 - Los campos físicos no dependen de `type="number"`: edad filtra a enteros sin signo; peso y altura usan teclado decimal, aceptan coma o punto y delegan la normalización definitiva al esquema del servidor.
+- Los objetivos económicos y de clientes filtran la escritura con controles de texto y teclado numérico: no deben admitir signos, exponentes, letras ni símbolos; el servidor repite siempre esa validación.
 - El éxito del registro usa un diálogo modal marfil con acento rojo, mensaje de confirmación, CTA inmediato y redirección automática al login; no permanece como un aviso insertado dentro del formulario.
 - Los enlaces de regreso de las páginas de acceso y captación se alinean siempre con el borde izquierdo de su contenido principal.
 - Conservar una jerarquía de un `h1` por vista y encabezados secuenciales.

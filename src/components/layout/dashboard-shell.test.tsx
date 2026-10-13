@@ -130,4 +130,33 @@ describe("DashboardShell", () => {
     expect(navigation.textContent?.indexOf("Clientes")).toBeLessThan(navigation.textContent?.indexOf("Pagos") ?? 0);
     expect(navigation).toHaveTextContent(/Tarifas\s*Cuotas/);
   });
+
+  it("abre el perfil verificado del administrador desde su identidad", () => {
+    navigationMocks.pathname = "/admin/perfil";
+
+    render(
+      <DashboardShell mode="admin" userName="Samuel Ortega" userAvatarUrl="https://example.com/avatar.jpg">
+        <p>Perfil</p>
+      </DashboardShell>,
+    );
+
+    const profileLinks = screen.getAllByRole("link", { name: "Editar perfil de Samuel Ortega", current: "page" });
+    expect(profileLinks).toHaveLength(2);
+    expect(profileLinks[0]).toHaveAttribute("href", "/admin/perfil");
+    expect(screen.getAllByText("Cuenta verificada")).toHaveLength(2);
+    expect(screen.getAllByRole("img", { name: "Foto de perfil de Samuel Ortega" })[0]).toHaveStyle({
+      backgroundImage: "url(https://example.com/avatar.jpg)",
+    });
+  });
+
+  it("no presenta una cuenta de cliente como perfil administrativo verificado", () => {
+    render(
+      <DashboardShell mode="client" userName="Cliente de prueba" onboardingComplete>
+        <p>Inicio</p>
+      </DashboardShell>,
+    );
+
+    expect(screen.queryByRole("link", { name: /editar perfil/i })).not.toBeInTheDocument();
+    expect(screen.queryByText("Cuenta verificada")).not.toBeInTheDocument();
+  });
 });

@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-perfil-admin-y-ajustes-resumen`
+
+- La identidad de Samuel Ortega en el menú muestra el distintivo de cuenta verificada y abre su perfil tanto en escritorio como en móvil.
+- El perfil permite actualizar nombre, teléfono y foto; la imagen continúa siendo privada, admite JPG, PNG o WebP hasta 2 MB y puede eliminarse para recuperar las iniciales.
+- Los objetivos de ingresos y clientes eliminan signos, letras y símbolos durante la escritura y vuelven a validarse al guardar para impedir cantidades inválidas.
+- Retirado el texto explicativo situado bajo las tres gráficas finales del resumen.
+- La validación final completó análisis de código, tipos, 117 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-sidebar-y-creacion-de-planes`
 
 - El menú administrativo separa ahora **Asesorías** —Clientes, Entrenamientos, Nutrición y Seguimientos— y **Pagos** —Tarifas y Cuotas—, tanto en escritorio como en móvil.

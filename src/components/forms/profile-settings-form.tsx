@@ -1,9 +1,10 @@
 "use client";
 
-import { KeyRound, Mail } from "lucide-react";
+import { BadgeCheck, KeyRound, Mail } from "lucide-react";
 import { useActionState, useMemo, useState } from "react";
 import { requestAccountChangeAction } from "@/app/actions/account-security";
-import { updateProfileAction } from "@/app/actions/profile";
+import { updateAdminProfileAction, updateProfileAction } from "@/app/actions/profile";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -19,13 +20,16 @@ export function ProfileSettingsForm({
   avatarUrl,
   notice,
   noticeTone = "success",
+  variant = "client",
 }: {
   initial: { fullName: string; phone: string; email: string };
   avatarUrl?: string | null;
   notice?: string;
   noticeTone?: "success" | "error";
+  variant?: "admin" | "client";
 }) {
-  const [profileState, profileAction] = useActionState(updateProfileAction, initialActionState);
+  const profileUpdateAction = variant === "admin" ? updateAdminProfileAction : updateProfileAction;
+  const [profileState, profileAction] = useActionState(profileUpdateAction, initialActionState);
   const [securityState, securityAction] = useActionState(requestAccountChangeAction, initialActionState);
   const [{ prefix: initialPhonePrefix, phoneNumber: initialPhoneNumber }] = useState(() => splitPhoneValue(initial.phone));
   const [phonePrefix, setPhonePrefix] = useState<string>(initialPhonePrefix);
@@ -45,6 +49,11 @@ export function ProfileSettingsForm({
         <div className="flex flex-col gap-5 rounded-[var(--radius-lg)] bg-surface-muted p-5 sm:flex-row sm:items-center">
           <ProfileAvatar name={initial.fullName} src={avatarUrl} className="size-24 text-2xl" />
           <div className="grid min-w-0 flex-1 gap-3">
+            {variant === "admin" ? (
+              <Badge tone="brand" className="w-fit gap-1.5">
+                <BadgeCheck className="size-4" aria-hidden="true" /> Cuenta verificada
+              </Badge>
+            ) : null}
             <Field
               label="Foto de perfil"
               htmlFor="avatar"
@@ -102,6 +111,7 @@ export function ProfileSettingsForm({
         </SubmitButton>
       </form>
 
+      {variant === "client" ? (
       <section className="grid gap-5 border-t border-border pt-8" aria-labelledby="account-security-title">
         <div>
           <h2 id="account-security-title" className="font-display text-2xl font-black uppercase">
@@ -144,6 +154,7 @@ export function ProfileSettingsForm({
           </div>
         </div>
       </section>
+      ) : null}
     </div>
   );
 }
