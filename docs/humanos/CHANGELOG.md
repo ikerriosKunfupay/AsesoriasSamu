@@ -1,5 +1,10 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-volver-ficha-cliente`
+
+- Añadido un botón visible para volver desde la ficha individual a la lista de clientes.
+- El destino es estable y funciona también cuando la ficha se abre desde un enlace directo.
+
 ## 2026-10-13 — `2026-10-13-kpis-interactivos-sidebar-plegable`
 
 - Reorganizados los cinco indicadores del resumen del entrenador en una única fila compacta de escritorio.

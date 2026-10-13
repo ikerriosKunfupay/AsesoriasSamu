@@ -20,6 +20,8 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 La navegación administrativa presenta **Interesados** antes de **Clientes** para reflejar el flujo operativo: las filas de `leads` nacen en el formulario público y son independientes de las identidades `client` de `profiles`.
 
+La ruta `/admin/clientes/[id]` expone un `ButtonLink` estable a `/admin/clientes` antes de la cabecera. No depende de `history.back()`, de modo que la salida de la ficha funciona también al abrir una URL profunda directamente.
+
 La cabecera móvil de `DashboardShell` coloca el disparador de navegación a la izquierda y `BrandLogo` compacto a la derecha. El menú se ancla al borde izquierdo del disparador; ocultar el lateral de escritorio no altera este comportamiento móvil.
 
 El layout de `/app` entrega `onboardingComplete` a `DashboardShell`. Mientras sea `false`, el shell intercepta en escritorio y móvil todos los enlaces del cliente salvo `/app/cuestionario` y muestra un diálogo accesible que explica el requisito. La protección no depende solo de la interfaz: `requireCompletedClient()` bloquea también el acceso directo a Inicio, Entrenamiento, Nutrición y Seguimiento, redirigiendo al cuestionario. `saveOnboardingAction` comprueba por separado el `upsert` del formulario, el consentimiento y `complete_onboarding()`; solo devuelve éxito cuando los tres pasos terminan bien, registra únicamente etapa y código ante un fallo y revalida el área cliente y las vistas administrativas afectadas.

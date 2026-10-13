@@ -1,5 +1,10 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-volver-ficha-cliente`
+
+- `/admin/clientes/[id]` incorpora un `ButtonLink` con `ArrowLeft` dirigido a `/admin/clientes`, sin depender del historial del navegador.
+- El cambio queda cubierto por lint, tipos, las 68 pruebas existentes y el build Webpack del proyecto.
+
 ## 2026-10-13 — `2026-10-13-kpis-interactivos-sidebar-plegable`
 
 - `AdminDashboardPage` combina conteos exactos con consultas limitadas a diez filas y entrega a `DashboardKpis` DTO mínimos sin respuestas sensibles.

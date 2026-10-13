@@ -35,6 +35,8 @@ El entrenador también puede iniciar el alta desde el panel:
 4. Al entrar, completa el cuestionario inicial.
 5. Desde su ficha, el entrenador publica entrenamiento y nutrición.
 
+La ficha de cada cliente incluye **Volver a clientes** antes del título para regresar siempre a la lista, incluso cuando la ficha se haya abierto desde un enlace directo.
+
 En ambos casos la cuenta se crea siempre con rol de cliente. El formulario público no permite solicitar ni escoger el rol de administrador.
 
 ## Experiencia del cliente

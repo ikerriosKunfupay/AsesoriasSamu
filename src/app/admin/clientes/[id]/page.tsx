@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 import { AssignmentForm } from "@/components/forms/admin-forms";
 import { Badge } from "@/components/ui/badge";
+import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { PageHeading } from "@/components/layout/page-heading";
@@ -33,6 +34,10 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
     : { data: null };
   const email = authResult.data.user?.email;
   return <>
+    <ButtonLink href="/admin/clientes" variant="outline" size="sm" className="mb-5">
+      <ArrowLeft className="size-4" aria-hidden="true" />
+      Volver a clientes
+    </ButtonLink>
     <PageHeading eyebrow="Ficha del cliente" title={profile.full_name || "Cliente"} description={`Alta: ${formatDate(profile.created_at)}`} action={<Badge tone={profile.status === "active" ? "success" : "warning"}>{statusLabel(profile.status)}</Badge>} />
     <Card className="mb-6">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
