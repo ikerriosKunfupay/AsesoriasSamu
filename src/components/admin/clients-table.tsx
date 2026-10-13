@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useMemo, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { ArrowDown, ArrowUp, ArrowUpDown, Filter, MoreHorizontal, Tags, X } from "lucide-react";
 import { saveClientCommercialQuickUpdateAction } from "@/app/actions/admin";
@@ -16,6 +17,7 @@ import { InternalSelect } from "@/components/ui/internal-select";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import {
   billingCycleLabel,
+  pricingPlanDetailsLabel,
   serviceModalityOptions,
   type PricingPlanOption,
 } from "@/lib/admin/commercial-terms";
@@ -101,7 +103,8 @@ function QuickCommercialSelect({
         invalid={state.status === "error"}
         disabled={pending}
         menuPlacement="top"
-        className={`min-h-10 px-2.5 text-sm font-bold disabled:opacity-60 ${className ?? ""}`}
+        menuPortal
+        className={`min-h-10 py-2 pl-2.5 pr-4 text-sm font-bold disabled:opacity-60 ${className ?? ""}`}
         onValueChange={(nextValue) => {
           if (pending) return;
           setSelectedValue(nextValue);
@@ -124,41 +127,98 @@ function ClientRowActions({
   pricingPlans: PricingPlanOption[];
   detailHref: string;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState<CSSProperties>();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const updateMenuPosition = useCallback(() => {
+    if (!triggerRef.current) return;
+
+    const rect = triggerRef.current.getBoundingClientRect();
+    const viewportPadding = 16;
+    const width = Math.min(256, window.innerWidth - viewportPadding * 2);
+    const left = Math.min(
+      Math.max(rect.right - width, viewportPadding),
+      window.innerWidth - width - viewportPadding,
+    );
+    setMenuStyle({ bottom: window.innerHeight - rect.top + 8, left, width });
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!triggerRef.current?.contains(target) && !menuRef.current?.contains(target)) setIsOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setIsOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    updateMenuPosition();
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
+    return () => {
+      document.removeEventListener("mousedown", closeOnOutsideClick);
+      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
+    };
+  }, [isOpen, updateMenuPosition]);
+
   return (
-    <details className="group relative">
-      <summary
+    <div className="relative">
+      <button
+        ref={triggerRef}
+        type="button"
         aria-label={`Más opciones para ${client.name}`}
-        className="grid size-10 cursor-pointer list-none place-items-center rounded-[var(--radius-md)] border border-border-strong bg-surface transition hover:bg-surface-muted [&::-webkit-details-marker]:hidden"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        className="grid size-10 place-items-center rounded-[var(--radius-md)] border border-border-strong bg-surface transition hover:bg-surface-muted"
+        onClick={() => {
+          updateMenuPosition();
+          setIsOpen((open) => !open);
+        }}
       >
         <MoreHorizontal aria-hidden="true" className="size-5" />
-      </summary>
-      <div className="absolute bottom-full right-0 z-30 mb-2 grid w-64 gap-1 rounded-[var(--radius-md)] border border-border bg-surface p-2 shadow-xl">
-        <ClientCommercialTermsEditor
-          clientId={client.id}
-          clientName={client.name}
-          pricingPlans={pricingPlans}
-          initialTerms={client.modality && client.agreedAmountEur != null ? {
-            modality: client.modality,
-            pricingPlanId: client.pricingPlanId,
-            agreedAmountEur: client.agreedAmountEur,
-          } : null}
-          menuTrigger
-        />
-        <Link
-          href="/admin/tarifas"
-          className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
-        >
-          <Tags aria-hidden="true" className="size-4" />
-          Gestionar tarifas
-        </Link>
-        <Link
-          href={detailHref}
-          className="inline-flex min-h-10 items-center rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
-        >
-          Ver ficha
-        </Link>
-      </div>
-    </details>
+      </button>
+      {isOpen ? createPortal(
+        <div ref={menuRef} role="menu" style={menuStyle} className="fixed z-[60] grid gap-1 rounded-[var(--radius-md)] border border-border bg-surface p-2 shadow-xl">
+          <ClientCommercialTermsEditor
+            clientId={client.id}
+            clientName={client.name}
+            pricingPlans={pricingPlans}
+            initialTerms={client.modality && client.agreedAmountEur != null ? {
+              modality: client.modality,
+              pricingPlanId: client.pricingPlanId,
+              agreedAmountEur: client.agreedAmountEur,
+            } : null}
+            menuTrigger
+          />
+          <Link
+            href="/admin/tarifas"
+            role="menuitem"
+            className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
+          >
+            <Tags aria-hidden="true" className="size-4" />
+            Gestionar tarifas
+          </Link>
+          <Link
+            href={detailHref}
+            role="menuitem"
+            className="inline-flex min-h-10 items-center rounded-[var(--radius-md)] px-3 text-sm font-bold transition hover:bg-surface-muted"
+          >
+            Ver ficha
+          </Link>
+        </div>,
+        document.body,
+      ) : null}
+    </div>
   );
 }
 
@@ -290,8 +350,8 @@ export function ClientsTable({
           </div>
         ) : null}
       </div>
-      <div className="overflow-x-auto">
-        <table className="data-table">
+      <div className="clients-table-scroll overflow-x-auto">
+        <table className="data-table clients-table">
           <thead>
             <tr>
               <SortableHeader column="name" sort={sort} onSort={(column) => setSort((current) => nextClientTableSort(current, column))} />
@@ -310,61 +370,61 @@ export function ClientsTable({
 
               return (
                 <tr key={client.id}>
-                  <td>
+                  <td className="clients-table__name">
                     <Link className="font-black hover:text-primary" href={detailHref}>
                       {client.name}
                     </Link>
                   </td>
-                  <td>
+                  <td className="clients-table__status" data-label="Alta / baja">
                     <ClientStatusSwitch clientId={client.id} clientName={client.name} status={client.status} />
                   </td>
-                  <td>{client.onboardingComplete ? "Completado" : "Pendiente"}</td>
-                  <td>
+                  <td className="clients-table__questionnaire" data-label="Cuestionario">{client.onboardingComplete ? "Completado" : "Pendiente"}</td>
+                  <td className="clients-table__modality" data-label="Modalidad">
                     <QuickCommercialSelect
                       key={`modality-${client.modality ?? "unassigned"}`}
                       clientId={client.id}
                       field="modality"
                       value={client.modality ?? ""}
                       label={`Modalidad de ${client.name}`}
-                      className="w-32"
+                      className="w-full md:w-36"
                       options={client.modality
                         ? serviceModalityOptions
                         : [{ value: "", label: "Sin asignar" }, ...serviceModalityOptions]}
                     />
                   </td>
-                  <td>
+                  <td className="clients-table__pricing" data-label="Tarifa">
                     <QuickCommercialSelect
                       key={`pricing-${client.pricingPlanId ?? "unassigned"}`}
                       clientId={client.id}
                       field="pricingPlanId"
                       value={client.pricingPlanId ?? ""}
                       label={`Tarifa de ${client.name}`}
-                      className="w-44"
+                      className="w-full md:w-48"
                       options={[
                         { value: "", label: "Sin asignar" },
                         ...pricingPlans
                         .filter((plan) => plan.active || plan.id === client.pricingPlanId)
                         .map((plan) => ({
                           value: plan.id,
-                          label: `${plan.name} · ${billingCycleLabel(plan.billingCycle)}`,
+                          label: `${plan.name} · ${pricingPlanDetailsLabel(plan)} · ${billingCycleLabel(plan.billingCycle)}`,
                         })),
                       ]}
                     />
                   </td>
-                  <td className="whitespace-nowrap font-bold">
+                  <td className="clients-table__amount whitespace-nowrap font-bold" data-label="Precio">
                     {client.agreedAmountEur == null ? "—" : formatMoney(client.agreedAmountEur)}
                   </td>
-                  <td>
+                  <td className="clients-table__notes" data-label="Notas internas">
                     <ClientAdminNotesForm clientId={client.id} initialNotes={client.notes} compact />
                   </td>
-                  <td>
+                  <td className="clients-table__actions">
                     <ClientRowActions client={client} pricingPlans={pricingPlans} detailHref={detailHref} />
                   </td>
                 </tr>
               );
             }) : (
               <tr>
-                <td colSpan={8} className="py-10 text-center text-muted">
+                <td colSpan={8} className="clients-table__empty py-10 text-center text-muted">
                   No hay clientes que coincidan con el filtro.
                 </td>
               </tr>

@@ -1,7 +1,8 @@
 "use client";
 
 import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type InternalSelectOption = {
@@ -23,6 +24,7 @@ export function InternalSelect({
   invalid,
   className,
   menuPlacement = "bottom",
+  menuPortal = false,
   disabled,
 }: {
   id: string;
@@ -37,30 +39,63 @@ export function InternalSelect({
   invalid?: boolean;
   className?: string;
   menuPlacement?: "top" | "bottom";
+  menuPortal?: boolean;
   disabled?: boolean;
 }) {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [portalStyle, setPortalStyle] = useState<CSSProperties>();
   const value = controlledValue ?? internalValue;
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selectedOption = options[selectedIndex];
   const listboxId = `${id}-options`;
 
+  const updatePortalPosition = useCallback(() => {
+    if (!menuPortal || !triggerRef.current) return;
+
+    const rect = triggerRef.current.getBoundingClientRect();
+    const viewportPadding = 16;
+    const width = Math.min(rect.width, window.innerWidth - viewportPadding * 2);
+    const left = Math.min(
+      Math.max(rect.left, viewportPadding),
+      window.innerWidth - width - viewportPadding,
+    );
+
+    setPortalStyle(menuPlacement === "top"
+      ? { bottom: window.innerHeight - rect.top + 8, left, width }
+      : { left, top: rect.bottom + 8, width });
+  }, [menuPlacement, menuPortal]);
+
   useEffect(() => {
     if (!isOpen) return;
 
     const closeOnOutsideClick = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false);
+      const target = event.target as Node;
+      if (!containerRef.current?.contains(target) && !menuRef.current?.contains(target)) setIsOpen(false);
     };
 
     document.addEventListener("mousedown", closeOnOutsideClick);
     return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || !menuPortal) return;
+
+    updatePortalPosition();
+    window.addEventListener("resize", updatePortalPosition);
+    window.addEventListener("scroll", updatePortalPosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePortalPosition);
+      window.removeEventListener("scroll", updatePortalPosition, true);
+    };
+  }, [isOpen, menuPortal, updatePortalPosition]);
+
   const openMenu = (focusIndex = Math.max(selectedIndex, 0)) => {
+    updatePortalPosition();
     setIsOpen(true);
     requestAnimationFrame(() => optionRefs.current[focusIndex]?.focus());
   };
@@ -92,6 +127,47 @@ export function InternalSelect({
     }
     if (event.key === "Tab") setIsOpen(false);
   };
+
+  const menu = isOpen ? (
+    <div
+      ref={menuRef}
+      id={listboxId}
+      role="listbox"
+      aria-label={`Opciones de ${ariaLabel}`}
+      style={menuPortal ? portalStyle : undefined}
+      className={cn(
+        "overflow-hidden rounded-[var(--radius-md)] border border-border-strong bg-surface py-1 shadow-2xl",
+        menuPortal
+          ? "fixed z-[60]"
+          : cn(
+            "absolute left-0 z-40 w-full",
+            menuPlacement === "top" ? "bottom-[calc(100%+0.5rem)]" : "top-[calc(100%+0.5rem)]",
+          ),
+      )}
+    >
+      {options.map((option, index) => {
+        const isSelected = option.value === value;
+        return (
+          <button
+            key={option.value}
+            ref={(element) => { optionRefs.current[index] = element; }}
+            type="button"
+            role="option"
+            aria-selected={isSelected}
+            className={`flex min-h-11 w-full items-center justify-between px-4 text-left text-sm font-bold transition-colors hover:bg-surface-muted focus:bg-surface-muted focus:outline-none ${isSelected ? "text-primary" : "text-foreground"}`}
+            onClick={() => selectOption(option.value)}
+            onKeyDown={(event) => handleOptionKeyDown(event, index)}
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              {option.icon ? <span className="shrink-0" aria-hidden="true">{option.icon}</span> : null}
+              <span className="truncate">{option.label}</span>
+            </span>
+            {isSelected ? <Check aria-hidden="true" className="size-4" /> : null}
+          </button>
+        );
+      })}
+    </div>
+  ) : null;
 
   return (
     <div ref={containerRef} className="relative">
@@ -132,39 +208,7 @@ export function InternalSelect({
           className={`size-5 shrink-0 transition-transform ${isOpen ? "rotate-180 text-primary" : "text-muted"}`}
         />
       </button>
-      {isOpen ? (
-        <div
-          id={listboxId}
-          role="listbox"
-          aria-label={`Opciones de ${ariaLabel}`}
-          className={cn(
-            "absolute left-0 z-40 w-full overflow-hidden rounded-[var(--radius-md)] border border-border-strong bg-surface py-1 shadow-2xl",
-            menuPlacement === "top" ? "bottom-[calc(100%+0.5rem)]" : "top-[calc(100%+0.5rem)]",
-          )}
-        >
-          {options.map((option, index) => {
-            const isSelected = option.value === value;
-            return (
-              <button
-                key={option.value}
-                ref={(element) => { optionRefs.current[index] = element; }}
-                type="button"
-                role="option"
-                aria-selected={isSelected}
-                className={`flex min-h-11 w-full items-center justify-between px-4 text-left text-sm font-bold transition-colors hover:bg-surface-muted focus:bg-surface-muted focus:outline-none ${isSelected ? "text-primary" : "text-foreground"}`}
-                onClick={() => selectOption(option.value)}
-                onKeyDown={(event) => handleOptionKeyDown(event, index)}
-              >
-                <span className="flex min-w-0 items-center gap-2">
-                  {option.icon ? <span className="shrink-0" aria-hidden="true">{option.icon}</span> : null}
-                  <span className="truncate">{option.label}</span>
-                </span>
-                {isSelected ? <Check aria-hidden="true" className="size-4" /> : null}
-              </button>
-            );
-          })}
-        </div>
-      ) : null}
+      {menuPortal && menu ? createPortal(menu, document.body) : menu}
     </div>
   );
 }

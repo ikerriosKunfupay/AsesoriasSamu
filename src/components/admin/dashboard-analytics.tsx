@@ -374,7 +374,7 @@ export function DashboardAnalytics({
             Cobros reales, cartera mensual equivalente, previsión y composición de clientes. Los filtros se aplican a todas las cifras y gráficas.
           </p>
         </div>
-        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[10.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[11.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
           <InternalSelect
             id="analytics-period"
             options={periodOptions}

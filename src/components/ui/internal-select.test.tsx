@@ -37,4 +37,19 @@ describe("InternalSelect", () => {
 
     expect(screen.getByRole("combobox", { name: "Sexo" })).toHaveClass("gap-3", "pr-4");
   });
+
+  it("puede sacar el menú del contenedor para evitar recortes", () => {
+    const { container } = render(
+      <InternalSelect id="sex" name="sex" options={options} ariaLabel="Sexo" menuPortal />,
+    );
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Sexo" }));
+
+    const listbox = screen.getByRole("listbox");
+    expect(listbox.parentElement).toBe(document.body);
+    expect(container.querySelector('[role="listbox"]')).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("option", { name: "Hombre" }));
+    expect(screen.getByRole("combobox", { name: "Sexo" })).toHaveTextContent("Hombre");
+  });
 });

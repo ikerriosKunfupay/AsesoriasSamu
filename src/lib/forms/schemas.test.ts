@@ -121,6 +121,8 @@ describe("validación de formularios", () => {
     const result = pricingPlanSchema.safeParse({
       pricingPlanId: "",
       name: "Semestral",
+      serviceModality: "in_person",
+      daysPerWeek: "3",
       billingCycle: "semiannual",
       amountEur: "299,90",
     });
@@ -133,12 +135,16 @@ describe("validación de formularios", () => {
     expect(pricingPlanSchema.safeParse({
       pricingPlanId: "",
       name: "Trimestral",
+      serviceModality: "online",
+      daysPerWeek: "4",
       billingCycle: "custom",
       amountEur: "150",
     }).success).toBe(false);
     expect(pricingPlanSchema.safeParse({
       pricingPlanId: "",
       name: "Trimestral",
+      serviceModality: "online",
+      daysPerWeek: "4",
       billingCycle: "custom",
       durationMonths: "3",
       amountEur: "150",
@@ -162,7 +168,23 @@ describe("validación de formularios", () => {
       ...base,
       newPlanName: "Anual",
       newBillingCycle: "annual",
+      newPlanDaysPerWeek: "5",
     }).success).toBe(true);
+  });
+
+  it("exige modalidad, entre uno y siete días y rechaza importes negativos", () => {
+    const base = {
+      pricingPlanId: "",
+      name: "Mensual",
+      billingCycle: "monthly",
+      amountEur: "60",
+    };
+
+    expect(pricingPlanSchema.safeParse(base).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "in_person", daysPerWeek: "0" }).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "online", daysPerWeek: "8" }).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "online", daysPerWeek: "3", amountEur: "-60" }).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "online", daysPerWeek: "3" }).success).toBe(true);
   });
 
   it("valida los cambios rápidos de modalidad y tarifa", () => {

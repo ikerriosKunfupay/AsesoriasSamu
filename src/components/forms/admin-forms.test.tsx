@@ -26,11 +26,11 @@ describe("ClientStatusSwitch", () => {
     expect(control).toHaveTextContent("Activo");
   });
 
-  it("muestra la nota compacta con guardado automático y sin botón", () => {
+  it("muestra la nota compacta sin texto auxiliar ni botón", () => {
     render(<ClientAdminNotesForm clientId="client-1" initialNotes="Llamar el viernes" compact />);
 
     expect(screen.getByDisplayValue("Llamar el viernes")).toHaveClass("min-h-10");
-    expect(screen.getByText("Guardado automático")).toBeInTheDocument();
+    expect(screen.queryByText("Guardado automático")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /guardar nota/i })).not.toBeInTheDocument();
   });
 });

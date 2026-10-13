@@ -113,6 +113,7 @@ describe("DashboardAnalytics", () => {
     expect(screen.getByRole("combobox", { name: "Periodo de las gráficas" })).toHaveTextContent("Últimos 6 meses");
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Todas las modalidades");
     expect(screen.getByRole("combobox", { name: "Filtrar por tarifa" })).toHaveTextContent("Todas las tarifas");
+    expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[11.5rem_14rem_12rem]");
 
     fireEvent.click(screen.getByRole("combobox", { name: "Filtrar por modalidad" }));
     fireEvent.click(screen.getByRole("option", { name: "Presencial" }));

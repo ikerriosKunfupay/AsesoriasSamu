@@ -17,6 +17,8 @@ export type PricingPlanOption = {
   name: string;
   billingCycle: BillingCycle;
   durationMonths: number;
+  serviceModality: ServiceModality | null;
+  daysPerWeek: number | null;
   defaultAmountEur: number;
   active: boolean;
 };
@@ -33,6 +35,15 @@ export function billingCycleLabel(value: BillingCycle | null | undefined) {
 
 export function serviceModalityLabel(value: ServiceModality | null | undefined) {
   return serviceModalityOptions.find((option) => option.value === value)?.label ?? "Sin asignar";
+}
+
+export function daysPerWeekLabel(value: number | null | undefined) {
+  if (!value) return "Días sin definir";
+  return `${value} ${value === 1 ? "día" : "días"}/semana`;
+}
+
+export function pricingPlanDetailsLabel(plan: Pick<PricingPlanOption, "serviceModality" | "daysPerWeek">) {
+  return `${serviceModalityLabel(plan.serviceModality)} · ${daysPerWeekLabel(plan.daysPerWeek)}`;
 }
 
 export function billingCycleMonths(value: BillingCycle, customMonths = 1) {

@@ -1,9 +1,33 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-variantes-y-vistas-tarifas`
+
+- `202610140001_pricing_plan_service_details.sql` añade `service_modality` y `days_per_week` a `pricing_plans` y sustituye la unicidad por nombre por una variante compuesta.
+- `PricingPlanForm` exige modalidad y entre uno y siete días, usa `InternalSelect` para las opciones y sanea los importes en la escritura; las Server Actions persisten esos campos y heredan la modalidad al asignar una plantilla.
+- `PricingPlansCatalog` ofrece tabla, lista y galería persistidas en `localStorage`, con un editor modal compartido para evitar duplicar formularios.
+- La primera prueba dirigida del catálogo falló por buscar como nodo aislado un texto compuesto; se ajustó a contenido accesible y `pnpm check` terminó con lint, tipos, 98 pruebas y build Webpack correctos.
+- El servidor local arrancó tras autorizar el puerto, pero `/admin/tarifas` devolvió `500` por ausencia explícita de variables públicas y privadas de Supabase en el checkout temporal; no se simuló una sesión ni se aplicó todavía la migración remota.
+
+## 2026-10-14 — `2026-10-14-navegacion-activa-panel`
+
+- `DashboardShell` deriva el enlace activo desde `usePathname()`, exige coincidencia exacta para `/admin` y admite descendientes para el resto de secciones.
+- La navegación de escritorio y móvil comparte el mismo criterio, expone `aria-current="page"` y aplica tokens de superficie propios de cada contexto.
+- `pnpm check` superó lint, tipos, 95 pruebas y build Webpack; `git diff --check` no detectó errores.
+
+## 2026-10-14 — `2026-10-14-clientes-movil-y-menus-flotantes`
+
+- `InternalSelect` admite `menuPortal`, calcula posición fija respecto al disparador y se actualiza con scroll o resize sin perder cierre exterior ni navegación de opciones.
+- `QuickCommercialSelect` usa el portal, anchuras responsivas y padding derecho explícito; `ClientRowActions` sustituye `details` por un menú accesible flotante con cierre exterior y por `Escape`.
+- `.clients-table` convierte las celdas existentes en tarjetas móviles mediante CSS, sin duplicar formularios, acciones ni IDs; `ClientAdminNotesForm` oculta el estado compacto y conserva el autosave mediante región viva.
+- `lib/forms/phone.ts` extrae las utilidades telefónicas del componente cliente; `formatStoredPhoneValue()` permite que la ficha servidor muestre prefijo y aplique `+34` a datos nacionales heredados.
+- `ClientCommercialTermsForm` y `PricingPlanForm` reemplazan sus selects nativos por `InternalSelect` controlados o compatibles con `FormData`; una prueba impide reintroducir controles externos.
+- La primera ejecución de `pnpm check` falló porque `admin-forms.test.tsx` aún exigía el texto visual retirado; la expectativa se actualizó y la validación final pasó.
+
 ## 2026-10-14 — `2026-10-14-selectores-internos-resumen`
 
 - `DashboardAnalytics` sustituye sus tres `<select>` nativos por `InternalSelect` controlados, manteniendo el cálculo reactivo de periodo, modalidad y tarifa.
 - `InternalSelect` incorpora `gap-3` y padding derecho explícito en el disparador; las pruebas cubren ausencia de selects nativos, selección controlada y espaciado de la flecha.
+- La columna de periodo usa `11.5rem` en `xl` para absorber el icono interno sin truncar la opción activa.
 - `pnpm check` superó lint, tipos, 91 pruebas y build Webpack; `git diff --check` no detectó errores.
 
 ## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`

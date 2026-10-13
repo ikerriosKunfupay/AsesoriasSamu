@@ -21,7 +21,7 @@ export default async function ClientsPage() {
     clientIds.length
       ? supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur").in("client_id", clientIds)
       : Promise.resolve({ data: [] }),
-    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, default_amount_eur, active").order("name"),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, service_modality, days_per_week, default_amount_eur, active").order("name"),
   ]);
   const notesByClientId = new Map(noteRows?.map((row) => [row.client_id, row.notes]));
   const commercialByClientId = new Map(commercialRows?.map((row) => [row.client_id, row]));
@@ -30,6 +30,8 @@ export default async function ClientsPage() {
     name: plan.name,
     billingCycle: plan.billing_cycle,
     durationMonths: plan.duration_months,
+    serviceModality: plan.service_modality,
+    daysPerWeek: plan.days_per_week,
     defaultAmountEur: plan.default_amount_eur,
     active: plan.active,
   }));

@@ -2,6 +2,7 @@ import { DashboardAnalytics } from "@/components/admin/dashboard-analytics";
 import { DashboardKpis, type DashboardKpi } from "@/components/admin/dashboard-kpis";
 import { PageHeading } from "@/components/layout/page-heading";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
+import { daysPerWeekLabel, serviceModalityLabel } from "@/lib/admin/commercial-terms";
 import type { AnalyticsClient, AnalyticsFee } from "@/lib/admin/dashboard-analytics";
 import { requireAdmin } from "@/lib/auth/current-user";
 import { formatDate, formatMoney, statusLabel } from "@/lib/format";
@@ -52,7 +53,7 @@ export default async function AdminDashboardPage() {
       .order("updated_at", { ascending: false })
       .limit(MAX_MODAL_ITEMS),
     supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur"),
-    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months"),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, service_modality, days_per_week"),
     supabase
       .from("manual_fee_records")
       .select("id, client_id, period, amount_eur, status")
@@ -167,7 +168,9 @@ export default async function AdminDashboardPage() {
       createdAt: client.created_at,
       modality: terms?.modality ?? null,
       pricingPlanId: terms?.pricing_plan_id ?? null,
-      pricingPlanName: plan?.name ?? "",
+      pricingPlanName: plan
+        ? `${plan.name} · ${serviceModalityLabel(plan.service_modality)} · ${daysPerWeekLabel(plan.days_per_week)}`
+        : "",
       billingCycle: plan?.billing_cycle ?? null,
       durationMonths: plan?.duration_months ?? null,
       agreedAmountEur: terms?.agreed_amount_eur ?? null,

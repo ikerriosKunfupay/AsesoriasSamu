@@ -139,7 +139,7 @@ export function ClientAdminNotesForm({
   };
 
   return (
-    <form ref={formRef} action={action} className={cn("grid gap-2", compact ? "w-56" : "max-w-3xl gap-3")}>
+    <form ref={formRef} action={action} className={cn("grid gap-2", compact ? "w-full gap-0 md:w-56" : "max-w-3xl gap-3")}>
       <input type="hidden" name="clientId" value={clientId} />
       <label className={cn("font-bold", compact ? "sr-only" : "text-sm")} htmlFor={fieldId}>
         Notas internas
@@ -154,14 +154,14 @@ export function ClientAdminNotesForm({
           Solo lo verá la administración. Se guarda automáticamente; anota información práctica y evita copiar informes médicos completos.
         </p>
       ) : null}
-      <div id={`${fieldId}-status`} className={cn("min-h-4 text-xs", state.status === "error" ? "text-danger" : "text-muted")} aria-live="polite">
+      <div id={`${fieldId}-status`} className={cn(compact ? "sr-only" : "min-h-4 text-xs", state.status === "error" ? "text-danger" : "text-muted")} aria-live="polite">
         {pending
           ? "Guardando…"
           : state.status === "error"
             ? state.message
             : state.status === "success"
               ? "Guardado"
-              : compact ? "Guardado automático" : "Los cambios se guardan automáticamente."}
+              : compact ? "" : "Los cambios se guardan automáticamente."}
       </div>
     </form>
   );

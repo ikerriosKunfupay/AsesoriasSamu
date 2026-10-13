@@ -107,6 +107,8 @@ const euroAmount = z.preprocess(
 export const pricingPlanSchema = z.object({
   pricingPlanId: z.union([z.string().uuid("Tarifa no válida."), z.literal("")]).optional(),
   name: requiredText("El nombre").max(80),
+  serviceModality: z.enum(["in_person", "online"], { error: "Selecciona la modalidad." }),
+  daysPerWeek: z.coerce.number({ error: "Indica los días por semana." }).int().min(1).max(7),
   billingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]),
   durationMonths: z.coerce.number().int().min(1).max(120).optional(),
   amountEur: euroAmount,
@@ -129,6 +131,7 @@ export const clientCommercialTermsSchema = z
     newPlanName: z.string().trim().max(80).optional(),
     newBillingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]).optional(),
     newDurationMonths: z.coerce.number().int().min(1).max(120).optional(),
+    newPlanDaysPerWeek: z.coerce.number().int().min(1).max(7).optional(),
   })
   .superRefine((value, context) => {
     if (value.pricingPlanId !== "new") return;
@@ -144,6 +147,13 @@ export const clientCommercialTermsSchema = z
         code: "custom",
         path: ["newBillingCycle"],
         message: "Selecciona la periodicidad.",
+      });
+    }
+    if (!value.newPlanDaysPerWeek) {
+      context.addIssue({
+        code: "custom",
+        path: ["newPlanDaysPerWeek"],
+        message: "Indica los días por semana.",
       });
     }
     if (value.newBillingCycle === "custom" && !value.newDurationMonths) {

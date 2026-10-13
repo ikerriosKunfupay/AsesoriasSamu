@@ -6,7 +6,8 @@ import { Field } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
 import { initialActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
-import { formatPhoneValue, PhonePrefixSelect } from "./phone-prefix-select";
+import { PhonePrefixSelect } from "./phone-prefix-select";
+import { formatPhoneValue } from "@/lib/forms/phone";
 import { SubmitButton } from "./submit-button";
 
 const contactMethods = [

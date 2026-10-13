@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
 import { type LucideIcon, AlertCircle, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
@@ -33,6 +34,10 @@ const clientItems: NavItem[] = [
 
 const SIDEBAR_STORAGE_KEY = "team-ortega:sidebar-open";
 
+function isCurrentNavItem(pathname: string, href: string) {
+  return pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`));
+}
+
 export function DashboardShell({
   mode,
   userName,
@@ -46,6 +51,7 @@ export function DashboardShell({
   onboardingComplete?: boolean;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   const items = mode === "admin" ? adminItems : clientItems;
   const [showOnboardingNotice, setShowOnboardingNotice] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
@@ -90,12 +96,21 @@ export function DashboardShell({
           />
         </div>
         <nav aria-label={mode === "admin" ? "Administración" : "Área personal"} className="mt-6 grid gap-1">
-          {items.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground">
-              <Icon className="size-5 text-primary" aria-hidden="true" />
-              {label}
-            </Link>
-          ))}
+          {items.map(({ href, label, icon: Icon }) => {
+            const active = isCurrentNavItem(pathname, href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={active ? "page" : undefined}
+                onClick={(event) => guardNavigation(event, href)}
+                className={`flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold transition-colors ${active ? "bg-sidebar-hover text-sidebar-foreground" : "text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"}`}
+              >
+                <Icon className="size-5 text-primary" aria-hidden="true" />
+                {label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="mt-auto border-t border-sidebar-border pt-5">
           <div className="mb-3 flex min-w-0 items-center gap-3">
@@ -117,11 +132,20 @@ export function DashboardShell({
               <Menu className="size-5" />
             </summary>
             <nav className="absolute left-0 mt-2 grid w-64 gap-1 rounded-[var(--radius-lg)] border border-border bg-surface p-2 shadow-md">
-              {items.map(({ href, label, icon: Icon }) => (
-                <Link key={href} href={href} onClick={(event) => guardNavigation(event, href)} className="flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold hover:bg-surface-muted">
-                  <Icon className="size-5 text-primary" aria-hidden="true" /> {label}
-                </Link>
-              ))}
+              {items.map(({ href, label, icon: Icon }) => {
+                const active = isCurrentNavItem(pathname, href);
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    onClick={(event) => guardNavigation(event, href)}
+                    className={`flex min-h-11 items-center gap-3 rounded-[var(--radius-md)] px-3 text-sm font-bold transition-colors ${active ? "bg-surface-muted text-foreground" : "text-muted hover:bg-surface-muted hover:text-foreground"}`}
+                  >
+                    <Icon className="size-5 text-primary" aria-hidden="true" /> {label}
+                  </Link>
+                );
+              })}
               <ThemeToggle className="w-full" />
               <form action={logoutAction} className="border-t border-border pt-1">
                 <Button type="submit" variant="ghost" className="w-full justify-start"><LogOut className="size-4" /> Cerrar sesión</Button>

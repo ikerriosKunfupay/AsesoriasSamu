@@ -55,6 +55,8 @@ export type Database = {
           name: string;
           billing_cycle: BillingCycle;
           duration_months: number;
+          service_modality: ServiceModality | null;
+          days_per_week: number | null;
           default_amount_eur: number;
           active: boolean;
           created_by: string;
@@ -66,6 +68,8 @@ export type Database = {
           name: string;
           billing_cycle: BillingCycle;
           duration_months?: number;
+          service_modality?: ServiceModality | null;
+          days_per_week?: number | null;
           default_amount_eur: number;
           active?: boolean;
           created_by: string;
@@ -74,6 +78,8 @@ export type Database = {
           name?: string;
           billing_cycle?: BillingCycle;
           duration_months?: number;
+          service_modality?: ServiceModality | null;
+          days_per_week?: number | null;
           default_amount_eur?: number;
           active?: boolean;
         };

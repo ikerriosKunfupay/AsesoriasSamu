@@ -1,6 +1,14 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+const navigationMocks = vi.hoisted(() => ({
+  pathname: "/admin",
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => navigationMocks.pathname,
+}));
+
 vi.mock("@/app/actions/auth", () => ({
   logoutAction: vi.fn(),
 }));
@@ -9,6 +17,7 @@ import { DashboardShell } from "./dashboard-shell";
 
 afterEach(() => {
   cleanup();
+  navigationMocks.pathname = "/admin";
   window.localStorage.clear();
   delete document.documentElement.dataset.theme;
   document.documentElement.style.colorScheme = "";
@@ -87,7 +96,23 @@ describe("DashboardShell", () => {
     const sidebar = screen.getByRole("complementary");
     expect(sidebar).toHaveClass("bg-sidebar", "text-sidebar-foreground", "border-sidebar-border");
     expect(sidebar).not.toHaveClass("bg-surface-inverse", "text-white");
-    expect(screen.getAllByRole("link", { name: "Resumen" })[0]).toHaveClass("text-sidebar-muted", "hover:bg-sidebar-hover");
+    expect(screen.getAllByRole("link", { name: "Resumen" })[0]).toHaveClass("bg-sidebar-hover", "text-sidebar-foreground");
     expect(screen.getByRole("main")).toHaveClass("px-4", "sm:px-6", "lg:px-10", "xl:px-12");
+  });
+
+  it("remarca la sección actual en escritorio y móvil, también en rutas internas", () => {
+    navigationMocks.pathname = "/admin/clientes/client-1";
+
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Ficha del cliente</p>
+      </DashboardShell>,
+    );
+
+    const activeLinks = screen.getAllByRole("link", { name: "Clientes", current: "page" });
+    expect(activeLinks).toHaveLength(2);
+    expect(activeLinks[0]).toHaveClass("bg-sidebar-hover", "text-sidebar-foreground");
+    expect(activeLinks[1]).toHaveClass("bg-surface-muted", "text-foreground");
+    expect(screen.getAllByRole("link", { name: "Resumen" })[0]).not.toHaveAttribute("aria-current");
   });
 });

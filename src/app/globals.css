@@ -333,6 +333,84 @@ textarea {
   text-transform: uppercase;
 }
 
+@media (max-width: 767px) {
+  .clients-table-scroll {
+    overflow: visible;
+  }
+
+  .clients-table,
+  .clients-table tbody {
+    display: block;
+    min-width: 0;
+  }
+
+  .clients-table thead {
+    display: none;
+  }
+
+  .clients-table tbody {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .clients-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.875rem 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .clients-table td {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .clients-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.375rem;
+    color: var(--muted);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .clients-table__name {
+    align-self: center;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .clients-table__actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .clients-table__status {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .clients-table__questionnaire {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .clients-table__modality,
+  .clients-table__pricing,
+  .clients-table__amount,
+  .clients-table__notes,
+  .clients-table__empty {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (min-width: 768px) {
   .page-shell {
     padding-inline: 3rem;

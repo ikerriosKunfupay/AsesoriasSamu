@@ -45,6 +45,8 @@ const pricingPlans = [{
   name: "Mensual",
   billingCycle: "monthly" as const,
   durationMonths: 1,
+  serviceModality: "in_person" as const,
+  daysPerWeek: 3,
   defaultAmountEur: 60,
   active: true,
 }];
@@ -68,10 +70,15 @@ describe("ClientsTable", () => {
   it("ofrece selectores internos por fila, notas automáticas y un menú de tres puntos", () => {
     render(<ClientsTable clients={[clients[0]]} pricingPlans={pricingPlans} />);
 
+    expect(screen.getByRole("table")).toHaveClass("clients-table");
     expect(screen.getByRole("combobox", { name: "Modalidad de Iker Ríos" })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Tarifa de Iker Ríos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /guardar nota/i })).not.toBeInTheDocument();
-    expect(screen.getByText("Guardado automático")).toBeInTheDocument();
-    expect(screen.getByLabelText("Más opciones para Iker Ríos")).toBeInTheDocument();
+    expect(screen.queryByText("Guardado automático")).not.toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Notas internas" }).closest("form")).toHaveClass("w-full", "md:w-56");
+
+    fireEvent.click(screen.getByLabelText("Más opciones para Iker Ríos"));
+    expect(screen.getByRole("menu").parentElement).toBe(document.body);
+    expect(screen.getByRole("menuitem", { name: /ajustar precio o crear tarifa/i })).toBeInTheDocument();
   });
 });

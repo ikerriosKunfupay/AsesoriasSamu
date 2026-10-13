@@ -1,9 +1,33 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-variantes-y-vistas-tarifas`
+
+- Cada plantilla de tarifa incluye modalidad y días por semana, por lo que un plan mensual presencial puede diferenciarse de uno virtual.
+- Las tarifas creadas pueden consultarse como tabla, lista o galería; la vista elegida se recuerda en el navegador y la edición se abre desde cualquiera de ellas.
+- Los importes de las tarifas ya no admiten signos negativos ni caracteres ajenos a un precio y el servidor mantiene la validación como segunda protección.
+- La primera prueba de las vistas usó una coincidencia de texto demasiado estricta y se corrigió; la validación final completó análisis de código, tipos, 98 pruebas y compilación de producción.
+- La previsualización local del panel no pudo cargar datos porque este checkout temporal no contiene las credenciales de Supabase; la migración nueva debe aplicarse antes de publicar esta versión.
+
+## 2026-10-14 — `2026-10-14-navegacion-activa-panel`
+
+- El menú lateral y su versión móvil remarcan siempre la sección que se está consultando.
+- Las páginas internas, como la ficha de un cliente, mantienen activa su sección principal en lugar de perder el contexto.
+- El análisis de código, los tipos, las 95 pruebas y la compilación de producción finalizaron correctamente.
+
+## 2026-10-14 — `2026-10-14-clientes-movil-y-menus-flotantes`
+
+- En móvil, cada cliente se muestra como una tarjeta ordenada y completa, sin empezar la vista en mitad de una tabla horizontal.
+- Los desplegables de modalidad y tarifa y el menú de tres puntos aparecen completos sobre la tabla, sin bordes ni opciones recortados.
+- La nota sigue guardándose sola, pero se elimina el texto permanente **Guardado automático** para mantener la cuadrícula alineada.
+- La ficha muestra el teléfono con su prefijo internacional; los números históricos sin prefijo aparecen con `+34`.
+- Modalidad, tarifa y periodicidad abren desplegables internos también en la ficha y en la gestión de tarifas, con espacio suficiente a la derecha de la flecha.
+- La primera validación detectó que una prueba todavía esperaba el texto auxiliar eliminado; se corrigió esa comprobación y la ejecución final quedó completa.
+
 ## 2026-10-14 — `2026-10-14-selectores-internos-resumen`
 
 - Los filtros de periodo, modalidad y tarifa del resumen abren ahora desplegables propios de Team Ortega en lugar del menú exterior del sistema.
 - El texto, la flecha y el borde derecho de todos los selectores internos mantienen una separación más cómoda.
+- El filtro de periodo conserva ancho suficiente para mostrar completa la opción seleccionada.
 - El análisis de código, los tipos, las 91 pruebas y la compilación de producción finalizaron correctamente.
 
 ## 2026-10-14 — `2026-10-14-tabla-clientes-compacta`

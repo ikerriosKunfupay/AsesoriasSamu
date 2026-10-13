@@ -237,6 +237,8 @@ export async function savePricingPlanAction(
   const pricingPlanId = parsed.data.pricingPlanId || null;
   const payload = {
     name: parsed.data.name,
+    service_modality: parsed.data.serviceModality,
+    days_per_week: parsed.data.daysPerWeek,
     billing_cycle: parsed.data.billingCycle,
     duration_months: billingCycleMonths(parsed.data.billingCycle, parsed.data.durationMonths),
     default_amount_eur: parsed.data.amountEur,
@@ -249,7 +251,7 @@ export async function savePricingPlanAction(
     return {
       status: "error",
       message: result.error?.code === "23505"
-        ? "Ya existe una tarifa activa con ese nombre."
+        ? "Ya existe una tarifa activa con esa modalidad, periodicidad y días."
         : "No se pudo guardar la tarifa.",
     };
   }
@@ -315,6 +317,8 @@ export async function saveClientCommercialTermsAction(
       .from("pricing_plans")
       .insert({
         name: parsed.data.newPlanName!,
+        service_modality: parsed.data.modality,
+        days_per_week: parsed.data.newPlanDaysPerWeek!,
         billing_cycle: parsed.data.newBillingCycle!,
         duration_months: billingCycleMonths(parsed.data.newBillingCycle!, parsed.data.newDurationMonths),
         default_amount_eur: parsed.data.amountEur,
@@ -327,7 +331,7 @@ export async function saveClientCommercialTermsAction(
       return {
         status: "error",
         message: planError?.code === "23505"
-          ? "Ya existe una tarifa activa con ese nombre; selecciónala de la lista."
+          ? "Ya existe una tarifa activa con esos mismos datos; selecciónala de la lista."
           : "No se pudo crear la nueva tarifa.",
       };
     }
@@ -390,11 +394,12 @@ export async function saveClientCommercialQuickUpdateAction(
     if (pricingPlanId) {
       const { data: plan, error: planError } = await admin
         .from("pricing_plans")
-        .select("default_amount_eur")
+        .select("default_amount_eur, service_modality")
         .eq("id", pricingPlanId)
         .maybeSingle();
       if (planError || !plan) return { status: "error", message: "La tarifa seleccionada ya no está disponible." };
       amountEur = plan.default_amount_eur;
+      if (plan.service_modality) modality = plan.service_modality;
     }
   }
 

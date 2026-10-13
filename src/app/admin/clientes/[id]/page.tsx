@@ -20,6 +20,7 @@ import {
   getSocialProfileUrl,
   parseSocialProfiles,
 } from "@/lib/forms/social-networks";
+import { formatStoredPhoneValue } from "@/lib/forms/phone";
 
 export default async function ClientDetailPage({
   params,
@@ -40,7 +41,7 @@ export default async function ClientDetailPage({
     supabase.from("check_ins").select("id, weight_kg, energy_level, adherence_level, notes, created_at").eq("client_id", id).order("created_at", { ascending: false }).limit(5),
     supabase.from("client_admin_notes").select("notes").eq("client_id", id).maybeSingle(),
     supabase.from("client_commercial_terms").select("modality, pricing_plan_id, agreed_amount_eur").eq("client_id", id).maybeSingle(),
-    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, default_amount_eur, active").order("name"),
+    supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, service_modality, days_per_week, default_amount_eur, active").order("name"),
   ]);
   const profile = profileResult.data;
   if (!profile) notFound();
@@ -51,11 +52,14 @@ export default async function ClientDetailPage({
     ? await supabase.storage.from("profile-avatars").createSignedUrl(profile.avatar_path, 3600)
     : { data: null };
   const email = authResult.data.user?.email;
+  const displayPhone = profile.phone ? formatStoredPhoneValue(profile.phone) : "";
   const pricingPlans: PricingPlanOption[] = (pricingResult.data ?? []).map((plan) => ({
     id: plan.id,
     name: plan.name,
     billingCycle: plan.billing_cycle,
     durationMonths: plan.duration_months,
+    serviceModality: plan.service_modality,
+    daysPerWeek: plan.days_per_week,
     defaultAmountEur: plan.default_amount_eur,
     active: plan.active,
   }));
@@ -80,7 +84,7 @@ export default async function ClientDetailPage({
         <ProfileAvatar name={profile.full_name || "Cliente"} src={avatarData?.signedUrl} className="size-24 text-2xl" />
         <dl className="grid min-w-0 flex-1 gap-4 text-sm sm:grid-cols-2">
           <div><dt className="font-bold text-muted">Nombre</dt><dd className="mt-1 font-bold">{profile.full_name || "Sin indicar"}</dd></div>
-          <div><dt className="font-bold text-muted">Teléfono</dt><dd className="mt-1">{profile.phone ? <a className="hover:text-primary hover:underline" href={`tel:${profile.phone}`}>{profile.phone}</a> : "Sin indicar"}</dd></div>
+          <div><dt className="font-bold text-muted">Teléfono</dt><dd className="mt-1">{displayPhone ? <a className="hover:text-primary hover:underline" href={`tel:${displayPhone.replace(/\s+/g, "")}`}>{displayPhone}</a> : "Sin indicar"}</dd></div>
           <div className="sm:col-span-2"><dt className="font-bold text-muted">Correo electrónico</dt><dd className="mt-1 break-all">{email ? <a className="hover:text-primary hover:underline" href={`mailto:${email}`}>{email}</a> : "No disponible"}</dd></div>
         </dl>
       </div>

@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { initialActionState, type ActionState } from "@/lib/forms/action-state";
 import { FormMessage } from "./form-message";
-import { formatPhoneValue, PhonePrefixSelect, splitPhoneValue } from "./phone-prefix-select";
+import { PhonePrefixSelect } from "./phone-prefix-select";
+import { formatPhoneValue, splitPhoneValue } from "@/lib/forms/phone";
 import { SubmitButton } from "./submit-button";
 
 export function ProfileSettingsForm({

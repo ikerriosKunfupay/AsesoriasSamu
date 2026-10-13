@@ -14,7 +14,7 @@
 | `workout_logs` | futuro registro de sesiones | lectura/inserción propia |
 | `check_ins` | revisiones periódicas | lectura/inserción propia |
 | `manual_fee_records` | control interno sin cobro | ninguno |
-| `pricing_plans` | catálogo interno de tarifas y duración | ninguno |
+| `pricing_plans` | catálogo interno de tarifas, modalidad, días, duración y precio habitual | ninguno |
 | `client_commercial_terms` | modalidad, tarifa y precio acordado por cliente | ninguno |
 | `admin_dashboard_settings` | objetivos privados de ingresos y clientes del administrador | ninguno |
 | `audit_events` | trazabilidad administrativa | ninguno |

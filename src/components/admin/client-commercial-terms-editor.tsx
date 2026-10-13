@@ -44,6 +44,7 @@ export function ClientCommercialTermsEditor({
       <Button
         ref={triggerRef}
         type="button"
+        role={menuTrigger ? "menuitem" : undefined}
         variant={menuTrigger ? "ghost" : "outline"}
         size="sm"
         className={menuTrigger ? "w-full justify-start" : undefined}
