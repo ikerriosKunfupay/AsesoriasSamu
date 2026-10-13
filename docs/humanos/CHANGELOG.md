@@ -1,5 +1,19 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-invitacion-centrada`
+
+- La cabecera y el formulario de **Nueva invitación** se muestran como un único bloque centrado en el espacio disponible.
+- El ancho queda limitado para facilitar la lectura, mientras que en móvil continúa ocupando todo el espacio útil.
+- La validación final completó análisis de código, tipos, 103 pruebas y compilación de producción.
+
+## 2026-10-14 — `2026-10-14-periodos-y-control-cuotas`
+
+- El resumen permite agrupar toda la información económica por día, semana o mes; cambian conjuntamente los KPI, la gráfica, las altas, la cartera, el objetivo y la previsión.
+- La vista diaria enseña los últimos 14 días, la semanal las últimas 12 semanas y la mensual los últimos 12 meses.
+- **Cobrado** indica que se puede pulsar para ver quién ha pagado; **Pendiente** abre los pendientes y, en la vista mensual, también identifica como **Sin registrar** a cada cliente activo que todavía no tenga una cuota creada ese mes.
+- La primera prueba del listado mensual encontró dos textos coincidentes para **Sin cuota registrada**; se hizo la comprobación más precisa y las siete pruebas específicas terminaron correctamente junto con la validación de tipos.
+- La validación final completó análisis de código, tipos, 103 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-resumen-sin-descripcion-asesorias`
 
 - Eliminado el texto explicativo situado bajo **Valor de las asesorías** para dejar una cabecera más limpia y compacta.

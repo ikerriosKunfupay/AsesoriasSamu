@@ -54,6 +54,7 @@ const fees = [
     period: "2026-10",
     amountEur: 60,
     status: "paid",
+    updatedAt: "2026-10-14T08:00:00.000Z",
   },
 ];
 
@@ -64,7 +65,7 @@ describe("DashboardAnalytics", () => {
         clients={clients}
         fees={fees}
         goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
-        referencePeriod="2026-10"
+        referenceDate="2026-10-14"
       />,
     );
 
@@ -84,7 +85,7 @@ describe("DashboardAnalytics", () => {
         clients={clients}
         fees={fees}
         goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
-        referencePeriod="2026-10"
+        referenceDate="2026-10-14"
       />,
     );
 
@@ -105,12 +106,12 @@ describe("DashboardAnalytics", () => {
         clients={clients}
         fees={fees}
         goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
-        referencePeriod="2026-10"
+        referenceDate="2026-10-14"
       />,
     );
 
     expect(container.querySelector("select")).not.toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Periodo de las gráficas" })).toHaveTextContent("Últimos 6 meses");
+    expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por mes");
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Todas las modalidades");
     expect(screen.getByRole("combobox", { name: "Filtrar por tarifa" })).toHaveTextContent("Todas las tarifas");
     expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[11.5rem_14rem_12rem]");
@@ -119,5 +120,29 @@ describe("DashboardAnalytics", () => {
     fireEvent.click(screen.getByRole("option", { name: "Presencial" }));
 
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Presencial");
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Agrupar estadísticas por" }));
+    fireEvent.click(screen.getByRole("option", { name: "Por día" }));
+
+    expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por día");
+    expect(screen.getByRole("button", { name: /cobrado hoy/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /previsión mañana/i })).toBeInTheDocument();
+  });
+
+  it("muestra los clientes activos sin cuota mensual dentro de pendientes", () => {
+    render(
+      <DashboardAnalytics
+        clients={clients}
+        fees={[]}
+        goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
+        referenceDate="2026-10-14"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /pendiente este mes/i }));
+
+    expect(screen.getByRole("dialog", { name: /pendiente este mes/i })).toBeInTheDocument();
+    expect(screen.getByText(/^sin cuota registrada en octubre de 2026$/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /iker ríos navarro/i })).toHaveAttribute("href", "/admin/cuotas");
   });
 });

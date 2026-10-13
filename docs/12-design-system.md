@@ -41,6 +41,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 
 - `Button` y `ButtonLink`: variantes `primary`, `secondary`, `outline`, `ghost` y `danger`; tamaño táctil mínimo de 40–48 px.
 - Los KPI accionables se presentan como botones completos, con foco visible, indicación direccional y `aria-haspopup="dialog"`. Su modal conserva el contexto del filtro, muestra como máximo diez filas, permite cerrar con `Escape` o pulsando el fondo y devuelve el foco a la tarjeta de origen.
+- Los KPI económicos adaptan sus sustantivos y explicaciones a la granularidad elegida: día, semana o mes. **Cobrado** y **Pendiente** deben explicar de forma explícita que se pulsan para identificar personas y cuotas; la ausencia de una cuota mensual se distingue como **Sin registrar**, no como importe pendiente inventado.
 - `Card`: contenedor estándar para contenido y formularios.
 - `Field`, `Input`, `Textarea`: composición accesible de etiqueta, ayuda y error.
 - `FieldHelp`: botón `?` opcional junto a la etiqueta que abre una ayuda contextual en diálogo; usa textos específicos por campo, admite teclado y devuelve el foco al disparador al cerrarse.
@@ -73,6 +74,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - El consentimiento sanitario del cuestionario sigue la misma validación propia: el error aparece en `FormErrorToast`, la casilla y su contenedor se marcan en rojo y el mensaje queda asociado mediante `aria-describedby`. Los avisos informativos independientes pueden usar `DismissibleNotice`, cuya `X` no sustituye ni modifica consentimientos obligatorios.
 - El control para mostrar u ocultar la contraseña se reutiliza también en el login y conserva el propósito de autocompletado propio de cada formulario.
 - En escritorio, el menú privado ocupa la altura visible y mantiene el usuario y **Cerrar sesión** accesibles al pie, independientemente de la longitud del contenido.
+- Los formularios administrativos de una sola tarea, como **Nueva invitación**, centran cabecera y superficie en un único contenedor de ancho legible; no se centra el texto de etiquetas ni campos.
 - En la cabecera privada móvil, el menú se sitúa a la izquierda y el emblema compacto a la derecha.
 - El cuestionario del cliente se estructura en bloques numerados con título y descripción. Los cuatro datos físicos usan una cuadrícula de dos columnas desde `sm`, las respuestas narrativas forman pares desde `lg` y todo vuelve a una sola columna en móvil. Las ayudas que afectan solo a un campo pero rompen la alineación de la fila deben colocarse bajo el grupo y conservar su asociación ARIA.
 - Los campos narrativos del cuestionario muestran ayuda contextual mediante `FieldHelp`. La explicación siempre relaciona el nivel de detalle con una mejor adaptación del plan; en salud debe pedir solo información práctica y prohibir informes completos.

@@ -1,5 +1,20 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-invitacion-centrada`
+
+- `/admin/clientes/nuevo` envuelve `PageHeading` y `Card` en `mx-auto w-full max-w-3xl`, sin modificar `InviteClientForm` ni su Server Action.
+- Una prueba de página fija el centrado conjunto y la presencia del formulario.
+- `pnpm check` superó lint, tipos, 103 pruebas y el build Webpack; `git diff --check` no detectó errores.
+
+## 2026-10-14 — `2026-10-14-periodos-y-control-cuotas`
+
+- `AnalyticsFilters` sustituye el número de meses por `granularity: day | week | month`; `buildDashboardAnalytics()` genera 14 días, 12 semanas ISO o 12 meses y prorratea cartera y objetivo mensual mediante equivalencia anual.
+- `AnalyticsFee` incorpora `updatedAt`: el mes conserva `period` como fuente contable, mientras que día y semana agrupan la última actualización manual en la zona `Europe/Madrid`.
+- `DashboardAnalytics` adapta etiquetas, desgloses, previsión, series, progreso y distribución por tarifa a la granularidad; la consulta administrativa entrega `updated_at` y una fecha de referencia local.
+- El modal mensual de pendientes combina cuotas `pending` con clientes activos sin registro, sin sumar estos últimos al importe mientras no exista una cuota persistida.
+- La primera ejecución dirigida falló por una coincidencia de texto deliberadamente repetida entre descripción y fila; se restringió la expectativa y las siete pruebas específicas más `pnpm typecheck` finalizaron correctamente.
+- `pnpm check` superó lint, tipos, 103 pruebas y el build Webpack; `git diff --check` no detectó errores.
+
 ## 2026-10-14 — `2026-10-14-resumen-sin-descripcion-asesorias`
 
 - `DashboardAnalytics` retira el párrafo auxiliar de la cabecera de negocio sin modificar el `aria-labelledby`, el estado de los filtros ni los cálculos.

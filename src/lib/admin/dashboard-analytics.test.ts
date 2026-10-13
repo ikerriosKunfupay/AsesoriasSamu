@@ -43,11 +43,11 @@ describe("analítica del panel", () => {
     const analytics = buildDashboardAnalytics({
       clients,
       fees: [
-        { id: "f1", clientId: "1", period: "2026-10", amountEur: 60, status: "paid" },
-        { id: "f2", clientId: "2", period: "2026-10", amountEur: 300, status: "pending" },
+        { id: "f1", clientId: "1", period: "2026-10", amountEur: 60, status: "paid", updatedAt: "2026-10-14T08:00:00.000Z" },
+        { id: "f2", clientId: "2", period: "2026-10", amountEur: 300, status: "pending", updatedAt: "2026-10-13T08:00:00.000Z" },
       ],
-      filters: { months: 3, modality: "in_person", pricingPlanId: "all" },
-      referencePeriod: "2026-10",
+      filters: { granularity: "month", modality: "in_person", pricingPlanId: "all" },
+      referenceDate: "2026-10-14",
       goals: { monthlyRevenueGoalEur: 100, activeClientsGoal: 2 },
     });
 
@@ -56,5 +56,41 @@ describe("analítica del panel", () => {
     expect(analytics.currentCollected).toBe(60);
     expect(analytics.currentPending).toBe(0);
     expect(analytics.revenueGoalProgress).toBe(60);
+  });
+
+  it("agrupa los cobros por día, semana o mes y prorratea cartera y objetivo", () => {
+    const fees = [
+      { id: "f1", clientId: "1", period: "2026-10", amountEur: 60, status: "paid", updatedAt: "2026-10-14T08:00:00.000Z" },
+      { id: "f2", clientId: "2", period: "2026-10", amountEur: 300, status: "paid", updatedAt: "2026-10-13T08:00:00.000Z" },
+    ];
+    const base = {
+      clients,
+      fees,
+      referenceDate: "2026-10-14",
+      goals: { monthlyRevenueGoalEur: 520, activeClientsGoal: 2 },
+    };
+
+    const daily = buildDashboardAnalytics({
+      ...base,
+      filters: { granularity: "day", modality: "all", pricingPlanId: "all" },
+    });
+    const weekly = buildDashboardAnalytics({
+      ...base,
+      filters: { granularity: "week", modality: "all", pricingPlanId: "all" },
+    });
+    const monthly = buildDashboardAnalytics({
+      ...base,
+      filters: { granularity: "month", modality: "all", pricingPlanId: "all" },
+    });
+
+    expect(daily.revenueSeries).toHaveLength(14);
+    expect(daily.currentCollected).toBe(60);
+    expect(daily.recurringRevenue).toBeCloseTo((110 * 12) / 365);
+    expect(weekly.revenueSeries).toHaveLength(12);
+    expect(weekly.currentCollected).toBe(360);
+    expect(weekly.currentRevenueGoal).toBe(120);
+    expect(monthly.revenueSeries).toHaveLength(12);
+    expect(monthly.currentCollected).toBe(360);
+    expect(monthly.recurringRevenue).toBe(110);
   });
 });

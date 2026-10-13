@@ -21,6 +21,7 @@ export default async function AdminDashboardPage() {
   const adminUser = await requireAdmin();
   const supabase = createAdminClient();
   const now = new Date();
+  const referenceDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const referencePeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   const analyticsStart = new Date(now.getFullYear(), now.getMonth() - 11, 1);
   const analyticsStartPeriod = `${analyticsStart.getFullYear()}-${String(analyticsStart.getMonth() + 1).padStart(2, "0")}`;
@@ -56,8 +57,9 @@ export default async function AdminDashboardPage() {
     supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, service_modality, days_per_week"),
     supabase
       .from("manual_fee_records")
-      .select("id, client_id, period, amount_eur, status")
+      .select("id, client_id, period, amount_eur, status, updated_at")
       .gte("period", analyticsStartPeriod)
+      .lte("period", referencePeriod)
       .order("period"),
     supabase
       .from("admin_dashboard_settings")
@@ -182,6 +184,7 @@ export default async function AdminDashboardPage() {
     period: fee.period,
     amountEur: fee.amount_eur,
     status: fee.status,
+    updatedAt: fee.updated_at,
   }));
   const goals = {
     monthlyRevenueGoalEur: dashboardSettings.data?.monthly_revenue_goal_eur ?? 0,
@@ -192,7 +195,7 @@ export default async function AdminDashboardPage() {
     <>
       <PageHeading eyebrow="Panel privado" title="Resumen" description="Consulta la actividad, el valor de tus asesorías, las previsiones y el avance de tus objetivos." />
       <DashboardKpis kpis={kpis} />
-      <DashboardAnalytics clients={analyticsClients} fees={dashboardFees} goals={goals} referencePeriod={referencePeriod} />
+      <DashboardAnalytics clients={analyticsClients} fees={dashboardFees} goals={goals} referenceDate={referenceDate} />
     </>
   );
 }

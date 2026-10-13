@@ -43,6 +43,7 @@ import {
   type AnalyticsClient,
   type AnalyticsFee,
   type AnalyticsFilters,
+  type AnalyticsGranularity,
   type DashboardGoals,
 } from "@/lib/admin/dashboard-analytics";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
@@ -52,9 +53,9 @@ import { formatMoney } from "@/lib/format";
 const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
 const analyticsSelectClassName = "min-h-11 text-sm font-bold";
 const periodOptions = [
-  { value: "3", label: "Últimos 3 meses" },
-  { value: "6", label: "Últimos 6 meses" },
-  { value: "12", label: "Últimos 12 meses" },
+  { value: "month", label: "Por mes" },
+  { value: "week", label: "Por semana" },
+  { value: "day", label: "Por día" },
 ] as const;
 const modalityOptions = [
   { value: "all", label: "Todas las modalidades" },
@@ -62,6 +63,60 @@ const modalityOptions = [
   { value: "online", label: "Virtual" },
 ] as const;
 const tooltipStyle = { background: "var(--surface)", borderColor: "var(--border)", borderRadius: 12, color: "var(--foreground)" };
+
+const granularityCopy: Record<AnalyticsGranularity, {
+  collected: string;
+  recurring: string;
+  forecast: string;
+  pending: string;
+  average: string;
+  recurringDetail: string;
+  forecastDetail: string;
+  recurringSeries: string;
+  valueByPlan: string;
+  growth: string;
+  filter: string;
+}> = {
+  day: {
+    collected: "Cobrado hoy",
+    recurring: "Cartera diaria",
+    forecast: "Previsión mañana",
+    pending: "Pendiente hoy",
+    average: "Ticket diario medio",
+    recurringDetail: "Valor diario equivalente de tarifas activas.",
+    forecastDetail: "Combina la tendencia diaria y la cartera contratada.",
+    recurringSeries: "Cartera diaria",
+    valueByPlan: "Valor diario",
+    growth: "Altas por día",
+    filter: "día",
+  },
+  week: {
+    collected: "Cobrado esta semana",
+    recurring: "Cartera semanal",
+    forecast: "Previsión próxima semana",
+    pending: "Pendiente esta semana",
+    average: "Ticket semanal medio",
+    recurringDetail: "Valor semanal equivalente de tarifas activas.",
+    forecastDetail: "Combina la tendencia semanal y la cartera contratada.",
+    recurringSeries: "Cartera semanal",
+    valueByPlan: "Valor semanal",
+    growth: "Altas por semana",
+    filter: "semana",
+  },
+  month: {
+    collected: "Cobrado este mes",
+    recurring: "Cartera mensual",
+    forecast: "Previsión próximo mes",
+    pending: "Pendiente este mes",
+    average: "Ticket mensual medio",
+    recurringDetail: "Valor mensual equivalente de tarifas activas.",
+    forecastDetail: "Combina la tendencia reciente y la cartera contratada.",
+    recurringSeries: "Cartera mensual",
+    valueByPlan: "Valor mensual",
+    growth: "Altas por mes",
+    filter: "mes",
+  },
+};
 
 type AnalyticsMetricKey = "collected" | "recurring" | "forecast" | "pending" | "average" | "active";
 
@@ -200,23 +255,24 @@ export function DashboardAnalytics({
   clients,
   fees,
   goals,
-  referencePeriod,
+  referenceDate,
 }: {
   clients: AnalyticsClient[];
   fees: AnalyticsFee[];
   goals: DashboardGoals;
-  referencePeriod: string;
+  referenceDate: string;
 }) {
-  const [filters, setFilters] = useState<AnalyticsFilters>({ months: 6, modality: "all", pricingPlanId: "all" });
+  const [filters, setFilters] = useState<AnalyticsFilters>({ granularity: "month", modality: "all", pricingPlanId: "all" });
   const [activeMetricKey, setActiveMetricKey] = useState<AnalyticsMetricKey | null>(null);
   const dialogTitleId = useId();
   const dialogDescriptionId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
   const analytics = useMemo(
-    () => buildDashboardAnalytics({ clients, fees, filters, referencePeriod, goals }),
-    [clients, fees, filters, goals, referencePeriod],
+    () => buildDashboardAnalytics({ clients, fees, filters, referenceDate, goals }),
+    [clients, fees, filters, goals, referenceDate],
   );
+  const timeCopy = granularityCopy[filters.granularity];
   const pricingPlans = useMemo(() => (
     Array.from(new Map(clients.filter((client) => client.pricingPlanId).map((client) => [
       client.pricingPlanId!,
@@ -240,22 +296,41 @@ export function DashboardAnalytics({
         href: getClientDetailHref(client.id, "/admin"),
       }))
       .sort((left, right) => left.title.localeCompare(right.title, "es"));
+    const currentFeeIds = new Set(analytics.currentFeeIds);
     const feeItems = (status: "paid" | "pending"): AnalyticsMetricItem[] => fees
       .filter((fee) => (
         filteredClientIds.has(fee.clientId)
-        && fee.period === referencePeriod
+        && currentFeeIds.has(fee.id)
         && fee.status === status
       ))
       .map((fee) => ({
         id: fee.id,
         title: clientNames.get(fee.clientId) ?? "Cliente",
-        detail: `${formatPeriod(fee.period)} · ${status === "paid" ? "Pagada" : "Pendiente"}`,
+        detail: `Cuota de ${formatPeriod(fee.period)} · ${status === "paid" ? "Pagada" : "Pendiente"}`,
         value: formatMoney(fee.amountEur),
         href: `/admin/cuotas#cuota-${encodeURIComponent(fee.id)}`,
       }))
       .sort((left, right) => left.title.localeCompare(right.title, "es"));
     const paidItems = feeItems("paid");
-    const pendingItems = feeItems("pending");
+    const currentFees = fees.filter((fee) => (
+      filteredClientIds.has(fee.clientId) && currentFeeIds.has(fee.id)
+    ));
+    const registeredClientIds = new Set(currentFees.map((fee) => fee.clientId));
+    const unregisteredItems: AnalyticsMetricItem[] = filters.granularity === "month"
+      ? activeClients
+        .filter((client) => !registeredClientIds.has(client.id))
+        .map((client) => ({
+          id: `unregistered-${client.id}`,
+          title: client.name,
+          detail: `Sin cuota registrada en ${analytics.currentPeriodLabel}`,
+          value: client.agreedAmountEur == null
+            ? "Sin precio"
+            : `${formatMoney(monthlyEquivalent(client.agreedAmountEur, client.durationMonths))}/mes`,
+          href: "/admin/cuotas",
+        }))
+      : [];
+    const pendingItems = [...feeItems("pending"), ...unregisteredItems]
+      .sort((left, right) => left.title.localeCompare(right.title, "es"));
     const recurringItems = clientItems(activeClients);
     const averageItems = clientItems(contractedClients);
     const historicalItems: AnalyticsMetricItem[] = analytics.revenueSeries
@@ -264,7 +339,7 @@ export function DashboardAnalytics({
       .reverse()
       .map((period) => ({
         id: period.period,
-        title: formatPeriod(period.period),
+        title: period.label,
         detail: "Importe marcado como cobrado",
         value: formatMoney(period.collected),
       }));
@@ -274,14 +349,14 @@ export function DashboardAnalytics({
       : filters.pricingPlanId === "unassigned"
         ? "clientes sin tarifa"
         : pricingPlans.find(([id]) => id === filters.pricingPlanId)?.[1] ?? "tarifa seleccionada";
-    const filterSummary = `Filtro actual: ${modality} y ${selectedPlan}.`;
+    const filterSummary = `Filtro actual: por ${timeCopy.filter}, ${modality} y ${selectedPlan}.`;
 
     return [
       {
         key: "collected",
-        label: "Cobrado este mes",
+        label: timeCopy.collected,
         value: formatMoney(analytics.currentCollected),
-        description: `Cuotas pagadas en ${formatPeriod(referencePeriod)}. ${filterSummary}`,
+        description: `Cuotas pagadas en ${analytics.currentPeriodLabel}. ${filterSummary}`,
         emptyMessage: "No hay cuotas pagadas que coincidan con estos filtros.",
         items: paidItems,
         totalItems: paidItems.length,
@@ -289,9 +364,9 @@ export function DashboardAnalytics({
       },
       {
         key: "recurring",
-        label: "Cartera mensual",
+        label: timeCopy.recurring,
         value: formatMoney(analytics.recurringRevenue),
-        description: `Valor mensual equivalente de cada cliente activo. ${filterSummary}`,
+        description: `${timeCopy.recurringDetail} ${filterSummary}`,
         emptyMessage: "No hay clientes activos que coincidan con estos filtros.",
         items: recurringItems,
         totalItems: recurringItems.length,
@@ -299,28 +374,30 @@ export function DashboardAnalytics({
       },
       {
         key: "forecast",
-        label: "Previsión próximo mes",
-        value: formatMoney(analytics.nextMonthForecast),
-        description: `Estimación basada en la cartera contratada y hasta seis meses completos de cobros. Periodo analizado: últimos ${filters.months} meses. ${filterSummary}`,
-        emptyMessage: "Todavía no hay meses completos con cobros; la previsión se apoya en la cartera contratada.",
+        label: timeCopy.forecast,
+        value: formatMoney(analytics.nextPeriodForecast),
+        description: `Estimación basada en la cartera contratada y hasta seis periodos completos de cobros dentro de los ${analytics.rangeDescription}. ${filterSummary}`,
+        emptyMessage: "Todavía no hay periodos completos con cobros; la previsión se apoya en la cartera contratada.",
         items: historicalItems,
         totalItems: historicalItems.length,
       },
       {
         key: "pending",
-        label: "Pendiente este mes",
+        label: timeCopy.pending,
         value: formatMoney(analytics.currentPending),
-        description: `Cuotas pendientes en ${formatPeriod(referencePeriod)}. ${filterSummary}`,
-        emptyMessage: "No hay cuotas pendientes que coincidan con estos filtros.",
+        description: filters.granularity === "month"
+          ? `Cuotas pendientes y clientes activos sin cuota registrada en ${analytics.currentPeriodLabel}. ${filterSummary}`
+          : `Cuotas pendientes en ${analytics.currentPeriodLabel}. ${filterSummary}`,
+        emptyMessage: "No hay cuotas pendientes ni clientes sin revisar que coincidan con estos filtros.",
         items: pendingItems,
         totalItems: pendingItems.length,
         viewAllHref: "/admin/cuotas",
       },
       {
         key: "average",
-        label: "Ticket mensual medio",
+        label: timeCopy.average,
         value: formatMoney(analytics.averageTicket),
-        description: `Promedio mensual entre clientes activos con un precio asignado. ${filterSummary}`,
+        description: `Promedio por cliente activo con precio asignado en valor de ${timeCopy.filter}. ${filterSummary}`,
         emptyMessage: "No hay clientes activos con precio que coincidan con estos filtros.",
         items: averageItems,
         totalItems: averageItems.length,
@@ -337,7 +414,7 @@ export function DashboardAnalytics({
         viewAllHref: "/admin/clientes",
       },
     ] satisfies AnalyticsMetricDialog[];
-  }, [analytics, clients, fees, filters, pricingPlans, referencePeriod]);
+  }, [analytics, clients, fees, filters, pricingPlans, timeCopy]);
   const activeMetric = metricDialogs.find((metric) => metric.key === activeMetricKey) ?? null;
 
   useEffect(() => {
@@ -376,9 +453,12 @@ export function DashboardAnalytics({
             id="analytics-period"
             options={periodOptions}
             className={analyticsSelectClassName}
-            ariaLabel="Periodo de las gráficas"
-            value={String(filters.months)}
-            onValueChange={(value) => setFilters((current) => ({ ...current, months: Number(value) as AnalyticsFilters["months"] }))}
+            ariaLabel="Agrupar estadísticas por"
+            value={filters.granularity}
+            onValueChange={(value) => setFilters((current) => ({
+              ...current,
+              granularity: value as AnalyticsGranularity,
+            }))}
           />
           <InternalSelect
             id="analytics-modality"
@@ -404,11 +484,11 @@ export function DashboardAnalytics({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        <MetricCard metricKey="collected" icon={Banknote} label="Cobrado este mes" value={formatMoney(analytics.currentCollected)} detail="Cuotas del mes marcadas como pagadas." expanded={activeMetricKey === "collected"} onOpen={openMetric} />
-        <MetricCard metricKey="recurring" icon={CircleDollarSign} label="Cartera mensual" value={formatMoney(analytics.recurringRevenue)} detail="Valor mensual equivalente de tarifas activas." expanded={activeMetricKey === "recurring"} onOpen={openMetric} />
-        <MetricCard metricKey="forecast" icon={TrendingUp} label="Previsión próximo mes" value={formatMoney(analytics.nextMonthForecast)} detail="Combina tendencia reciente y cartera contratada." expanded={activeMetricKey === "forecast"} onOpen={openMetric} />
-        <MetricCard metricKey="pending" icon={CalendarClock} label="Pendiente este mes" value={formatMoney(analytics.currentPending)} detail="Cuotas del mes todavía pendientes." expanded={activeMetricKey === "pending"} onOpen={openMetric} />
-        <MetricCard metricKey="average" icon={Target} label="Ticket mensual medio" value={formatMoney(analytics.averageTicket)} detail="Promedio mensual por cliente con precio." expanded={activeMetricKey === "average"} onOpen={openMetric} />
+        <MetricCard metricKey="collected" icon={Banknote} label={timeCopy.collected} value={formatMoney(analytics.currentCollected)} detail="Pulsa para ver quién ha pagado." expanded={activeMetricKey === "collected"} onOpen={openMetric} />
+        <MetricCard metricKey="recurring" icon={CircleDollarSign} label={timeCopy.recurring} value={formatMoney(analytics.recurringRevenue)} detail={timeCopy.recurringDetail} expanded={activeMetricKey === "recurring"} onOpen={openMetric} />
+        <MetricCard metricKey="forecast" icon={TrendingUp} label={timeCopy.forecast} value={formatMoney(analytics.nextPeriodForecast)} detail={timeCopy.forecastDetail} expanded={activeMetricKey === "forecast"} onOpen={openMetric} />
+        <MetricCard metricKey="pending" icon={CalendarClock} label={timeCopy.pending} value={formatMoney(analytics.currentPending)} detail={filters.granularity === "month" ? "Pulsa para ver pendientes y cuotas sin registrar." : "Pulsa para ver las cuotas pendientes."} expanded={activeMetricKey === "pending"} onOpen={openMetric} />
+        <MetricCard metricKey="average" icon={Target} label={timeCopy.average} value={formatMoney(analytics.averageTicket)} detail={`Promedio por cliente con precio en valor de ${timeCopy.filter}.`} expanded={activeMetricKey === "average"} onOpen={openMetric} />
         <MetricCard metricKey="active" icon={Users} label="Clientes activos" value={String(analytics.activeClients)} detail="Clientes en alta dentro de los filtros." expanded={activeMetricKey === "active"} onOpen={openMetric} />
       </div>
 
@@ -416,9 +496,9 @@ export function DashboardAnalytics({
         <Card>
           <div className="mb-5">
             <h3 className="text-xl font-black">Ingresos, cartera y objetivo</h3>
-            <p className="text-sm text-muted">La línea de cartera prorratea cada tarifa entre los meses que cubre.</p>
+            <p className="text-sm text-muted">Vista de los {analytics.rangeDescription}; cartera y objetivo se prorratean a valor de {timeCopy.filter}.</p>
           </div>
-          <div className="h-80 min-w-0" role="img" aria-label="Gráfica de evolución de ingresos cobrados, cartera mensual y objetivo">
+          <div className="h-80 min-w-0" role="img" aria-label={`Gráfica de evolución de ingresos cobrados, ${timeCopy.recurringSeries.toLowerCase()} y objetivo`}>
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={analytics.revenueSeries} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" vertical={false} />
@@ -427,7 +507,7 @@ export function DashboardAnalytics({
                 <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatMoney(Number(value))} />
                 <Legend />
                 <Area type="monotone" dataKey="collected" name="Cobrado" stroke="#ef2d32" fill="#fee2e2" strokeWidth={3} />
-                <Line type="monotone" dataKey="recurring" name="Cartera mensual" stroke="var(--foreground)" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="recurring" name={timeCopy.recurringSeries} stroke="var(--foreground)" strokeWidth={3} dot={false} />
                 <Line type="monotone" dataKey="goal" name="Objetivo" stroke="#16a34a" strokeDasharray="6 5" strokeWidth={2} dot={false} />
               </ComposedChart>
             </ResponsiveContainer>
@@ -435,9 +515,9 @@ export function DashboardAnalytics({
         </Card>
 
         <Card>
-          <div className="mb-6 flex items-center gap-3"><Goal className="text-primary" /><div><h3 className="text-xl font-black">Objetivos</h3><p className="text-sm text-muted">Progreso del mes y de la cartera actual.</p></div></div>
+          <div className="mb-6 flex items-center gap-3"><Goal className="text-primary" /><div><h3 className="text-xl font-black">Objetivos</h3><p className="text-sm text-muted">Progreso por {timeCopy.filter} y de la cartera actual.</p></div></div>
           <div className="grid gap-6">
-            <GoalProgress label="Ingresos cobrados" value={formatMoney(analytics.currentCollected)} target={formatMoney(goals.monthlyRevenueGoalEur)} progress={analytics.revenueGoalProgress} />
+            <GoalProgress label={`Ingresos cobrados por ${timeCopy.filter}`} value={formatMoney(analytics.currentCollected)} target={formatMoney(analytics.currentRevenueGoal)} progress={analytics.revenueGoalProgress} />
             <GoalProgress label="Clientes activos" value={String(analytics.activeClients)} target={String(goals.activeClientsGoal)} progress={analytics.clientGoalProgress} />
             <details className="rounded-[var(--radius-md)] border border-border p-4">
               <summary className="cursor-pointer font-black">Modificar objetivos</summary>
@@ -450,15 +530,15 @@ export function DashboardAnalytics({
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
         <Card>
           <h3 className="text-xl font-black">Valor por tarifa</h3>
-          <p className="mb-4 text-sm text-muted">Ingreso mensual equivalente de clientes activos.</p>
-          <div className="h-72 min-w-0" role="img" aria-label="Gráfica del valor mensual por tarifa">
+          <p className="mb-4 text-sm text-muted">Ingreso equivalente por {timeCopy.filter} de clientes activos.</p>
+          <div className="h-72 min-w-0" role="img" aria-label={`Gráfica del ${timeCopy.valueByPlan.toLowerCase()} por tarifa`}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analytics.planDistribution} layout="vertical" margin={{ left: 5, right: 15 }}>
                 <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" horizontal={false} />
                 <XAxis stroke="var(--muted)" type="number" tickFormatter={compactMoney} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--muted)" type="category" dataKey="name" width={95} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(value) => formatMoney(Number(value))} />
-                <Bar dataKey="monthlyValue" name="Valor mensual" fill="#ef2d32" radius={[0, 8, 8, 0]} />
+                <Bar dataKey="periodValue" name={timeCopy.valueByPlan} fill="#ef2d32" radius={[0, 8, 8, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -481,9 +561,9 @@ export function DashboardAnalytics({
         </Card>
 
         <Card>
-          <h3 className="text-xl font-black">Altas por mes</h3>
+          <h3 className="text-xl font-black">{timeCopy.growth}</h3>
           <p className="mb-4 text-sm text-muted">Nuevos registros dentro del periodo seleccionado.</p>
-          <div className="h-72 min-w-0" role="img" aria-label="Gráfica de altas de clientes por mes">
+          <div className="h-72 min-w-0" role="img" aria-label={`Gráfica de ${timeCopy.growth.toLowerCase()}`}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={analytics.clientGrowth}>
                 <CartesianGrid stroke="var(--border)" strokeDasharray="4 4" vertical={false} />
@@ -498,7 +578,7 @@ export function DashboardAnalytics({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-muted">
-        Las cifras son internas y orientativas. “Cobrado” depende del registro manual de cuotas; “cartera” prorratea el precio acordado; la previsión combina esa cartera con la tendencia de hasta seis meses completos. No representa beneficio neto porque no se registran gastos.
+        Las cifras son internas y orientativas. En la vista mensual, “cobrado” usa el periodo contable de la cuota; en día y semana usa su última actualización manual. “Cartera” y “objetivo” se prorratean a la escala seleccionada. La previsión combina la cartera con la tendencia de hasta seis periodos completos. No representa beneficio neto porque no se registran gastos.
       </p>
 
       {activeMetric ? (
