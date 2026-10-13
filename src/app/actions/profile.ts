@@ -15,10 +15,33 @@ export async function updateProfileAction(
   formData: FormData,
 ): Promise<ActionState> {
   const user = await requireCompletedClient();
+  const supabase = await createClient();
+
+  if (formData.get("intent") === "removeAvatar") {
+    if (!user.avatarPath) {
+      return { status: "success", message: "La foto de perfil ya estaba vacía." };
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ avatar_path: null })
+      .eq("id", user.id);
+
+    if (profileError) {
+      return { status: "error", message: "No se pudo quitar la foto de perfil." };
+    }
+
+    await supabase.storage.from(AVATAR_BUCKET).remove([user.avatarPath]);
+    revalidatePath("/app", "layout");
+    revalidatePath("/app/ajustes");
+    revalidatePath(`/admin/clientes/${user.id}`);
+
+    return { status: "success", message: "Foto eliminada. Volvemos a mostrar tus iniciales." };
+  }
+
   const parsed = profileSettingsSchema.safeParse({
     fullName: formData.get("fullName"),
     phone: formData.get("phone"),
-    email: formData.get("email"),
   });
 
   if (!parsed.success) {
@@ -47,7 +70,6 @@ export async function updateProfileAction(
     }
   }
 
-  const supabase = await createClient();
   let avatarPath: string | undefined;
 
   if (avatar instanceof File && avatar.size > 0) {
@@ -83,26 +105,9 @@ export async function updateProfileAction(
     return { status: "error", message: "No se pudieron guardar los datos del perfil." };
   }
 
-  const emailChanged = parsed.data.email.toLowerCase() !== user.email.toLowerCase();
-  if (emailChanged) {
-    const { error: emailError } = await supabase.auth.updateUser({ email: parsed.data.email });
-    if (emailError) {
-      return {
-        status: "error",
-        message: "El perfil se guardó, pero no se pudo solicitar el cambio de correo.",
-        fieldErrors: { email: ["Comprueba el correo o inténtalo de nuevo."] },
-      };
-    }
-  }
-
   revalidatePath("/app", "layout");
   revalidatePath("/app/ajustes");
   revalidatePath(`/admin/clientes/${user.id}`);
 
-  return {
-    status: "success",
-    message: emailChanged
-      ? "Perfil guardado. Revisa tu correo para confirmar la nueva dirección."
-      : "Perfil actualizado correctamente.",
-  };
+  return { status: "success", message: "Perfil actualizado correctamente." };
 }

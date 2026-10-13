@@ -29,7 +29,10 @@ export const emailSchema = z.object({
 export const profileSettingsSchema = z.object({
   fullName: requiredText("El nombre").max(120),
   phone: z.string().trim().max(30, "El teléfono es demasiado largo."),
-  email: z.string().trim().email("Introduce un correo válido."),
+});
+
+export const updateEmailSchema = z.object({
+  newEmail: z.string().trim().email("Introduce un correo válido."),
 });
 
 export const updatePasswordSchema = z

@@ -17,6 +17,8 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 
 El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. En móvil, el cierre de sesión está dentro del menú superior.
 
+La cuenta inicial designada para el entrenador se activa como administradora después de autenticarse correctamente por primera vez. El resto de registros continúa entrando siempre como cliente; la contraseña del administrador no se guarda en el código ni en las tablas de la aplicación.
+
 ## Registro y alta de un cliente
 
 Una persona que todavía no tenga cuenta puede pulsar **Regístrate** desde `/login` y completar nombre, correo y contraseña. Cuando la cuenta se crea, aparece una confirmación y la web vuelve automáticamente al acceso; también permite ir al login de inmediato. Recibirá un correo de confirmación y, al abrirlo, accederá al cuestionario inicial. El registro no solicita datos de salud; esos datos se recogen después, dentro de la cuenta y con consentimiento específico.
@@ -48,7 +50,7 @@ En móvil, el botón de navegación queda a la izquierda de la cabecera privada 
 Después puede:
 
 - completar o actualizar su cuestionario;
-- abrir **Ajustes** para cambiar su foto, nombre, teléfono o correo;
+- abrir **Ajustes** para cambiar su foto, nombre, teléfono, correo o contraseña;
 - consultar el último entrenamiento publicado;
 - consultar la última pauta nutricional publicada;
 - enviar una revisión con peso opcional, energía, adherencia y comentarios;
@@ -56,7 +58,9 @@ Después puede:
 
 En el acceso se puede mostrar u ocultar la contraseña mediante el icono del propio campo.
 
-La foto de perfil admite JPG, PNG o WebP de hasta 2 MB y se mantiene privada. Si se cambia el correo, la nueva dirección debe confirmarse antes de sustituir a la anterior. El entrenador puede consultar la foto y los datos de contacto actualizados desde la ficha del cliente.
+La foto de perfil admite JPG, PNG o WebP de hasta 2 MB y se mantiene privada. Puede pulsarse para verla ampliada o eliminarse para volver a mostrar las iniciales.
+
+El correo no se edita directamente. Al solicitar el cambio, Team Ortega envía un enlace al correo actual para comprobar la identidad; al abrirlo aparece un formulario emergente para indicar la nueva dirección. Cuando se guarda, Ajustes muestra automáticamente el correo actualizado. El cambio de contraseña sigue el mismo principio: primero se recibe un enlace seguro en el correo actual y después se elige la nueva contraseña en un formulario emergente. El entrenador puede consultar la foto y los datos de contacto actualizados desde la ficha del cliente.
 
 ## Interesados
 

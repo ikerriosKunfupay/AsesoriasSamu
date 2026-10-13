@@ -22,9 +22,9 @@ No documentar aquí ni en Git las claves publishable, secret o service role.
 
 ## Administrador inicial
 
-1. Crea un usuario desde Authentication > Users con el correo real del entrenador.
-2. Copia su UUID después de verificar visualmente correo y usuario.
-3. Ejecuta con el UUID literal:
+La cuenta inicial designada se promociona a `admin/active` desde `loginAction` únicamente después de que Supabase valide sus credenciales. Para una instalación distinta, cambia esa identidad en el código servidor antes del primer despliegue; no añadas el rol a metadatos del registro ni expongas una selección de rol en la interfaz.
+
+Si fuera necesario recuperar manualmente el acceso, verifica primero la identidad y copia su UUID desde Authentication > Users. Después ejecuta con ese UUID literal:
 
 ```sql
 update public.profiles
@@ -32,7 +32,7 @@ set role = 'admin', status = 'active', full_name = 'Samuel Ortega'
 where id = '<UUID_VERIFICADO>';
 ```
 
-4. Comprueba una única fila antes de cerrar el editor:
+Comprueba una única fila antes de cerrar el editor:
 
 ```sql
 select id, full_name, role, status

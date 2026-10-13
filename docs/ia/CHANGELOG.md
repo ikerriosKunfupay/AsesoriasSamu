@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-13 — `2026-10-13-seguridad-cuenta-y-admin`
+
+- `ProfileAvatar` incorpora visor modal, cierre por botón/fondo/Escape y restauración del foco; `updateProfileAction` permite anular `avatar_path` y retirar el objeto privado.
+- Añadidos `account-security.ts`, dos rutas modales de Ajustes y tokens HMAC de diez minutos ligados a usuario/propósito; el callback PKCE solo emite cookies `HttpOnly` tras validar firma, usuario y destino.
+- Separada la edición ordinaria del perfil de correo y contraseña. El correo se confirma de inmediato con `auth.admin.updateUserById()` tras verificar el buzón anterior, y la contraseña usa la sesión de recuperación de Supabase.
+- `loginAction` promociona a `admin/active` únicamente la cuenta inicial designada después de una autenticación correcta; el resto del control continúa dependiendo de `profiles.role` y del trigger que crea clientes.
+- Añadidas pruebas de manipulación/caducidad del token y del visor de avatar. `pnpm check` superó lint, tipos, 46 pruebas y build; no se requiere migración.
+
 ## 2026-10-13 — `2026-10-13-ajustes-perfil-cliente`
 
 - Añadidos `/app/ajustes`, `ProfileSettingsForm`, `updateProfileAction`, la entrada de navegación y la visualización de datos básicos en la ficha administrativa.

@@ -4,6 +4,7 @@ import {
   onboardingSchema,
   profileSettingsSchema,
   registerSchema,
+  updateEmailSchema,
   updatePasswordSchema,
 } from "./schemas";
 
@@ -77,17 +78,12 @@ describe("validación de formularios", () => {
     const result = profileSettingsSchema.safeParse({
       fullName: "María Ortega",
       phone: "+34 600 000 000",
-      email: "maria@example.com",
     });
     expect(result.success).toBe(true);
   });
 
-  it("rechaza un correo inválido en los ajustes del perfil", () => {
-    const result = profileSettingsSchema.safeParse({
-      fullName: "María Ortega",
-      phone: "",
-      email: "correo-invalido",
-    });
+  it("rechaza un correo nuevo inválido", () => {
+    const result = updateEmailSchema.safeParse({ newEmail: "correo-invalido" });
     expect(result.success).toBe(false);
   });
 

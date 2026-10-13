@@ -4,8 +4,13 @@ import { Card } from "@/components/ui/card";
 import { requireCompletedClient } from "@/lib/auth/current-user";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function ProfileSettingsPage() {
+export default async function ProfileSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string; password?: string; verification?: string }>;
+}) {
   const user = await requireCompletedClient();
+  const query = await searchParams;
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
@@ -31,6 +36,16 @@ export default async function ProfileSettingsPage() {
             email: user.email,
           }}
           avatarUrl={avatarData?.signedUrl}
+          notice={
+            query.email === "actualizado"
+              ? "Correo actualizado correctamente. Ya puedes usar la nueva dirección para iniciar sesión."
+              : query.password === "actualizada"
+                ? "Contraseña actualizada correctamente."
+                : query.verification === "invalid"
+                  ? "El enlace de verificación no es válido o ha caducado. Solicita uno nuevo."
+                  : undefined
+          }
+          noticeTone={query.verification === "invalid" ? "error" : "success"}
         />
       </Card>
     </>

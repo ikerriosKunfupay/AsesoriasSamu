@@ -18,7 +18,7 @@
 
 ## Roles
 
-`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos, tanto en registros públicos como en invitaciones. El primer administrador se promociona manualmente desde el SQL Editor después de comprobar su UUID. El formulario de registro solo recoge nombre, correo y contraseña; los datos de salud permanecen en el onboarding autenticado.
+`handle_new_user()` crea siempre un perfil `client` e ignora cualquier rol recibido en metadatos, tanto en registros públicos como en invitaciones. La única excepción de bootstrap está en la Server Action de login: después de que Supabase autentique correctamente a la cuenta inicial designada, el cliente administrativo actualiza su fila concreta a `admin/active`. La contraseña nunca interviene en esa consulta ni sale de Supabase. El formulario de registro solo recoge nombre, correo y contraseña; los datos de salud permanecen en el onboarding autenticado.
 
 ## RLS
 
@@ -29,6 +29,12 @@ La migración activa RLS en todas las tablas. `is_admin()` es `security definer`
 ## Avatares
 
 `profile-avatars` es un bucket privado con límite de 2 MB y MIME restringido a JPG, PNG o WebP. Cada objeto vive bajo el UUID de su propietario. Las políticas de `storage.objects` limitan inserción, sustitución y borrado al cliente propietario; la lectura se permite al propietario y al administrador. La web no persiste URLs públicas: firma cada lectura durante una hora y conserva únicamente `profiles.avatar_path`.
+
+## Cambios sensibles de cuenta
+
+Correo y contraseña no se modifican desde el formulario ordinario del perfil. El acceso al buzón actual se demuestra mediante un callback PKCE acompañado de una prueba HMAC con UUID, propósito, nonce y caducidad. La autorización temporal solo se conserva en una cookie `HttpOnly`; no se persiste en tablas ni se expone al JavaScript del navegador. El secreto usa `ACCOUNT_CHANGE_SECRET` si existe y, en su defecto, la `SUPABASE_SERVICE_ROLE_KEY`, siempre en servidor.
+
+Después de verificar el correo anterior, el cambio de dirección usa `auth.admin.updateUserById()` para dejarla confirmada inmediatamente, tal como exige el flujo de producto. La acción vuelve a validar sesión, UUID, propósito y firma antes de usar la service role. El cambio de contraseña utiliza la sesión de recuperación emitida por Supabase y consume igualmente su autorización temporal.
 
 ## Datos de salud
 

@@ -10,7 +10,10 @@ import {
   registerSchema,
   updatePasswordSchema,
 } from "@/lib/forms/schemas";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+
+const INITIAL_ADMIN_EMAIL = "samprox77@gmail.com";
 
 export async function loginAction(
   _previous: ActionState,
@@ -25,6 +28,19 @@ export async function loginAction(
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error || !data.user) {
     return { status: "error", message: "El correo o la contraseña no son correctos." };
+  }
+
+  if (data.user.email?.toLowerCase() === INITIAL_ADMIN_EMAIL) {
+    const admin = createAdminClient();
+    const { error: promotionError } = await admin
+      .from("profiles")
+      .update({ role: "admin", status: "active" })
+      .eq("id", data.user.id);
+
+    if (promotionError) {
+      await supabase.auth.signOut();
+      return { status: "error", message: "No se pudo preparar el acceso de administración." };
+    }
   }
 
   const { data: profile } = await supabase

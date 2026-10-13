@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-13 — `2026-10-13-seguridad-cuenta-y-admin`
+
+- La foto de perfil puede ampliarse al pulsarla y eliminarse para recuperar las iniciales por defecto.
+- Cambiar el correo exige abrir primero un enlace enviado a la dirección actual; después aparece un formulario emergente y Ajustes refleja automáticamente la nueva dirección.
+- Añadida la opción de cambiar la contraseña mediante un enlace seguro y un formulario emergente con controles para mostrar u ocultar ambos campos.
+- Preparado el acceso de la cuenta inicial designada al panel de administración después de autenticarla correctamente, sin guardar su contraseña en el proyecto.
+- Lint, tipos, 46 pruebas y compilación de producción finalizaron correctamente.
+
 ## 2026-10-13 — `2026-10-13-ajustes-perfil-cliente`
 
 - Añadido un apartado de Ajustes para que cada cliente pueda cambiar foto, nombre, teléfono y correo.
