@@ -1,5 +1,12 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-despliegue-tarifas-tema`
+
+- Aplicadas en la base de datos de producción las nuevas estructuras de tarifas, condiciones comerciales y objetivos del panel.
+- Verificado que el historial de las seis migraciones coincide entre el proyecto y Supabase y que las tres tablas nuevas están disponibles.
+- Publicados conjuntamente el panel de análisis de asesorías, la gestión comercial, los modos claro y oscuro y el nuevo control del menú lateral.
+- La caché local utilizada para enlazar Supabase queda fuera del repositorio y no contiene cambios funcionales del proyecto.
+
 ## 2026-10-13 — `2026-10-13-tema-y-control-sidebar`
 
 - Añadidos modos claro y oscuro para todo el panel privado, con elección persistente y adaptación de tablas, formularios, avisos y gráficas.

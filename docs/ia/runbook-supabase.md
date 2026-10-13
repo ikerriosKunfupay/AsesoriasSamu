@@ -6,7 +6,7 @@
 - Proyecto: `team-ortega` (`grlntqiviyehnpibaijk`).
 - Región: `eu-west-1` (Irlanda).
 - Aplicación: `https://team-ortega.vercel.app`.
-- Migraciones `202610120001_initial_schema.sql` y `202610130002_profile_settings.sql` aplicadas; 11 tablas y el bucket privado `profile-avatars` verificados.
+- Migraciones `202610120001`–`202610130006` aplicadas y sincronizadas con el historial remoto; las tablas `pricing_plans`, `client_commercial_terms` y `admin_dashboard_settings`, las 11 tablas iniciales y el bucket privado `profile-avatars` están verificados.
 - Site URL: `https://team-ortega.vercel.app`.
 - Redirect URLs: producción y desarrollo local configuradas según la sección siguiente.
 

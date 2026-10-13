@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-despliegue-tarifas-tema`
+
+- Verificada en `team-ortega` la presencia real de las migraciones históricas `202610120001`–`202610130004`; se reconcilió su historial remoto antes de continuar.
+- `supabase db push` aplicó `202610130005_commercial_terms.sql` y `202610130006_admin_dashboard_settings.sql`; una consulta posterior confirmó `pricing_plans`, `client_commercial_terms` y `admin_dashboard_settings`.
+- `supabase migration list --linked` quedó sincronizado con las seis versiones locales y remotas.
+- `/supabase/.temp/` se ignora por ser caché local del enlace con Supabase; no se versionan referencias ni metadatos generados por la CLI.
+- Se publica el conjunto validado en `main`: tarifas y condiciones por cliente, analítica Recharts, objetivos persistentes, tema claro/oscuro y control superior del sidebar.
+
 ## 2026-10-13 — `2026-10-13-tema-y-control-sidebar`
 
 - `ThemeToggle` aplica `light`/`dark` mediante `data-theme`, persiste `team-ortega:theme` y expone etiquetas accesibles; el bootstrap previo a hidratación respeta primero almacenamiento y después el sistema.
@@ -10,7 +18,7 @@
 ## 2026-10-13 — `2026-10-13-tarifas-analitica-asesorias`
 
 - `202610130005_commercial_terms.sql` crea `pricing_plans` y `client_commercial_terms`, conserva acuerdos mediante snapshot del importe, retira tarifas con borrado lógico y aplica RLS administrativa.
-- `202610130006_admin_dashboard_settings.sql` persiste objetivos por administrador con RLS ligada a `auth.uid()`; ambas migraciones quedan preparadas para aplicarse en orden en `team-ortega`.
+- `202610130006_admin_dashboard_settings.sql` persiste objetivos por administrador con RLS ligada a `auth.uid()`; ambas migraciones se aplicaron y verificaron en orden en `team-ortega` el 14 de octubre de 2026.
 - `ClientCommercialTermsForm` se reutiliza en tabla y ficha; `/admin/tarifas` administra el catálogo y `ClientsTable` amplía búsqueda y orden trivalente a modalidad, tarifa y precio.
 - Incorporado Recharts para el panel `DashboardAnalytics`; `dashboard-analytics.ts` prorratea por meses, agrega cuotas pagadas/pendientes y calcula la previsión combinando tendencia reciente y cartera activa.
 - Los filtros de 3, 6 o 12 meses, modalidad y tarifa recalculan todas las métricas y gráficas sin nuevas lecturas; no se entregan respuestas sanitarias al componente.
