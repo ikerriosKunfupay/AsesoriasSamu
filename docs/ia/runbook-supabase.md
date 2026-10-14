@@ -6,6 +6,7 @@
 - Proyecto: `team-ortega` (`grlntqiviyehnpibaijk`).
 - Región: `eu-west-1` (Irlanda).
 - Aplicación: `https://team-ortega.vercel.app`.
+- Versión funcional de entrenamientos estructurados desplegada desde `main` en `93f530b`; Vercel informó `success` y las comprobaciones de `/` y `/login` devolvieron `200` el 14 de octubre de 2026.
 - Migraciones `202610120001`–`202610140004` aplicadas y sincronizadas con el historial remoto; las tablas iniciales, `pricing_plans`, `client_commercial_terms`, `admin_dashboard_settings`, `assignment_templates`, `admin_notifications`, `workout_set_logs` y el bucket privado `profile-avatars` están verificados por su historial reproducible.
 - `202610140001_pricing_plan_service_details.sql` añade modalidad y días a las plantillas; `202610140002_assignment_templates.sql` incorpora la biblioteca de planes; `202610140003_admin_notifications.sql` crea la bandeja administrativa; y `202610140004_structured_workouts.sql` añade `workout_assignments.plan_data` y el registro por serie. El 14 de octubre de 2026 se aplicaron en orden al proyecto enlazado y el historial local/remoto quedó sincronizado hasta `202610140004`.
 - Site URL: `https://team-ortega.vercel.app`.

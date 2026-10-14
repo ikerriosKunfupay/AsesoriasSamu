@@ -7,7 +7,7 @@
 - El cliente dispone de resumen del bloque, distribución por grupo muscular y una pestaña por semana; en cada sesión puede guardar carga, repeticiones y RIR reales por serie.
 - Los entrenamientos antiguos de texto siguen mostrándose con normalidad.
 - La interfaz se verificó sin desbordamiento en 375×667, 390×844, tablet y escritorio; la versión integrada completó análisis de código, tipos, 143 pruebas y build Webpack.
-- La migración `202610140004_structured_workouts.sql` se aplicó al Supabase productivo de Team Ortega y el historial remoto quedó sincronizado antes de publicar la aplicación desde `main`.
+- La migración `202610140004_structured_workouts.sql` se aplicó al Supabase productivo de Team Ortega y el historial remoto quedó sincronizado antes de publicar la aplicación desde `main`. Vercel completó correctamente el despliegue de `93f530b`, y la portada y el acceso respondieron `200` en `https://team-ortega.vercel.app`.
 
 ## 2026-10-14 — `2026-10-14-centro-notificaciones`
 

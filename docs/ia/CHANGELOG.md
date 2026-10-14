@@ -10,6 +10,7 @@
 - Se conserva `PlanView` para filas antiguas sin `plan_data`; `DashboardShell` contiene el ancho del contenido denso en tablet.
 - `impeccable detect` no devolvió hallazgos. Tras integrar los 14 commits remotos, `pnpm lint`, `pnpm typecheck`, 143 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente; la revisión visual previa cubrió 375×667, 390×844, 768×1024 y escritorio sin overflow y con controles táctiles de al menos 44 px.
 - El ensayo de `supabase db push --linked --dry-run` propuso únicamente `202610140004_structured_workouts.sql`; la ejecución posterior la aplicó al proyecto `grlntqiviyehnpibaijk` y `supabase migration list --linked` confirmó paridad local/remota hasta `202610140004` antes del despliegue desde `main`.
+- GitHub y Vercel marcaron `93f530b` como desplegado correctamente; las comprobaciones HTTP posteriores devolvieron `200` para `/` y `/login` en `https://team-ortega.vercel.app`.
 
 ## 2026-10-14 — `2026-10-14-centro-notificaciones`
 
