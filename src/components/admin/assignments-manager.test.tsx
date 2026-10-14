@@ -1,14 +1,17 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AdminAssignment } from "@/lib/admin/assignments";
+import type { WorkoutPlan } from "@/lib/workouts/plan";
 import { AssignmentsManager } from "./assignments-manager";
 
 vi.mock("@/app/actions/admin", () => ({
   deleteAssignmentAction: vi.fn(),
   deleteAssignmentTemplateAction: vi.fn(),
   saveAssignmentAction: vi.fn(),
+  saveWorkoutPlanAction: vi.fn(),
   updateAssignmentAction: vi.fn(),
   updateAssignmentTemplateAction: vi.fn(),
+  updateWorkoutPlanAction: vi.fn(),
 }));
 
 afterEach(cleanup);
@@ -31,9 +34,41 @@ const assignments: AdminAssignment[] = clients.map((client, index) => ({
 
 const templates = [{ id: "33333333-3333-4333-8333-333333333333", name: "Base fuerza", title: "Fuerza base", content: "Contenido reutilizable de fuerza con suficiente detalle." }];
 
+const structuredPlan: WorkoutPlan = {
+  schemaVersion: 1,
+  blockName: "Bloque de demostración",
+  objective: "Progresar con una estructura clara.",
+  phase: "Acumulación",
+  weeks: [{
+    id: "44444444-4444-4444-8444-444444444444",
+    number: 1,
+    name: "Semana 1",
+    objective: "Dominar la técnica.",
+    phase: "Base",
+    stepsTarget: 8000,
+    cardioNotes: "Dos paseos suaves.",
+    sessions: [{
+      id: "55555555-5555-4555-8555-555555555555",
+      number: 1,
+      name: "Torso A",
+      exercises: [{
+        id: "66666666-6666-4666-8666-666666666666",
+        muscleGroup: "Pectoral",
+        name: "Press banca",
+        method: "Serie recta",
+        sets: 3,
+        reps: "8-10",
+        targetRir: [2, 2, 1],
+        rest: "2 min",
+        cues: "Escápulas estables.",
+      }],
+    }],
+  }],
+};
+
 describe("AssignmentsManager", () => {
   it("mantiene el histórico visible y abre la creación con un switch", () => {
-    render(<AssignmentsManager kind="workout" clients={clients} assignments={assignments} templates={templates} />);
+    render(<AssignmentsManager kind="workout" clients={clients} assignments={assignments} templates={templates} workoutInitialPlan={structuredPlan} />);
 
     const toggle = screen.getByRole("switch", { name: "Mostrar formulario para crear entrenamiento" });
     expect(toggle).toHaveAttribute("aria-checked", "false");
@@ -44,15 +79,27 @@ describe("AssignmentsManager", () => {
     expect(toggle).toHaveAttribute("aria-checked", "true");
     expect(screen.getByRole("heading", { name: "Nuevo entrenamiento" })).toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Cliente del entrenamiento" })).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Plantilla de entrenamiento" })).toHaveTextContent("Empezar desde cero");
-    expect(screen.getByRole("combobox", { name: "Estado del plan" })).toHaveTextContent("Publicado para el cliente");
-    expect(screen.queryByText(/puedes usar saltos/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Estado del entrenamiento" })).toHaveTextContent("Publicado para el cliente");
+    expect(screen.getByRole("textbox", { name: "Nombre del bloque" })).toHaveValue("Bloque de demostración");
+    expect(screen.getByRole("button", { name: "Duplicar semana" })).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: "Contenido del plan" })).not.toBeInTheDocument();
     expect(document.querySelector('input[type="date"]')).not.toBeInTheDocument();
+  });
 
-    fireEvent.click(screen.getByRole("combobox", { name: "Plantilla de entrenamiento" }));
-    fireEvent.click(screen.getByRole("option", { name: "Base fuerza" }));
-    expect(screen.getByRole("textbox", { name: "Título" })).toHaveValue("Fuerza base");
-    expect(screen.getByRole("textbox", { name: "Contenido del plan" })).toHaveValue(templates[0].content);
+  it("muestra y edita un entrenamiento estructurado desde el histórico", () => {
+    const structuredAssignment: AdminAssignment = { ...assignments[0], planData: structuredPlan };
+    render(<AssignmentsManager kind="workout" clients={clients.slice(0, 1)} assignments={[structuredAssignment]} workoutInitialPlan={structuredPlan} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Ver entrenamiento Plan 1" }));
+    const preview = screen.getByRole("dialog", { name: "Plan 1" });
+    expect(preview).toHaveTextContent("Bloque de demostración");
+    expect(preview).toHaveTextContent("Press banca");
+    expect(preview).toHaveTextContent(/8.?000/);
+    fireEvent.click(screen.getByRole("button", { name: "Cerrar plan" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Editar entrenamiento Plan 1" }));
+    expect(screen.getByRole("button", { name: "Actualizar entrenamiento" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Nombre del bloque" })).toHaveValue("Bloque de demostración");
   });
 
   it("pagina el histórico cada diez registros", () => {

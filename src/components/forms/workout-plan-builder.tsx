@@ -1,13 +1,14 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useId, useMemo, useState } from "react";
 import { CopyPlus, Plus, Trash2 } from "lucide-react";
-import { saveWorkoutPlanAction } from "@/app/actions/admin";
+import { saveWorkoutPlanAction, updateWorkoutPlanAction } from "@/app/actions/admin";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
+import { InternalDatePicker } from "@/components/ui/internal-date-picker";
 import { InternalSelect } from "@/components/ui/internal-select";
 import { initialActionState } from "@/lib/forms/action-state";
 import {
@@ -42,16 +43,42 @@ const muscleGroups = [
 
 export function WorkoutPlanBuilder({
   clientId,
+  clients = [],
+  assignmentId,
+  initialClientId,
+  initialTitle = "",
+  initialStartsOn = null,
+  initialStatus = "published",
   initialPlan,
+  onSuccess,
 }: {
-  clientId: string;
+  clientId?: string;
+  clients?: Array<{ id: string; full_name: string }>;
+  assignmentId?: string;
+  initialClientId?: string;
+  initialTitle?: string;
+  initialStartsOn?: string | null;
+  initialStatus?: "draft" | "published";
   initialPlan: WorkoutPlan;
+  onSuccess?: () => void;
 }) {
-  const [state, action] = useActionState(saveWorkoutPlanAction, initialActionState);
+  const [state, action] = useActionState(assignmentId ? updateWorkoutPlanAction : saveWorkoutPlanAction, initialActionState);
+  const formId = useId();
   const [plan, setPlan] = useState(initialPlan);
   const [activeWeekId, setActiveWeekId] = useState(initialPlan.weeks[0].id);
   const activeWeek = plan.weeks.find((week) => week.id === activeWeekId) ?? plan.weeks[0];
   const serializedPlan = useMemo(() => JSON.stringify(plan), [plan]);
+  const clientFieldId = `${formId}-client`;
+  const titleFieldId = `${formId}-title`;
+  const startsOnFieldId = `${formId}-starts-on`;
+  const statusFieldId = `${formId}-status`;
+  const blockNameFieldId = `${formId}-block-name`;
+  const phaseFieldId = `${formId}-phase`;
+  const objectiveFieldId = `${formId}-objective`;
+
+  useEffect(() => {
+    if (state.status === "success") onSuccess?.();
+  }, [onSuccess, state.status]);
 
   const replaceWeek = (weekId: string, update: (week: WorkoutWeek) => WorkoutWeek) => {
     setPlan((current) => ({
@@ -98,51 +125,74 @@ export function WorkoutPlanBuilder({
 
   return (
     <form action={action} className="min-w-0 max-w-full grid gap-6">
-      <input type="hidden" name="clientId" value={clientId} />
+      {assignmentId ? <input type="hidden" name="assignmentId" value={assignmentId} /> : null}
+      {clientId ? <input type="hidden" name="clientId" value={clientId} /> : null}
       <input type="hidden" name="planData" value={serializedPlan} />
       <FormMessage state={state} />
 
-      <div className="grid gap-5 md:grid-cols-3">
-        <Field label="Título" htmlFor="workout-title" required error={state.fieldErrors?.title?.[0]}>
-          <Input id="workout-title" name="title" required placeholder="Hipertrofia · Bloque 1" />
+      <div className={`grid gap-5 md:grid-cols-2 ${clientId ? "xl:grid-cols-3" : "xl:grid-cols-4"}`}>
+        {!clientId ? (
+          <Field label="Cliente" htmlFor={clientFieldId} required error={state.fieldErrors?.clientId?.[0]}>
+            <InternalSelect
+              id={clientFieldId}
+              name="clientId"
+              ariaLabel="Cliente del entrenamiento"
+              options={clients.map((client) => ({ value: client.id, label: client.full_name }))}
+              placeholder="Selecciona un cliente"
+              defaultValue={initialClientId ?? ""}
+              required
+              invalid={Boolean(state.fieldErrors?.clientId)}
+              menuPortal
+            />
+          </Field>
+        ) : null}
+        <Field label="Título" htmlFor={titleFieldId} required error={state.fieldErrors?.title?.[0]}>
+          <Input id={titleFieldId} name="title" required defaultValue={initialTitle} placeholder="Hipertrofia · Bloque 1" />
         </Field>
-        <Field label="Fecha de inicio" htmlFor="workout-starts-on" error={state.fieldErrors?.startsOn?.[0]}>
-          <Input id="workout-starts-on" name="startsOn" type="date" />
+        <Field label="Fecha de inicio" htmlFor={startsOnFieldId} error={state.fieldErrors?.startsOn?.[0]}>
+          <InternalDatePicker
+            id={startsOnFieldId}
+            name="startsOn"
+            ariaLabel="Fecha de inicio del entrenamiento"
+            defaultValue={initialStartsOn ?? ""}
+            invalid={Boolean(state.fieldErrors?.startsOn)}
+          />
         </Field>
-        <Field label="Estado" htmlFor="workout-status" required error={state.fieldErrors?.status?.[0]}>
+        <Field label="Estado" htmlFor={statusFieldId} required error={state.fieldErrors?.status?.[0]}>
           <InternalSelect
-            id="workout-status"
+            id={statusFieldId}
             name="status"
             options={statusOptions}
-            defaultValue="published"
+            defaultValue={initialStatus}
             ariaLabel="Estado del entrenamiento"
             required
             invalid={Boolean(state.fieldErrors?.status)}
+            menuPortal
           />
         </Field>
       </div>
 
       <div className="grid gap-5 border-y border-border py-6 md:grid-cols-2">
-        <Field label="Nombre del bloque" htmlFor="workout-block-name" required>
+        <Field label="Nombre del bloque" htmlFor={blockNameFieldId} required>
           <Input
-            id="workout-block-name"
+            id={blockNameFieldId}
             value={plan.blockName}
             onChange={(event) => setPlan((current) => ({ ...current, blockName: event.target.value }))}
             required
           />
         </Field>
-        <Field label="Fase o mesociclo" htmlFor="workout-phase">
+        <Field label="Fase o mesociclo" htmlFor={phaseFieldId}>
           <Input
-            id="workout-phase"
+            id={phaseFieldId}
             value={plan.phase}
             placeholder="Acumulación, intensificación…"
             onChange={(event) => setPlan((current) => ({ ...current, phase: event.target.value }))}
           />
         </Field>
         <div className="md:col-span-2">
-          <Field label="Objetivo del bloque" htmlFor="workout-objective">
+          <Field label="Objetivo del bloque" htmlFor={objectiveFieldId}>
             <Textarea
-              id="workout-objective"
+              id={objectiveFieldId}
               rows={2}
               value={plan.objective}
               placeholder="Objetivo principal y criterios para progresar"
@@ -433,8 +483,8 @@ export function WorkoutPlanBuilder({
       {state.fieldErrors?.planData?.[0] ? (
         <p className="text-sm font-medium text-danger" role="alert">{state.fieldErrors.planData[0]}</p>
       ) : null}
-      <SubmitButton pendingLabel="Guardando entrenamiento…" className="w-full sm:w-auto">
-        Guardar entrenamiento
+      <SubmitButton pendingLabel={assignmentId ? "Actualizando entrenamiento…" : "Guardando entrenamiento…"} className="w-full sm:w-auto">
+        {assignmentId ? "Actualizar entrenamiento" : "Guardar entrenamiento"}
       </SubmitButton>
     </form>
   );

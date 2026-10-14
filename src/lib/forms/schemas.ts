@@ -232,6 +232,10 @@ export const structuredWorkoutAssignmentSchema = z.object({
   planData: z.string().min(1, "El plan está vacío.").max(900_000, "El plan es demasiado grande."),
 });
 
+export const structuredWorkoutUpdateSchema = structuredWorkoutAssignmentSchema.extend({
+  assignmentId: z.string().uuid("Entrenamiento no válido."),
+});
+
 export const checkInSchema = z.object({
   weightKg: z.union([z.coerce.number().min(35).max(300), z.literal("")]).optional(),
   energyLevel: z.coerce.number().int().min(1).max(5),

@@ -15,7 +15,9 @@ import {
   X,
 } from "lucide-react";
 import { AssignmentForm, DeleteAssignmentForm } from "@/components/forms/admin-forms";
+import { WorkoutPlanBuilder } from "@/components/forms/workout-plan-builder";
 import { AssignmentTemplatesManager } from "@/components/admin/assignment-templates-manager";
+import { WorkoutPlanPreview } from "@/components/admin/workout-plan-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -36,6 +38,7 @@ import {
 } from "@/lib/admin/assignments";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
 import { formatDate, statusLabel } from "@/lib/format";
+import type { WorkoutPlan } from "@/lib/workouts/plan";
 
 const PAGE_SIZE = 10;
 type AssignmentKind = "workout" | "nutrition";
@@ -135,11 +138,13 @@ export function AssignmentsManager({
   clients,
   assignments,
   templates = [],
+  workoutInitialPlan,
 }: {
   kind: AssignmentKind;
   clients: Array<{ id: string; full_name: string }>;
   assignments: AdminAssignment[];
   templates?: AssignmentTemplate[];
+  workoutInitialPlan?: WorkoutPlan;
 }) {
   const [showForm, setShowForm] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -156,6 +161,7 @@ export function AssignmentsManager({
   const currentPage = Math.min(page, totalPages);
   const pageAssignments = visibleAssignments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const activeFilterCount = Object.entries(filters).filter(([key, value]) => key === "status" ? value !== "all" : String(value).trim() !== "").length;
+  const usesStructuredWorkoutForm = kind === "workout" && Boolean(workoutInitialPlan);
 
   useEffect(() => {
     if (!viewingAssignment && !editingAssignment && !deletingAssignment) return;
@@ -195,11 +201,20 @@ export function AssignmentsManager({
         <p className="text-sm font-bold text-muted" aria-live="polite">{visibleAssignments.length} de {assignments.length}</p>
       </div>
 
-      <div className={`grid min-w-0 gap-5 ${showForm ? "xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]" : "grid-cols-1"}`}>
+      <div className={`grid min-w-0 gap-5 ${showForm && !usesStructuredWorkoutForm ? "xl:grid-cols-[minmax(0,420px)_minmax(0,1fr)]" : "grid-cols-1"}`}>
         {showForm ? (
           <Card className="min-w-0 self-start">
-            <h2 className="mb-5 text-xl font-black">{labels.formTitle}</h2>
-            <AssignmentForm kind={kind} clients={clients} templates={templates} compact />
+            <h2 className="text-xl font-black">{labels.formTitle}</h2>
+            {usesStructuredWorkoutForm ? (
+              <>
+                <p className="mb-6 mt-1 text-sm text-muted">Elige el cliente y organiza su bloque por semanas, sesiones, ejercicios y series.</p>
+                <WorkoutPlanBuilder clients={clients} initialPlan={workoutInitialPlan!} />
+              </>
+            ) : (
+              <div className="mt-5">
+                <AssignmentForm kind={kind} clients={clients} templates={templates} compact />
+              </div>
+            )}
           </Card>
         ) : null}
 
@@ -298,23 +313,45 @@ export function AssignmentsManager({
 
       {viewingAssignment ? (
         <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/70 px-4 py-8" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setViewingAssignment(null); }}>
-          <article role="dialog" aria-modal="true" aria-labelledby="assignment-view-title" className="relative w-full max-w-4xl rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-2xl sm:p-7">
+          <article role="dialog" aria-modal="true" aria-labelledby="assignment-view-title" className={`relative w-full rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-2xl sm:p-7 ${viewingAssignment.planData ? "max-w-6xl" : "max-w-4xl"}`}>
             <button type="button" aria-label="Cerrar plan" onClick={() => setViewingAssignment(null)} className="absolute right-4 top-4 grid size-10 place-items-center rounded-full text-muted transition hover:bg-surface-muted hover:text-foreground"><X className="size-5" aria-hidden="true" /></button>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">{labels.singular}</p>
             <h2 id="assignment-view-title" className="mt-2 pr-12 text-2xl font-black">{viewingAssignment.title}</h2>
             <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-muted"><span>{viewingAssignment.clientName}</span><span aria-hidden="true">·</span><span>{formatDate(viewingAssignment.startsOn ?? viewingAssignment.createdAt)}</span><Badge tone={viewingAssignment.status === "published" ? "success" : "neutral"}>{statusLabel(viewingAssignment.status)}</Badge></div>
-            <div className="mt-6 whitespace-pre-wrap rounded-[var(--radius-md)] border border-border bg-surface-muted p-4 leading-7">{viewingAssignment.content}</div>
+            <div className="mt-6 max-h-[70vh] overflow-y-auto pr-1">
+              {kind === "workout" && viewingAssignment.planData ? (
+                <WorkoutPlanPreview plan={viewingAssignment.planData} />
+              ) : (
+                <div className="whitespace-pre-wrap rounded-[var(--radius-md)] border border-border bg-surface-muted p-4 leading-7">{viewingAssignment.content}</div>
+              )}
+            </div>
           </article>
         </div>
       ) : null}
 
       {editingAssignment ? (
         <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-black/70 px-4 py-8" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setEditingAssignment(null); }}>
-          <section role="dialog" aria-modal="true" aria-labelledby="assignment-editor-title" className="relative w-full max-w-4xl rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-2xl sm:p-7">
+          <section role="dialog" aria-modal="true" aria-labelledby="assignment-editor-title" className={`relative w-full rounded-[var(--radius-lg)] border border-border bg-surface p-5 shadow-2xl sm:p-7 ${editingAssignment.planData ? "max-w-6xl" : "max-w-4xl"}`}>
             <button type="button" aria-label="Cerrar edición del plan" onClick={() => setEditingAssignment(null)} className="absolute right-4 top-4 grid size-10 place-items-center rounded-full text-muted transition hover:bg-surface-muted hover:text-foreground"><X className="size-5" aria-hidden="true" /></button>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Editar {labels.singular}</p>
             <h2 id="assignment-editor-title" className="mb-6 mt-2 pr-12 text-2xl font-black">{editingAssignment.title}</h2>
-            <AssignmentForm key={editingAssignment.id} kind={kind} clients={clients} templates={templates} initialAssignment={editingAssignment} onSuccess={() => setEditingAssignment(null)} />
+            <div className="max-h-[75vh] overflow-y-auto pr-1">
+              {kind === "workout" && editingAssignment.planData ? (
+                <WorkoutPlanBuilder
+                  key={editingAssignment.id}
+                  assignmentId={editingAssignment.id}
+                  clients={clients}
+                  initialClientId={editingAssignment.clientId}
+                  initialTitle={editingAssignment.title}
+                  initialStartsOn={editingAssignment.startsOn}
+                  initialStatus={editingAssignment.status}
+                  initialPlan={editingAssignment.planData}
+                  onSuccess={() => setEditingAssignment(null)}
+                />
+              ) : (
+                <AssignmentForm key={editingAssignment.id} kind={kind} clients={clients} templates={templates} initialAssignment={editingAssignment} onSuccess={() => setEditingAssignment(null)} />
+              )}
+            </div>
           </section>
         </div>
       ) : null}

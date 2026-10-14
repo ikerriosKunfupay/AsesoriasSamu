@@ -6,7 +6,6 @@ import {
   ClientStatusSwitch,
 } from "@/components/forms/admin-forms";
 import { ClientCommercialTermsForm } from "@/components/forms/commercial-terms-forms";
-import { WorkoutPlanBuilder } from "@/components/forms/workout-plan-builder";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,7 +21,6 @@ import {
   parseSocialProfiles,
 } from "@/lib/forms/social-networks";
 import { formatStoredPhoneValue } from "@/lib/forms/phone";
-import { createBlankWorkoutPlan } from "@/lib/workouts/plan";
 
 export default async function ClientDetailPage({
   params,
@@ -107,10 +105,14 @@ export default async function ClientDetailPage({
       <Card><h2 className="text-xl font-black">Últimos seguimientos</h2>{checkInsResult.data?.length ? <div className="mt-5 grid gap-3">{checkInsResult.data.map((item) => <div key={item.id} className="rounded-xl bg-surface-muted p-4 text-sm"><div className="flex justify-between gap-4"><b>{formatDate(item.created_at)}</b><span>Energía {item.energy_level}/5 · Adherencia {item.adherence_level}/5</span></div>{item.notes ? <p className="mt-2 text-muted">{item.notes}</p> : null}</div>)}</div> : <p className="mt-4 text-sm text-muted">Aún no hay seguimientos.</p>}</Card>
     </div>
     <Card className="mt-6">
-      <h2 className="text-xl font-black">Nuevo entrenamiento</h2>
-      <p className="mb-6 mt-1 text-sm text-muted">Organiza el bloque por semanas, sesiones, ejercicios y series; el cliente registrará sus resultados en el mismo formato.</p>
-      <WorkoutPlanBuilder clientId={id} initialPlan={createBlankWorkoutPlan()} />
-      {workoutResult.data?.length ? <ul className="mt-8 border-t border-border pt-5">{workoutResult.data.map((plan) => <li key={plan.id} className="flex justify-between gap-3 py-2 text-sm"><span className="font-bold">{plan.title}</span><Badge tone={plan.status === "published" ? "success" : "neutral"}>{statusLabel(plan.status)}</Badge></li>)}</ul> : null}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-xl font-black">Entrenamientos recientes</h2>
+          <p className="mt-1 text-sm text-muted">La creación y edición del bloque completo se gestiona desde Entrenamientos.</p>
+        </div>
+        <ButtonLink href="/admin/entrenamientos" variant="outline" size="sm">Abrir Entrenamientos</ButtonLink>
+      </div>
+      {workoutResult.data?.length ? <ul className="mt-5 border-t border-border pt-3">{workoutResult.data.map((plan) => <li key={plan.id} className="flex justify-between gap-3 py-2 text-sm"><span className="font-bold">{plan.title}</span><Badge tone={plan.status === "published" ? "success" : "neutral"}>{statusLabel(plan.status)}</Badge></li>)}</ul> : <p className="mt-5 border-t border-border pt-4 text-sm text-muted">Todavía no hay entrenamientos asignados.</p>}
     </Card>
     <Card className="mt-6">
       <h2 className="mb-5 text-xl font-black">Nueva pauta nutricional</h2>

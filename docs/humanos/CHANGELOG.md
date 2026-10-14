@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-entrenamientos-centralizados-y-demo`
+
+- El creador completo de entrenamientos se ha trasladado de la ficha individual a **Entrenamientos**, donde ahora se elige el cliente y se prepara el bloque por semanas, sesiones y ejercicios sin abandonar el histórico.
+- La ficha del cliente muestra únicamente sus entrenamientos recientes y enlaza a la sección central para crear o modificar planes.
+- **Ver** abre una vista estructurada del plan con resumen, pestañas semanales, sesiones y datos de cada ejercicio; **Editar** recupera la estructura completa en el mismo editor.
+- Los cinco clientes de demostración de producción disponen de entrenamientos estructurados completos para enseñar el flujo con datos ficticios.
+- La validación final completó análisis de código, tipos, 144 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-entrenamientos-estructurados`
 
 - El entrenador puede preparar cada plan como un bloque de hasta 16 semanas, con sesiones, ejercicios, series, repeticiones, RIR, descansos y observaciones, manteniendo el flujo de la hoja de cálculo de referencia.

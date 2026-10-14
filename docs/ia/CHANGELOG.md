@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-entrenamientos-centralizados-y-demo`
+
+- `/admin/entrenamientos` carga y valida `plan_data`, limita el selector a clientes activos y entrega un documento inicial a `AssignmentsManager`; la ficha `/admin/clientes/[id]` retira el constructor y conserva el histórico reciente con enlace al editor central.
+- `AssignmentsManager` usa `WorkoutPlanBuilder` a ancho completo para crear entrenamientos estructurados, `WorkoutPlanPreview` para inspeccionarlos y el mismo constructor para editarlos. Las asignaciones históricas sin `plan_data` mantienen el editor de texto compatible.
+- `structuredWorkoutUpdateSchema` y `updateWorkoutPlanAction` validan cliente, asignación y documento completo, revalidan las rutas afectadas y auditan solo identificadores y conteos.
+- No hay migración nueva. Se verificó en producción que los cinco perfiles ficticios cuentan con planes estructurados poblados, sin inventar cuestionarios ni datos sanitarios.
+- `impeccable detect --scope layout`, `pnpm lint`, `pnpm typecheck`, 144 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-entrenamientos-estructurados`
 
 - `workout_assignments.plan_data` almacena un documento JSON versionado y validado con Zod; `content` conserva un resumen para compatibilidad con planes históricos.

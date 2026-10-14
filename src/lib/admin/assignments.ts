@@ -1,3 +1,5 @@
+import type { WorkoutPlan } from "@/lib/workouts/plan";
+
 export type AssignmentStatus = "draft" | "published";
 
 export type AdminAssignment = {
@@ -9,6 +11,7 @@ export type AdminAssignment = {
   status: AssignmentStatus;
   startsOn: string | null;
   createdAt: string;
+  planData?: WorkoutPlan | null;
 };
 
 export type AssignmentTemplate = {
