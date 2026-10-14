@@ -211,6 +211,19 @@ export const assignmentDeleteSchema = z.object({
   kind: z.enum(["workout", "nutrition"]),
 });
 
+export const assignmentTemplateUpdateSchema = z.object({
+  templateId: z.string().uuid("Plantilla no válida."),
+  kind: z.enum(["workout", "nutrition"]),
+  name: requiredText("El nombre de la plantilla").max(160),
+  title: requiredText("El título").max(160),
+  content: requiredText("El contenido", 20),
+});
+
+export const assignmentTemplateDeleteSchema = z.object({
+  templateId: z.string().uuid("Plantilla no válida."),
+  kind: z.enum(["workout", "nutrition"]),
+});
+
 export const checkInSchema = z.object({
   weightKg: z.union([z.coerce.number().min(35).max(300), z.literal("")]).optional(),
   energyLevel: z.coerce.number().int().min(1).max(5),

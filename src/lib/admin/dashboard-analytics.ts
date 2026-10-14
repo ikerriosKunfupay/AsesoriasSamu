@@ -43,6 +43,24 @@ export type DashboardGoals = {
   activeClientsGoal: number;
 };
 
+export function inferAnalyticsGranularity(
+  range: AnalyticsRangePreset,
+  customStart?: string,
+  customEnd?: string,
+): AnalyticsGranularity {
+  if (range === "today" || range === "yesterday" || range === "last_14_days") return "day";
+  if (range === "this_week" || range === "last_week" || range === "last_12_weeks") return "week";
+  if (range !== "custom") return "month";
+  if (!customStart || !customEnd) return "month";
+
+  const first = dateFromKey(customStart <= customEnd ? customStart : customEnd);
+  const last = dateFromKey(customStart <= customEnd ? customEnd : customStart);
+  const days = Math.floor((last.getTime() - first.getTime()) / 86_400_000) + 1;
+  if (days <= 31) return "day";
+  if (days <= 120) return "week";
+  return "month";
+}
+
 function addMonths(period: string, offset: number) {
   const [year, month] = period.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1 + offset, 1));

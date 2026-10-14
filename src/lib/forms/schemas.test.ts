@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  assignmentTemplateDeleteSchema,
+  assignmentTemplateUpdateSchema,
   clientCommercialTermsSchema,
   clientCommercialQuickUpdateSchema,
   clientAdminNoteSchema,
@@ -18,6 +20,22 @@ import {
 } from "./schemas";
 
 describe("validación de formularios", () => {
+  it("valida la edición y eliminación de plantillas de planes", () => {
+    const templateId = "33333333-3333-4333-8333-333333333333";
+    const template = {
+      templateId,
+      kind: "workout",
+      name: "Base de fuerza",
+      title: "Fuerza · Semana base",
+      content: "Contenido reutilizable con ejercicios y descansos definidos.",
+    };
+
+    expect(assignmentTemplateUpdateSchema.safeParse(template).success).toBe(true);
+    expect(assignmentTemplateDeleteSchema.safeParse({ templateId, kind: "nutrition" }).success).toBe(true);
+    expect(assignmentTemplateUpdateSchema.safeParse({ ...template, content: "Breve" }).success).toBe(false);
+    expect(assignmentTemplateDeleteSchema.safeParse({ templateId: "incorrecta", kind: "workout" }).success).toBe(false);
+  });
+
   it("acepta una solicitud pública válida", () => {
     const result = leadSchema.safeParse({
       fullName: "María López",

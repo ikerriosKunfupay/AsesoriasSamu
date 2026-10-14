@@ -5,8 +5,10 @@ import { AssignmentsManager } from "./assignments-manager";
 
 vi.mock("@/app/actions/admin", () => ({
   deleteAssignmentAction: vi.fn(),
+  deleteAssignmentTemplateAction: vi.fn(),
   saveAssignmentAction: vi.fn(),
   updateAssignmentAction: vi.fn(),
+  updateAssignmentTemplateAction: vi.fn(),
 }));
 
 afterEach(cleanup);
@@ -67,6 +69,9 @@ describe("AssignmentsManager", () => {
     render(<AssignmentsManager kind="workout" clients={clients} assignments={assignments} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Filtros" }));
+    expect(document.querySelector("#workout-assignment-filters > div")?.className).toContain("repeat(auto-fit");
+    expect(document.querySelectorAll(".assignments-table col")[4]).toHaveClass("w-[20%]");
+    expect(screen.getAllByText("Publicado")[0].closest("td")).toHaveClass("overflow-hidden");
     fireEvent.change(screen.getByPlaceholderText("Título…"), { target: { value: "Plan 2" } });
     expect(screen.getByText("Plan 2")).toBeInTheDocument();
     expect(screen.queryByText("Plan 1")).not.toBeInTheDocument();
@@ -107,5 +112,23 @@ describe("AssignmentsManager", () => {
     fireEvent.click(screen.getByRole("button", { name: "Galería" }));
     expect(screen.getByText(/Contenido completo del plan 1/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Editar pauta nutricional Plan 1" })).toBeInTheDocument();
+  });
+
+  it("permite editar y eliminar las plantillas desde su biblioteca interna", () => {
+    render(<AssignmentsManager kind="workout" clients={clients.slice(0, 1)} assignments={assignments.slice(0, 1)} templates={templates} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Gestionar plantillas (1)" }));
+    expect(screen.getByRole("dialog", { name: /plantillas de entrenamiento/i })).toHaveTextContent("Base fuerza");
+
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    expect(screen.getByRole("dialog", { name: "Base fuerza" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "Nombre de la plantilla" })).toHaveValue("Base fuerza");
+    expect(screen.getByRole("textbox", { name: "Título del plan" })).toHaveValue("Fuerza base");
+    expect(screen.getByRole("textbox", { name: "Contenido del plan" })).toHaveValue(templates[0].content);
+
+    fireEvent.click(screen.getByRole("button", { name: "Volver a plantillas" }));
+    fireEvent.click(screen.getByRole("button", { name: "Eliminar" }));
+    expect(screen.getByRole("alertdialog", { name: "Eliminar plantilla de entrenamiento" })).toHaveTextContent("Los planes ya creados no cambiarán");
+    expect(screen.getByRole("button", { name: "Eliminar plantilla" })).toBeInTheDocument();
   });
 });

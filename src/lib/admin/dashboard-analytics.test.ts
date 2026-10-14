@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildDashboardAnalytics,
+  inferAnalyticsGranularity,
   monthlyEquivalent,
   resolveAnalyticsDateRange,
   type AnalyticsClient,
@@ -34,6 +35,14 @@ const clients: AnalyticsClient[] = [
 ];
 
 describe("analítica del panel", () => {
+  it("deduce la agrupación a partir del único periodo visible", () => {
+    expect(inferAnalyticsGranularity("today")).toBe("day");
+    expect(inferAnalyticsGranularity("last_week")).toBe("week");
+    expect(inferAnalyticsGranularity("this_month")).toBe("month");
+    expect(inferAnalyticsGranularity("custom", "2026-10-01", "2026-10-20")).toBe("day");
+    expect(inferAnalyticsGranularity("custom", "2026-06-01", "2026-10-14")).toBe("month");
+  });
+
   it("prorratea las tarifas por los meses que cubren", () => {
     expect(monthlyEquivalent(300, 6)).toBe(50);
     expect(monthlyEquivalent(600, 12)).toBe(50);

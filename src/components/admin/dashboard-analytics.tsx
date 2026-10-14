@@ -41,6 +41,7 @@ import { InternalSelect } from "@/components/ui/internal-select";
 import {
   buildDashboardAnalytics,
   filterAnalyticsClients,
+  inferAnalyticsGranularity,
   monthlyEquivalent,
   type AnalyticsClient,
   type AnalyticsFee,
@@ -59,11 +60,6 @@ import { formatMoney } from "@/lib/format";
 
 const chartColors = ["var(--primary)", "#2563eb", "#f59e0b", "#16a34a", "#8b5cf6", "#6b7280"];
 const analyticsSelectClassName = "min-h-11 text-sm font-bold";
-const periodOptions = [
-  { value: "month", label: "Por mes" },
-  { value: "week", label: "Por semana" },
-  { value: "day", label: "Por día" },
-] as const;
 const rangeOptions = [
   { value: "today", label: "Hoy" },
   { value: "yesterday", label: "Ayer" },
@@ -523,14 +519,11 @@ export function DashboardAnalytics({
   }
 
   function changeRange(nextRange: AnalyticsRangePreset) {
-    const granularity = nextRange === "today" || nextRange === "yesterday" || nextRange === "last_14_days"
-      ? "day"
-      : nextRange === "this_week" || nextRange === "last_week" || nextRange === "last_12_weeks"
-        ? "week"
-        : nextRange === "custom"
-          ? filters.granularity
-          : "month";
-    setFilters((current) => ({ ...current, range: nextRange, granularity }));
+    setFilters((current) => ({
+      ...current,
+      range: nextRange,
+      granularity: inferAnalyticsGranularity(nextRange, current.customStart, current.customEnd),
+    }));
   }
 
   return (
@@ -540,7 +533,7 @@ export function DashboardAnalytics({
           <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Inteligencia del negocio</p>
           <h2 id="business-intelligence-heading" className="mt-2 text-3xl font-black">Valor de las asesorías</h2>
         </div>
-        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:w-auto xl:shrink-0 xl:grid-cols-[13rem_11.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:w-auto xl:shrink-0 xl:grid-cols-[13rem_14rem_12rem]" aria-label="Filtros de estadísticas">
           <InternalSelect
             id="analytics-range"
             options={rangeOptions}
@@ -548,21 +541,6 @@ export function DashboardAnalytics({
             ariaLabel="Filtrar estadísticas por periodo"
             value={filters.range ?? "last_12_months"}
             onValueChange={(value) => changeRange(value as AnalyticsRangePreset)}
-          />
-          <InternalSelect
-            id="analytics-period"
-            options={periodOptions}
-            className={analyticsSelectClassName}
-            ariaLabel="Agrupar estadísticas por"
-            value={filters.granularity}
-            onValueChange={(value) => {
-              const granularity = value as AnalyticsGranularity;
-              setFilters((current) => ({
-                ...current,
-                granularity,
-                range: granularity === "day" ? "last_14_days" : granularity === "week" ? "last_12_weeks" : "last_12_months",
-              }));
-            }}
           />
           <InternalSelect
             id="analytics-modality"
@@ -591,11 +569,11 @@ export function DashboardAnalytics({
         <div className="mb-5 grid gap-3 rounded-[var(--radius-md)] border border-border bg-surface p-4 sm:grid-cols-2" aria-label="Periodo personalizado">
           <div className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
             Desde
-            <InternalDatePicker id="analytics-range-start" ariaLabel="Fecha inicial de estadísticas" value={filters.customStart} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customStart: value }))} />
+            <InternalDatePicker id="analytics-range-start" ariaLabel="Fecha inicial de estadísticas" value={filters.customStart} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customStart: value, granularity: inferAnalyticsGranularity("custom", value, current.customEnd) }))} />
           </div>
           <div className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
             Hasta
-            <InternalDatePicker id="analytics-range-end" ariaLabel="Fecha final de estadísticas" value={filters.customEnd} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customEnd: value }))} />
+            <InternalDatePicker id="analytics-range-end" ariaLabel="Fecha final de estadísticas" value={filters.customEnd} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customEnd: value, granularity: inferAnalyticsGranularity("custom", current.customStart, value) }))} />
           </div>
           <p className="text-xs normal-case tracking-normal text-muted sm:col-span-2">El histórico está limitado a los últimos doce meses para mantener rápidas las consultas y las gráficas.</p>
         </div>

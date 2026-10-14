@@ -100,7 +100,7 @@ describe("DashboardAnalytics", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("usa selectores internos para periodo, agrupación, modalidad y tarifa", () => {
+  it("usa un único selector de periodo y ajusta la agrupación automáticamente", () => {
     const { container } = render(
       <DashboardAnalytics
         clients={clients}
@@ -112,21 +112,18 @@ describe("DashboardAnalytics", () => {
 
     expect(container.querySelector("select")).not.toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" })).toHaveTextContent("Últimos 12 meses");
-    expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por mes");
+    expect(screen.queryByRole("combobox", { name: "Agrupar estadísticas por" })).not.toBeInTheDocument();
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Todas las modalidades");
     expect(screen.getByRole("combobox", { name: "Filtrar por tarifa" })).toHaveTextContent("Todas las tarifas");
-    expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[13rem_11.5rem_14rem_12rem]");
+    expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[13rem_14rem_12rem]");
 
     fireEvent.click(screen.getByRole("combobox", { name: "Filtrar por modalidad" }));
     fireEvent.click(screen.getByRole("option", { name: "Presencial" }));
 
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Presencial");
 
-    fireEvent.click(screen.getByRole("combobox", { name: "Agrupar estadísticas por" }));
-    fireEvent.click(screen.getByRole("option", { name: "Por día" }));
-
-    expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por día");
-    expect(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" })).toHaveTextContent("Últimos 14 días");
+    fireEvent.click(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" }));
+    fireEvent.click(screen.getByRole("option", { name: "Hoy" }));
     expect(screen.getByRole("button", { name: /cobrado hoy/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /previsión mañana/i })).toBeInTheDocument();
 

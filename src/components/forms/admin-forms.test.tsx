@@ -4,6 +4,7 @@ import { ClientAdminNotesForm, ClientStatusSwitch } from "./admin-forms";
 
 vi.mock("@/app/actions/admin", () => ({
   deleteAssignmentAction: vi.fn(),
+  deleteAssignmentTemplateAction: vi.fn(),
   deleteFeeAction: vi.fn(),
   inviteClientAction: vi.fn(),
   saveAssignmentAction: vi.fn(),
@@ -11,6 +12,7 @@ vi.mock("@/app/actions/admin", () => ({
   saveFeeAction: vi.fn(),
   setClientStatusAction: vi.fn(),
   updateAssignmentAction: vi.fn(),
+  updateAssignmentTemplateAction: vi.fn(),
   updateFeeAction: vi.fn(),
 }));
 

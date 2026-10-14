@@ -6,6 +6,8 @@ import {
   archivePricingPlanSchema,
   assignmentDeleteSchema,
   assignmentSchema,
+  assignmentTemplateDeleteSchema,
+  assignmentTemplateUpdateSchema,
   assignmentUpdateSchema,
   clientAdminNoteSchema,
   clientCommercialTermsSchema,
@@ -194,6 +196,81 @@ export async function deleteAssignmentAction(
   revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
   revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
   return { status: "success", message: "Plan eliminado." };
+}
+
+export async function updateAssignmentTemplateAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = assignmentTemplateUpdateSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa la plantilla.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("assignment_templates")
+    .update({
+      name: parsed.data.name,
+      title: parsed.data.title,
+      content: parsed.data.content,
+    })
+    .eq("id", parsed.data.templateId)
+    .eq("kind", parsed.data.kind)
+    .eq("created_by", adminUser.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) {
+    return {
+      status: "error",
+      message: error?.code === "23505"
+        ? "Ya existe una plantilla con ese nombre."
+        : "No se pudo actualizar la plantilla.",
+    };
+  }
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "assignment_template.updated",
+    entity_type: "assignment_templates",
+    entity_id: data.id,
+    metadata: { kind: parsed.data.kind },
+  });
+  revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
+  return { status: "success", message: "Plantilla actualizada." };
+}
+
+export async function deleteAssignmentTemplateAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = assignmentTemplateDeleteSchema.safeParse(formValues(formData));
+  if (!parsed.success) return { status: "error", message: "Plantilla no válida." };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("assignment_templates")
+    .delete()
+    .eq("id", parsed.data.templateId)
+    .eq("kind", parsed.data.kind)
+    .eq("created_by", adminUser.id)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo eliminar la plantilla." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "assignment_template.deleted",
+    entity_type: "assignment_templates",
+    entity_id: data.id,
+    metadata: { kind: parsed.data.kind },
+  });
+  revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
+  return { status: "success", message: "Plantilla eliminada." };
 }
 
 export async function saveFeeAction(

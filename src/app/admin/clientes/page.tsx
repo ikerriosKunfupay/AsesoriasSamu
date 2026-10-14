@@ -8,19 +8,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function ClientsPage() {
   const supabase = createAdminClient();
-  const { data: clients } = await supabase
-    .from("profiles")
-    .select("id, full_name, phone, status, onboarding_complete, created_at")
-    .eq("role", "client")
-    .order("created_at", { ascending: false });
-  const clientIds = clients?.map((client) => client.id) ?? [];
-  const [{ data: noteRows }, { data: commercialRows }, { data: pricingRows }] = await Promise.all([
-    clientIds.length
-      ? supabase.from("client_admin_notes").select("client_id, notes").in("client_id", clientIds)
-      : Promise.resolve({ data: [] }),
-    clientIds.length
-      ? supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur").in("client_id", clientIds)
-      : Promise.resolve({ data: [] }),
+  const [{ data: clients }, { data: noteRows }, { data: commercialRows }, { data: pricingRows }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id, full_name, status, onboarding_complete")
+      .eq("role", "client")
+      .order("created_at", { ascending: false }),
+    supabase.from("client_admin_notes").select("client_id, notes"),
+    supabase.from("client_commercial_terms").select("client_id, modality, pricing_plan_id, agreed_amount_eur"),
     supabase.from("pricing_plans").select("id, name, billing_cycle, duration_months, service_modality, days_per_week, default_amount_eur, active").order("name"),
   ]);
   const notesByClientId = new Map(noteRows?.map((row) => [row.client_id, row.notes]));

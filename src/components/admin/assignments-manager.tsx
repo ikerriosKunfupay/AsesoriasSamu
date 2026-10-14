@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { AssignmentForm, DeleteAssignmentForm } from "@/components/forms/admin-forms";
+import { AssignmentTemplatesManager } from "@/components/admin/assignment-templates-manager";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -92,7 +93,7 @@ function AssignmentFiltersPanel({
   onChange: <Key extends keyof AssignmentFilters>(key: Key, value: AssignmentFilters[Key]) => void;
 }) {
   return (
-    <div className="grid gap-3 border-t border-border bg-surface-muted p-4 sm:grid-cols-2 xl:grid-cols-5">
+    <div className="grid gap-3 border-t border-border bg-surface-muted p-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))]">
       <label className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
         Plan
         <Input value={filters.title} onChange={(event) => onChange("title", event.target.value)} placeholder="Título…" className="min-h-10 text-sm normal-case tracking-normal text-foreground" />
@@ -187,7 +188,10 @@ export function AssignmentsManager({
   return (
     <div className="min-w-0">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <SectionFormSwitch checked={showForm} label={labels.createLabel} ariaLabel={labels.switchLabel} onChange={() => setShowForm((visible) => !visible)} />
+        <div className="flex flex-wrap items-center gap-3">
+          <SectionFormSwitch checked={showForm} label={labels.createLabel} ariaLabel={labels.switchLabel} onChange={() => setShowForm((visible) => !visible)} />
+          <AssignmentTemplatesManager kind={kind} templates={templates} />
+        </div>
         <p className="text-sm font-bold text-muted" aria-live="polite">{visibleAssignments.length} de {assignments.length}</p>
       </div>
 
@@ -216,7 +220,7 @@ export function AssignmentsManager({
           {pageAssignments.length && view === "table" ? (
             <div className="assignments-table-shell">
               <table className="data-table assignments-table table-fixed">
-                <colgroup><col className="w-[29%]" /><col className="w-[25%]" /><col className="w-[18%]" /><col className="w-[14%]" /><col className="w-[14%]" /></colgroup>
+                <colgroup><col className="w-[25%]" /><col className="w-[22%]" /><col className="w-[18%]" /><col className="w-[15%]" /><col className="w-[20%]" /></colgroup>
                 <thead><tr>
                   {(["title", "client", "startsOn", "status"] as const).map((column) => <SortableHeader key={column} column={column} sort={sort} onSort={(nextColumn) => setSort((current) => nextAssignmentSort(current, nextColumn))} />)}
                   <th className="text-right"><span className="sr-only">Acciones</span></th>
@@ -227,7 +231,7 @@ export function AssignmentsManager({
                       <td className="assignments-table__plan truncate font-black" data-label="Plan" title={assignment.title}>{assignment.title}</td>
                       <td className="assignments-table__client truncate" data-label="Cliente"><Link className="text-primary hover:underline" href={getClientDetailHref(assignment.clientId, labels.returnTo)}>{assignment.clientName}</Link></td>
                       <td className="assignments-table__start whitespace-nowrap" data-label="Inicio">{formatDate(assignment.startsOn ?? assignment.createdAt)}</td>
-                      <td className="assignments-table__status" data-label="Estado"><Badge tone={assignment.status === "published" ? "success" : "neutral"}>{statusLabel(assignment.status)}</Badge></td>
+                      <td className="assignments-table__status overflow-hidden" data-label="Estado"><Badge className="max-w-full truncate" tone={assignment.status === "published" ? "success" : "neutral"}>{statusLabel(assignment.status)}</Badge></td>
                       <td className="assignments-table__actions" data-label="Acciones">
                         <div className="flex justify-end gap-1.5">
                           <Button type="button" variant="outline" size="sm" aria-label={`Ver ${labels.singular} ${assignment.title}`} onClick={() => setViewingAssignment(assignment)}><Eye className="size-4" aria-hidden="true" /></Button>

@@ -68,17 +68,7 @@ export default async function AdminDashboardPage() {
       .maybeSingle(),
   ]);
 
-  const relatedClientIds = Array.from(
-    new Set([
-      ...(questionnaires.data ?? []).map((item) => item.user_id),
-      ...(checkIns.data ?? []).map((item) => item.client_id),
-      ...(fees.data ?? []).map((item) => item.client_id),
-    ]),
-  );
-  const relatedProfiles = relatedClientIds.length
-    ? await supabase.from("profiles").select("id, full_name").in("id", relatedClientIds)
-    : { data: [] as Array<{ id: string; full_name: string }> };
-  const namesById = new Map((relatedProfiles.data ?? []).map((profile) => [profile.id, profile.full_name]));
+  const namesById = new Map((clients.data ?? []).map((profile) => [profile.id, profile.full_name]));
 
   const kpis: DashboardKpi[] = [
     {

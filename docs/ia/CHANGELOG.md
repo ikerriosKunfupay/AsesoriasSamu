@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-biblioteca-plantillas-y-rendimiento`
+
+- `AssignmentTemplatesManager` añade un diálogo por tipo con listado, editor y confirmación de borrado. Los nuevos esquemas y Server Actions restringen UUID, `kind` y `created_by`, revalidan la ruta correspondiente y auditan únicamente identificador y tipo.
+- `AssignmentFiltersPanel` cambia su cuadrícula a `auto-fit`; el `colgroup` de la tabla reserva un 20 % a acciones y el badge de estado queda contenido dentro de su celda.
+- `DashboardAnalytics` retira el selector de granularidad y usa `inferAnalyticsGranularity()` para derivarla del preset o de la duración personalizada, conservando un solo control temporal visible.
+- `/admin/clientes` ejecuta perfiles, notas, condiciones y tarifas en una única tanda paralela con columnas mínimas. El resumen reutiliza los perfiles ya leídos para resolver nombres y Seguimientos consulta registros y perfiles en paralelo.
+- `pnpm lint`, `pnpm typecheck`, 138 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-gestion-operativa-y-vistas`
 
 - `ContextHelp` añade tooltips accesibles por hover, foco o pulsación a objetivos y gráficas. `DashboardAnalytics` separa rango y granularidad, resuelve presets y fechas personalizadas con un máximo móvil de 365 días y aplica el mismo conjunto de periodos a KPI, desgloses y series.

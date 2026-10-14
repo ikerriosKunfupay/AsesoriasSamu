@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-biblioteca-plantillas-y-rendimiento`
+
+- Entrenamientos y Nutrición incorporan **Gestionar plantillas**, una biblioteca propia desde la que se puede editar nombre, título y contenido o eliminar plantillas reutilizables sin afectar a los planes ya asignados.
+- Los filtros de planes se reparten automáticamente en varias filas cuando falta ancho y el estado ya no invade los botones de ver, editar o eliminar al abrir el formulario lateral.
+- El resumen elimina el selector temporal duplicado: el periodo visible decide automáticamente si las cifras y gráficas se agrupan por día, semana o mes.
+- Clientes, Seguimientos y Resumen reducen esperas al cargar en paralelo los datos independientes y evitar una segunda consulta de nombres que ya estaban disponibles.
+- La validación final completó análisis de código, tipos, 138 pruebas, compilación de producción y comprobación de diferencias.
+
 ## 2026-10-14 — `2026-10-14-gestion-operativa-y-vistas`
 
 - El resumen añade ayudas `?` accesibles a objetivos, progresos y gráficas. El periodo admite Hoy, Ayer, Esta semana, Semana pasada, Este mes, rangos de 14 días, 12 semanas, 3/6/12 meses y fechas personalizadas; la agrupación por día, semana o mes se aplica a todas las cifras y gráficas.
