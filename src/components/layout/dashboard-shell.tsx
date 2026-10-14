@@ -9,6 +9,7 @@ import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { NotificationCenter } from "@/components/layout/notification-center";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
 type CollapsibleGroupId = "advisories" | "payments";
@@ -237,7 +238,12 @@ export function DashboardShell({
       </aside>
       ) : null}
       <div className="min-w-0">
-        <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-border bg-surface/95 px-4 backdrop-blur lg:hidden">
+        {mode === "admin" ? (
+          <div className="fixed right-4 top-2.5 z-30 lg:right-[10.75rem]">
+            <NotificationCenter />
+          </div>
+        ) : null}
+        <header className="sticky top-0 z-20 flex min-h-16 items-center justify-between border-b border-border bg-surface/95 px-4 pr-16 backdrop-blur lg:hidden">
           <details className="relative">
             <summary className="grid size-11 cursor-pointer list-none place-items-center rounded-[var(--radius-md)] border border-border" aria-label="Abrir navegación">
               <Menu className="size-5" />

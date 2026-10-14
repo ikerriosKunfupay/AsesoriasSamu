@@ -59,6 +59,7 @@ El sidebar forma parte del tema del panel: usa los tokens `sidebar-background`, 
 - `Badge`: estados compactos sin depender solo del color.
 - `EmptyState`: vacíos accionables y consistentes.
 - `DashboardShell`: navegación diferenciada para entrenador y cliente, sección actual remarcada en escritorio y móvil mediante `aria-current`, control lateral estable en la barra superior y selector de tema. La identidad administrativa enlaza al perfil propio y acompaña el nombre con el icono de cuenta verificada.
+- `NotificationCenter`: campana administrativa única y responsiva, con contador de no leídas, panel superpuesto de ancho acotado, estados vacío/carga/error y destinos completos como área pulsable. En móvil deja libre el botón de navegación y en escritorio se sitúa inmediatamente antes del selector de tema.
 - `PricingPlansCatalog`: selector segmentado de tabla, lista y galería; todas las vistas resumen la misma plantilla y abren un único editor modal para mantener coherencia funcional.
 - `public-action`, `public-kicker`, `hero-mark` y `public-form`: lenguaje editorial compartido por landing, captación, acceso y páginas legales.
 

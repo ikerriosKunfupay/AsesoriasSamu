@@ -380,6 +380,34 @@ export type Database = {
         Update: never;
         Relationships: [];
       };
+      admin_notifications: {
+        Row: {
+          id: string;
+          recipient_id: string;
+          event_key: string;
+          category: "lead" | "client" | "questionnaire" | "check_in" | "workout_log";
+          title: string;
+          message: string;
+          href: string;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          recipient_id: string;
+          event_key: string;
+          category: "lead" | "client" | "questionnaire" | "check_in" | "workout_log";
+          title: string;
+          message: string;
+          href: string;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          read_at?: string | null;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

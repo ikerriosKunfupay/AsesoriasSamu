@@ -18,6 +18,7 @@
 | `pricing_plans` | catálogo interno de tarifas, modalidad, días, duración y precio habitual | ninguno |
 | `client_commercial_terms` | modalidad, tarifa y precio acordado por cliente | ninguno |
 | `admin_dashboard_settings` | objetivos privados de ingresos y clientes del administrador | ninguno |
+| `admin_notifications` | avisos privados de actividad entrante y estado de lectura | ninguno |
 | `audit_events` | trazabilidad administrativa | ninguno |
 
 ## Roles
@@ -31,6 +32,8 @@ La migración activa RLS en todas las tablas. `is_admin()` es `security definer`
 `anon` no recibe permisos de tabla. Los leads se insertan mediante una Server Action con service role. El service role se reserva para administración validada y nunca se construye en un Client Component. Un usuario autenticado solo tiene `UPDATE` de columna sobre `full_name`, `phone` y `avatar_path` en su propia fila; no puede editar `role`, `status` ni `onboarding_complete` aunque actúe directamente contra la API. `updateAdminProfileAction` exige además `requireAdmin()` y deriva el UUID de la sesión.
 
 Tarifas, condiciones comerciales y plantillas de planes solo admiten operaciones de administradores activos. Cada plantilla conserva `created_by = auth.uid()` en sus políticas, por lo que tampoco se comparte entre posibles administradores. Las acciones de edición y borrado repiten esa comprobación de propietario antes de mutar con service role. Los objetivos del resumen aplican el mismo aislamiento. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago. Las auditorías de planes, plantillas y cuotas registran identificadores y tipo de cambio, pero nunca copian el contenido del plan ni la nota interna.
+
+Las notificaciones se crean mediante funciones `security definer` invocadas solo por triggers de tablas internas. El rol autenticado no puede insertar ni borrar avisos y únicamente recibe `SELECT` y `UPDATE(read_at)` sobre los avisos cuyo `recipient_id` coincide con `auth.uid()` y cuya sesión sigue siendo administradora activa. Los mensajes incluyen el nombre necesario para identificar la actividad, pero nunca copian respuestas de salud, objetivos, notas ni otros campos libres. La API limita además a cincuenta UUID cualquier petición de marcado selectivo.
 
 ## Avatares
 

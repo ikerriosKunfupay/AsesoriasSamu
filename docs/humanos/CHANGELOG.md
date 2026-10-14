@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-centro-notificaciones`
+
+- La cabecera administrativa incorpora una campana con contador de avisos sin leer y un panel adaptado a móvil y escritorio.
+- La bandeja avisa de nuevas solicitudes de información, cuentas de cliente, cuestionarios, seguimientos y entrenamientos registrados, con fecha y enlace directo al registro relacionado.
+- Los avisos pueden marcarse individualmente al abrirlos o todos a la vez, y el estado de lectura se conserva entre dispositivos.
+- La bandeja se actualiza en segundo plano sin retrasar la carga del resumen ni del resto de páginas.
+- La validación final completó análisis de código, tipos, 139 pruebas, compilación de producción y comprobación de diferencias.
+
 ## 2026-10-14 — `2026-10-14-biblioteca-plantillas-y-rendimiento`
 
 - Entrenamientos y Nutrición incorporan **Gestionar plantillas**, una biblioteca propia desde la que se puede editar nombre, título y contenido o eliminar plantillas reutilizables sin afectar a los planes ya asignados.

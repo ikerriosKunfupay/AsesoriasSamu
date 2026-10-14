@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-centro-notificaciones`
+
+- `202610140003_admin_notifications.sql` crea una bandeja por administrador, claves de evento únicas, índices de actividad reciente/no leída y triggers para leads, perfiles cliente, onboarding, check-ins y registros de entrenamiento.
+- RLS limita la lectura y `UPDATE(read_at)` al administrador destinatario; los triggers solo proyectan nombre, tipo, destino y fecha y no copian respuestas sanitarias ni texto libre.
+- `/api/admin/notifications` ofrece una lectura acotada a treinta avisos y marcado individual o global; `NotificationCenter` carga después de pintar, sondea cada minuto solo con la pestaña visible y actualiza el contador de forma optimista.
+- `DashboardShell` renderiza una sola instancia responsiva de la campana para evitar peticiones duplicadas. La migración se validó en seco y se aplicó correctamente al proyecto remoto de Supabase.
+- `pnpm lint`, `pnpm typecheck`, 139 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-biblioteca-plantillas-y-rendimiento`
 
 - `AssignmentTemplatesManager` añade un diálogo por tipo con listado, editor y confirmación de borrado. Los nuevos esquemas y Server Actions restringen UUID, `kind` y `created_by`, revalidan la ruta correspondiente y auditan únicamente identificador y tipo.
