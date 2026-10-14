@@ -1,5 +1,13 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-limpieza-datos-demo-produccion`
+
+- La inspección previa de Supabase confirmó 1 perfil administrador, 6 perfiles cliente, 7 identidades Auth y un bucket `profile-avatars` vacío.
+- Una transacción protegida por aserciones eliminó las seis identidades no administradoras, dejando que las claves foráneas en cascada retiraran cuestionarios, consentimientos, entrenamientos, nutrición, registros de series, seguimientos, cuotas, notas y condiciones comerciales.
+- Se vaciaron explícitamente `leads`, `client_invitations`, `admin_notifications` y `audit_events`; se conservaron `exercise_catalog`, `pricing_plans`, `assignment_templates`, `admin_dashboard_settings` y la identidad administradora.
+- Las aserciones dentro de la transacción y una lectura posterior confirmaron 1 identidad Auth/administradora y cero datos de cliente en todas las tablas comprobadas. Authentication mostró un único usuario tras recargar.
+- `pnpm lint`, `pnpm typecheck`, 149 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-catalogo-ejercicios-excel`
 
 - `202610140005_exercise_catalog.sql` crea `exercise_catalog`, su índice, trigger, RLS administrativa y una carga idempotente de 339 registros extraídos de `EXERCISE DATA BASE`; los nombres duplicados se conservan como filas independientes por su origen y claves distintas.

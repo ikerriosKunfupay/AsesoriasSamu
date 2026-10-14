@@ -4,6 +4,8 @@
 
 El MVP está implementado, validado y publicado en `https://team-ortega.vercel.app`. El proyecto Vercel `team-ortega` usa el repositorio exclusivo `ikerriosKunfupay/AsesoriasSamu`. Supabase está creado en una organización propia, en región europea, con la migración aplicada y las URLs de autenticación configuradas.
 
+La base productiva parte limpia: conserva únicamente la cuenta administradora y los catálogos/configuración general. No quedan cuentas cliente, interesados, cuestionarios, planes asignados, seguimientos, cuotas, notas, avisos ni auditorías de los datos de demostración.
+
 Todavía no deben incorporarse clientes reales: falta completar una prueba real de registro e invitación y sustituir la información legal provisional.
 
 ## Lista previa a producción

@@ -1,5 +1,13 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-limpieza-datos-demo-produccion`
+
+- Producción vuelve a estar limpia para empezar con clientes reales: se han eliminado las seis cuentas cliente y toda su información asociada.
+- También se han retirado los interesados, avisos y registros administrativos generados durante las demostraciones.
+- Se conserva únicamente la cuenta administradora, junto con la biblioteca de ejercicios, tarifas, plantillas y configuración general de la aplicación.
+- La comprobación final confirmó 1 administrador, 0 clientes y 0 registros en planes, nutrición, cuotas, avisos y auditorías de aplicación.
+- La validación del repositorio completó análisis de código, tipos, 149 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-catalogo-ejercicios-excel`
 
 - La biblioteca de Entrenamientos incorpora los 339 ejercicios y 17 grupos musculares de la hoja de trabajo, con sus enlaces y claves de ejecución.

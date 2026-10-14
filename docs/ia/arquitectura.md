@@ -26,6 +26,10 @@ Los layouts `/admin` y `/app` llaman respectivamente a `requireAdmin()` y `requi
 
 La navegación administrativa presenta **Interesados** antes de **Clientes** para reflejar el flujo operativo: las filas de `leads` nacen en el formulario público y son independientes de las identidades `client` de `profiles`.
 
+## Estado operativo de producción
+
+Desde `2026-10-14-limpieza-datos-demo-produccion`, Supabase conserva una única identidad administrativa y cero identidades cliente. La limpieza eliminó también `leads`, invitaciones, notificaciones y auditorías de aplicación; las relaciones `on delete cascade` retiraron cuestionarios, consentimientos, asignaciones, registros, seguimientos, cuotas, notas y condiciones comerciales. Se conservaron los catálogos y configuración reutilizable (`exercise_catalog`, tarifas, plantillas y ajustes administrativos). El bucket privado de avatares se verificó vacío antes de la operación.
+
 Los enlaces hacia `/admin/clientes/[id]` se construyen con `getClientDetailHref()` y un `returnTo` limitado a una lista cerrada de rutas administrativas. La ficha resuelve ese origen con `getClientReturnDestination()` y adapta tanto el destino como la etiqueta del botón. No depende de `history.back()`, rechaza redirecciones externas y usa `/admin/clientes` como alternativa para enlaces directos o manipulados.
 
 La cabecera móvil de `DashboardShell` coloca el disparador de navegación a la izquierda y `BrandLogo` compacto a la derecha. El menú se ancla al borde izquierdo del disparador; ocultar el lateral de escritorio no altera este comportamiento móvil.
