@@ -8,6 +8,7 @@
 - La vista previa y el área cliente enlazan la demostración técnica cuando existe. Las pruebas cubren búsqueda sin tildes, teclado, filtro muscular y autocompletado.
 - El ensayo remoto propuso únicamente `202610140005_exercise_catalog.sql`; se aplicó en el proyecto enlazado y `supabase migration list --linked` confirmó paridad local/remota hasta `202610140005`.
 - `impeccable detect`, `pnpm lint`, `pnpm typecheck`, 149 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente.
+- Vercel marcó `546cc2b` como desplegado correctamente; `/` y `/login` devolvieron `200`, y `/admin/entrenamientos/ejercicios` devolvió la redirección autenticada esperada hacia `/login` sin sesión.
 
 ## 2026-10-14 — `2026-10-14-entrenamientos-centralizados-y-demo`
 
