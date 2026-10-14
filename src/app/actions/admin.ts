@@ -14,6 +14,8 @@ import {
   clientCommercialQuickUpdateSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
+  exerciseCatalogDeleteSchema,
+  exerciseCatalogSchema,
   feeDeleteSchema,
   feeNoteSchema,
   feeSchema,
@@ -244,6 +246,145 @@ export async function updateWorkoutPlanAction(
   revalidatePath("/admin/entrenamientos");
   revalidatePath("/app/entrenamiento");
   return { status: "success", message: "Entrenamiento actualizado correctamente." };
+}
+
+export async function saveExerciseCatalogAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = exerciseCatalogSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa los datos del ejercicio.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const admin = createAdminClient();
+  const muscleGroup = parsed.data.muscleGroup.toLocaleUpperCase("es-ES");
+  const [{ data: groupReference }, { data: lastGroup }] = await Promise.all([
+    admin
+      .from("exercise_catalog")
+      .select("muscle_order")
+      .eq("muscle_group", muscleGroup)
+      .order("muscle_order")
+      .limit(1)
+      .maybeSingle(),
+    admin
+      .from("exercise_catalog")
+      .select("muscle_order")
+      .order("muscle_order", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+  const muscleOrder = groupReference?.muscle_order ?? (lastGroup?.muscle_order ?? 0) + 1;
+
+  if (parsed.data.exerciseId) {
+    const { data: existing } = await admin
+      .from("exercise_catalog")
+      .select("id, muscle_group, source_order")
+      .eq("id", parsed.data.exerciseId)
+      .maybeSingle();
+    if (!existing) return { status: "error", message: "El ejercicio ya no existe." };
+
+    let sourceOrder = existing.source_order;
+    if (existing.muscle_group !== muscleGroup) {
+      const { data: lastExercise } = await admin
+        .from("exercise_catalog")
+        .select("source_order")
+        .eq("muscle_group", muscleGroup)
+        .order("source_order", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      sourceOrder = (lastExercise?.source_order ?? 0) + 1;
+    }
+
+    const { data, error } = await admin
+      .from("exercise_catalog")
+      .update({
+        muscle_group: muscleGroup,
+        muscle_order: muscleOrder,
+        source_order: sourceOrder,
+        name: parsed.data.name,
+        reference_url: parsed.data.referenceUrl || null,
+        cues: parsed.data.cues,
+      })
+      .eq("id", existing.id)
+      .select("id")
+      .maybeSingle();
+    if (error || !data) return { status: "error", message: "No se pudo actualizar el ejercicio." };
+
+    await admin.from("audit_events").insert({
+      actor_id: adminUser.id,
+      action: "exercise_catalog.updated",
+      entity_type: "exercise_catalog",
+      entity_id: data.id,
+      metadata: { muscle_group: muscleGroup },
+    });
+    revalidatePath("/admin/entrenamientos");
+    revalidatePath("/admin/entrenamientos/ejercicios");
+    return { status: "success", message: "Ejercicio actualizado." };
+  }
+
+  const { data: lastExercise } = await admin
+    .from("exercise_catalog")
+    .select("source_order")
+    .eq("muscle_group", muscleGroup)
+    .order("source_order", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const { data, error } = await admin
+    .from("exercise_catalog")
+    .insert({
+      muscle_group: muscleGroup,
+      muscle_order: muscleOrder,
+      source_order: (lastExercise?.source_order ?? 0) + 1,
+      name: parsed.data.name,
+      reference_url: parsed.data.referenceUrl || null,
+      cues: parsed.data.cues,
+      created_by: adminUser.id,
+    })
+    .select("id")
+    .single();
+  if (error || !data) return { status: "error", message: "No se pudo crear el ejercicio." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "exercise_catalog.created",
+    entity_type: "exercise_catalog",
+    entity_id: data.id,
+    metadata: { muscle_group: muscleGroup },
+  });
+  revalidatePath("/admin/entrenamientos");
+  revalidatePath("/admin/entrenamientos/ejercicios");
+  return { status: "success", message: "Ejercicio añadido a la biblioteca." };
+}
+
+export async function deleteExerciseCatalogAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = exerciseCatalogDeleteSchema.safeParse(formValues(formData));
+  if (!parsed.success) return { status: "error", message: "Ejercicio no válido." };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("exercise_catalog")
+    .delete()
+    .eq("id", parsed.data.exerciseId)
+    .select("id")
+    .maybeSingle();
+  if (error || !data) return { status: "error", message: "No se pudo eliminar el ejercicio." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "exercise_catalog.deleted",
+    entity_type: "exercise_catalog",
+    entity_id: data.id,
+    metadata: {},
+  });
+  revalidatePath("/admin/entrenamientos");
+  revalidatePath("/admin/entrenamientos/ejercicios");
+  return { status: "success", message: "Ejercicio eliminado de la biblioteca." };
 }
 
 export async function updateAssignmentAction(

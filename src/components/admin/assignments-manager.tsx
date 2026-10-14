@@ -37,6 +37,7 @@ import {
   type AssignmentTemplate,
 } from "@/lib/admin/assignments";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
+import type { ExerciseCatalogItem } from "@/lib/admin/exercise-catalog";
 import { formatDate, statusLabel } from "@/lib/format";
 import type { WorkoutPlan } from "@/lib/workouts/plan";
 
@@ -139,12 +140,14 @@ export function AssignmentsManager({
   assignments,
   templates = [],
   workoutInitialPlan,
+  exerciseCatalog = [],
 }: {
   kind: AssignmentKind;
   clients: Array<{ id: string; full_name: string }>;
   assignments: AdminAssignment[];
   templates?: AssignmentTemplate[];
   workoutInitialPlan?: WorkoutPlan;
+  exerciseCatalog?: ExerciseCatalogItem[];
 }) {
   const [showForm, setShowForm] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -208,7 +211,7 @@ export function AssignmentsManager({
             {usesStructuredWorkoutForm ? (
               <>
                 <p className="mb-6 mt-1 text-sm text-muted">Elige el cliente y organiza su bloque por semanas, sesiones, ejercicios y series.</p>
-                <WorkoutPlanBuilder clients={clients} initialPlan={workoutInitialPlan!} />
+                <WorkoutPlanBuilder clients={clients} initialPlan={workoutInitialPlan!} exerciseCatalog={exerciseCatalog} />
               </>
             ) : (
               <div className="mt-5">
@@ -346,6 +349,7 @@ export function AssignmentsManager({
                   initialStartsOn={editingAssignment.startsOn}
                   initialStatus={editingAssignment.status}
                   initialPlan={editingAssignment.planData}
+                  exerciseCatalog={exerciseCatalog}
                   onSuccess={() => setEditingAssignment(null)}
                 />
               ) : (

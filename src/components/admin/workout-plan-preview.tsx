@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { workoutPlanStats, type WorkoutPlan } from "@/lib/workouts/plan";
 
@@ -74,6 +75,11 @@ export function WorkoutPlanPreview({ plan }: { plan: WorkoutPlan }) {
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-muted">{exercise.muscleGroup}</p>
                     <h5 className="mt-1 font-black">{exerciseIndex + 1}. {exercise.name}</h5>
+                    {exercise.referenceUrl ? (
+                      <a className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-xs font-bold text-primary hover:underline" href={exercise.referenceUrl} target="_blank" rel="noreferrer">
+                        Ver técnica del ejercicio <ExternalLink aria-hidden="true" className="size-3.5" />
+                      </a>
+                    ) : null}
                     {exercise.method ? <p className="mt-1 text-sm text-muted">{exercise.method}</p> : null}
                     {exercise.cues ? <p className="mt-3 text-sm leading-6 text-muted">{exercise.cues}</p> : null}
                   </div>

@@ -33,6 +33,15 @@ const assignments: AdminAssignment[] = clients.map((client, index) => ({
 }));
 
 const templates = [{ id: "33333333-3333-4333-8333-333333333333", name: "Base fuerza", title: "Fuerza base", content: "Contenido reutilizable de fuerza con suficiente detalle." }];
+const exerciseCatalog = [{
+  id: "77777777-7777-4777-8777-777777777777",
+  muscleGroup: "CUÁDRICEPS",
+  name: "Sentadilla Hack",
+  referenceUrl: "https://example.com/sentadilla-hack",
+  cues: "Empuja la plataforma y controla la bajada.",
+  muscleOrder: 1,
+  sourceOrder: 1,
+}];
 
 const structuredPlan: WorkoutPlan = {
   schemaVersion: 1,
@@ -53,8 +62,10 @@ const structuredPlan: WorkoutPlan = {
       name: "Torso A",
       exercises: [{
         id: "66666666-6666-4666-8666-666666666666",
+        catalogExerciseId: null,
         muscleGroup: "Pectoral",
         name: "Press banca",
+        referenceUrl: "",
         method: "Serie recta",
         sets: 3,
         reps: "8-10",
@@ -84,6 +95,22 @@ describe("AssignmentsManager", () => {
     expect(screen.getByRole("button", { name: "Duplicar semana" })).toBeInTheDocument();
     expect(screen.queryByRole("textbox", { name: "Contenido del plan" })).not.toBeInTheDocument();
     expect(document.querySelector('input[type="date"]')).not.toBeInTheDocument();
+  });
+
+  it("filtra ejercicios por músculo y completa sus claves", () => {
+    render(<AssignmentsManager kind="workout" clients={clients.slice(0, 1)} assignments={[]} workoutInitialPlan={structuredPlan} exerciseCatalog={exerciseCatalog} />);
+    fireEvent.click(screen.getByRole("switch", { name: "Mostrar formulario para crear entrenamiento" }));
+
+    const muscleSelect = screen.getByRole("combobox", { name: "Grupo muscular del ejercicio 1" });
+    fireEvent.focus(muscleSelect);
+    fireEvent.click(screen.getByRole("option", { name: "CUÁDRICEPS" }));
+
+    const exerciseSelect = screen.getByRole("combobox", { name: "Ejercicio 1" });
+    fireEvent.focus(exerciseSelect);
+    fireEvent.click(screen.getByRole("option", { name: "Sentadilla Hack" }));
+
+    expect(screen.getByRole("textbox", { name: "Ejecución y observaciones" })).toHaveValue("Empuja la plataforma y controla la bajada.");
+    expect(screen.getByRole("link", { name: /Ver técnica del ejercicio/ })).toHaveAttribute("href", exerciseCatalog[0].referenceUrl);
   });
 
   it("muestra y edita un entrenamiento estructurado desde el histórico", () => {

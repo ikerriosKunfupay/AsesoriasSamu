@@ -7,14 +7,19 @@ const optionalText = (maximum: number) => z.string().trim().max(maximum).default
 
 export const workoutExerciseSchema = z.object({
   id: z.string().uuid("Ejercicio no válido."),
+  catalogExerciseId: z.string().uuid("Ejercicio de catálogo no válido.").nullable().default(null),
   muscleGroup: compactText("El grupo muscular", 80),
   name: compactText("El ejercicio", 160),
+  referenceUrl: z.union([
+    z.literal(""),
+    z.string().trim().url("El enlace del ejercicio no es válido.").max(500, "El enlace del ejercicio es demasiado largo."),
+  ]).default(""),
   method: optionalText(300),
   sets: z.number().int().min(1).max(5),
   reps: compactText("Las repeticiones", 40),
   targetRir: z.array(z.number().min(0).max(10).nullable()).min(1).max(5),
   rest: optionalText(80),
-  cues: optionalText(1000),
+  cues: optionalText(4000),
 }).superRefine((exercise, context) => {
   if (exercise.targetRir.length !== exercise.sets) {
     context.addIssue({
@@ -87,8 +92,10 @@ export type WorkoutSetLog = {
 function createBlankExercise(): WorkoutExercise {
   return {
     id: crypto.randomUUID(),
+    catalogExerciseId: null,
     muscleGroup: "",
     name: "",
+    referenceUrl: "",
     method: "",
     sets: 3,
     reps: "8-12",

@@ -1,5 +1,14 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-catalogo-ejercicios-excel`
+
+- La biblioteca de Entrenamientos incorpora los 339 ejercicios y 17 grupos musculares de la hoja de trabajo, con sus enlaces y claves de ejecución.
+- El creador permite buscar el músculo y después el ejercicio dentro de ese grupo; al seleccionarlo rellena automáticamente sus claves, que siguen siendo editables para adaptar el plan al cliente.
+- **Biblioteca de ejercicios** permite buscar, filtrar, crear, editar y eliminar fichas. Los planes ya guardados conservan sus datos aunque la ficha general cambie o se elimine.
+- El enlace técnico aparece tanto en la vista previa administrativa como en el entrenamiento del cliente cuando está disponible.
+- El catálogo y sus políticas de acceso se han aplicado en el Supabase productivo de Team Ortega; el historial remoto quedó sincronizado hasta `202610140005`.
+- La validación final completó análisis de código, tipos, 149 pruebas y compilación de producción.
+
 ## 2026-10-14 — `2026-10-14-entrenamientos-centralizados-y-demo`
 
 - El creador completo de entrenamientos se ha trasladado de la ficha individual a **Entrenamientos**, donde ahora se elige el cliente y se prepara el bloque por semanas, sesiones y ejercicios sin abandonar el histórico.

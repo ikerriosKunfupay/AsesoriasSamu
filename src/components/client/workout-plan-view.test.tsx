@@ -29,8 +29,10 @@ const plan: WorkoutPlan = {
       name: "Torso A",
       exercises: [{
         id: exerciseId,
+        catalogExerciseId: null,
         muscleGroup: "Pectoral",
         name: "Press banca",
+        referenceUrl: "",
         method: "Tempo controlado",
         sets: 2,
         reps: "8-10",

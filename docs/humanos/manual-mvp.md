@@ -57,7 +57,9 @@ En ambos casos la cuenta se crea siempre con rol de cliente. El formulario públ
 
 Desde **Entrenamientos**, el entrenador elige un cliente y crea un bloque de hasta 16 semanas. Cada semana admite hasta 8 sesiones y cada sesión hasta 20 ejercicios. Para cada ejercicio se indican grupo muscular, nombre, método, series, rango de repeticiones, RIR objetivo por serie, descanso y observaciones de ejecución. Una semana se puede duplicar para conservar la base y ajustar únicamente la progresión.
 
-El plan puede guardarse como borrador o publicarse. Cada nueva revisión crea una asignación independiente para conservar el histórico; los planes de texto anteriores siguen siendo legibles. El resumen del bloque muestra semanas, sesiones, ejercicios, series, RIR medio y distribución por grupo muscular. La estructura necesaria está aplicada en el entorno productivo mediante `202610140004_structured_workouts.sql`.
+El grupo muscular y el ejercicio se eligen mediante desplegables con búsqueda. El segundo muestra únicamente los ejercicios del músculo seleccionado y, al elegir uno, copia sus claves de ejecución y su enlace técnico; las claves se pueden adaptar después para ese cliente sin modificar la biblioteca general. **Biblioteca de ejercicios** reúne los 339 ejercicios y 17 grupos importados de la hoja de trabajo, permite buscar por nombre, músculo o contenido de las claves y ofrece alta, edición y borrado. El borrado no altera los planes ya creados, porque cada entrenamiento conserva su propia copia.
+
+El plan puede guardarse como borrador o publicarse. Cada nueva revisión crea una asignación independiente para conservar el histórico; los planes de texto anteriores siguen siendo legibles. El resumen del bloque muestra semanas, sesiones, ejercicios, series, RIR medio y distribución por grupo muscular. La estructura del plan y su catálogo están aplicados en el entorno productivo mediante `202610140004_structured_workouts.sql` y `202610140005_exercise_catalog.sql`.
 
 ## Experiencia del cliente
 

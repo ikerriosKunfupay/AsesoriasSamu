@@ -307,6 +307,36 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["assignment_templates"]["Insert"]>;
         Relationships: [];
       };
+      exercise_catalog: {
+        Row: {
+          id: string;
+          source_row: number | null;
+          source_order: number;
+          muscle_order: number;
+          muscle_group: string;
+          name: string;
+          reference_url: string | null;
+          cues: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          source_row?: number | null;
+          source_order?: number;
+          muscle_order?: number;
+          muscle_group: string;
+          name: string;
+          reference_url?: string | null;
+          cues?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["exercise_catalog"]["Insert"]>;
+        Relationships: [];
+      };
       workout_logs: {
         Row: {
           id: string;

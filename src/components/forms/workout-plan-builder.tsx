@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useId, useMemo, useState } from "react";
-import { CopyPlus, Plus, Trash2 } from "lucide-react";
+import { CopyPlus, ExternalLink, Plus, Trash2 } from "lucide-react";
 import { saveWorkoutPlanAction, updateWorkoutPlanAction } from "@/app/actions/admin";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -10,6 +10,8 @@ import { Field } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
 import { InternalDatePicker } from "@/components/ui/internal-date-picker";
 import { InternalSelect } from "@/components/ui/internal-select";
+import { SearchableSelect, type SearchableSelectOption } from "@/components/ui/searchable-select";
+import type { ExerciseCatalogItem } from "@/lib/admin/exercise-catalog";
 import { initialActionState } from "@/lib/forms/action-state";
 import {
   appendBlankExercise,
@@ -28,19 +30,6 @@ const statusOptions = [
 
 const setOptions = [1, 2, 3, 4, 5].map((value) => ({ value: String(value), label: String(value) }));
 
-const muscleGroups = [
-  "Pectoral",
-  "Espalda",
-  "Deltoides",
-  "Bíceps",
-  "Tríceps",
-  "Cuádriceps",
-  "Isquiosurales",
-  "Glúteos",
-  "Gemelos",
-  "Core",
-];
-
 export function WorkoutPlanBuilder({
   clientId,
   clients = [],
@@ -50,6 +39,7 @@ export function WorkoutPlanBuilder({
   initialStartsOn = null,
   initialStatus = "published",
   initialPlan,
+  exerciseCatalog = [],
   onSuccess,
 }: {
   clientId?: string;
@@ -60,6 +50,7 @@ export function WorkoutPlanBuilder({
   initialStartsOn?: string | null;
   initialStatus?: "draft" | "published";
   initialPlan: WorkoutPlan;
+  exerciseCatalog?: ExerciseCatalogItem[];
   onSuccess?: () => void;
 }) {
   const [state, action] = useActionState(assignmentId ? updateWorkoutPlanAction : saveWorkoutPlanAction, initialActionState);
@@ -75,6 +66,10 @@ export function WorkoutPlanBuilder({
   const blockNameFieldId = `${formId}-block-name`;
   const phaseFieldId = `${formId}-phase`;
   const objectiveFieldId = `${formId}-objective`;
+  const muscleOptions = useMemo<SearchableSelectOption[]>(() => {
+    const groups = [...new Set(exerciseCatalog.map((item) => item.muscleGroup))];
+    return groups.map((group) => ({ value: group, label: group }));
+  }, [exerciseCatalog]);
 
   useEffect(() => {
     if (state.status === "success") onSuccess?.();
@@ -321,24 +316,62 @@ export function WorkoutPlanBuilder({
                     <div className="grid gap-4 lg:grid-cols-12">
                       <div className="lg:col-span-3">
                         <Field label="Grupo muscular" htmlFor={`exercise-${exercise.id}-muscle`} required>
-                          <Input
+                          <SearchableSelect
                             id={`exercise-${exercise.id}-muscle`}
-                            list="workout-muscle-groups"
+                            ariaLabel={`Grupo muscular del ejercicio ${exerciseIndex + 1}`}
+                            options={exercise.muscleGroup && !muscleOptions.some((option) => option.value === exercise.muscleGroup)
+                              ? [{ value: exercise.muscleGroup, label: exercise.muscleGroup }, ...muscleOptions]
+                              : muscleOptions}
                             value={exercise.muscleGroup}
-                            onChange={(event) => replaceExercise(activeWeek.id, session.id, exercise.id, (current) => ({ ...current, muscleGroup: event.target.value }))}
-                            required
+                            placeholder="Selecciona un músculo"
+                            searchPlaceholder="Buscar músculo…"
+                            emptyMessage="No hay músculos que coincidan."
+                            menuPortal
+                            onValueChange={(muscleGroup) => replaceExercise(activeWeek.id, session.id, exercise.id, (current) => ({
+                              ...current,
+                              catalogExerciseId: null,
+                              muscleGroup,
+                              name: "",
+                              referenceUrl: "",
+                              cues: "",
+                            }))}
                           />
                         </Field>
                       </div>
                       <div className="lg:col-span-5">
                         <Field label="Ejercicio" htmlFor={`exercise-${exercise.id}-name`} required>
-                          <Input
+                          <SearchableSelect
                             id={`exercise-${exercise.id}-name`}
-                            value={exercise.name}
-                            onChange={(event) => replaceExercise(activeWeek.id, session.id, exercise.id, (current) => ({ ...current, name: event.target.value }))}
-                            required
+                            ariaLabel={`Ejercicio ${exerciseIndex + 1}`}
+                            options={buildExerciseOptions(exerciseCatalog, exercise)}
+                            value={exercise.catalogExerciseId && exerciseCatalog.some((item) => item.id === exercise.catalogExerciseId)
+                              ? exercise.catalogExerciseId
+                              : (exercise.name ? `saved:${exercise.id}` : "")}
+                            placeholder={exercise.muscleGroup ? "Selecciona un ejercicio" : "Primero elige un músculo"}
+                            searchPlaceholder="Buscar ejercicio…"
+                            emptyMessage={exercise.muscleGroup ? "No hay ejercicios que coincidan." : "Elige primero un grupo muscular."}
+                            disabled={!exercise.muscleGroup}
+                            menuPortal
+                            onValueChange={(catalogExerciseId) => {
+                              if (catalogExerciseId.startsWith("saved:")) return;
+                              const selected = exerciseCatalog.find((item) => item.id === catalogExerciseId);
+                              if (!selected) return;
+                              replaceExercise(activeWeek.id, session.id, exercise.id, (current) => ({
+                                ...current,
+                                catalogExerciseId: selected.id,
+                                muscleGroup: selected.muscleGroup,
+                                name: selected.name,
+                                referenceUrl: selected.referenceUrl,
+                                cues: selected.cues,
+                              }));
+                            }}
                           />
                         </Field>
+                        {exercise.referenceUrl ? (
+                          <a className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-xs font-bold text-primary hover:underline" href={exercise.referenceUrl} target="_blank" rel="noreferrer">
+                            Ver técnica del ejercicio <ExternalLink aria-hidden="true" className="size-3.5" />
+                          </a>
+                        ) : null}
                       </div>
                       <div className="lg:col-span-2">
                         <Field label="Series" htmlFor={`exercise-${exercise.id}-sets`} required>
@@ -477,9 +510,6 @@ export function WorkoutPlanBuilder({
         </div>
       </section>
 
-      <datalist id="workout-muscle-groups">
-        {muscleGroups.map((muscle) => <option key={muscle} value={muscle} />)}
-      </datalist>
       {state.fieldErrors?.planData?.[0] ? (
         <p className="text-sm font-medium text-danger" role="alert">{state.fieldErrors.planData[0]}</p>
       ) : null}
@@ -488,4 +518,25 @@ export function WorkoutPlanBuilder({
       </SubmitButton>
     </form>
   );
+}
+
+function buildExerciseOptions(catalog: ExerciseCatalogItem[], exercise: WorkoutExercise): SearchableSelectOption[] {
+  const matchingExercises = catalog.filter((item) => item.muscleGroup === exercise.muscleGroup);
+  const totals = new Map<string, number>();
+  const seen = new Map<string, number>();
+  matchingExercises.forEach((item) => totals.set(item.name, (totals.get(item.name) ?? 0) + 1));
+  const options: SearchableSelectOption[] = matchingExercises.map((item) => {
+    const occurrence = (seen.get(item.name) ?? 0) + 1;
+    seen.set(item.name, occurrence);
+    return {
+      value: item.id,
+      label: (totals.get(item.name) ?? 0) > 1 ? `${item.name} · variante ${occurrence}` : item.name,
+      keywords: item.cues,
+    };
+  });
+  const catalogHasCurrent = exercise.catalogExerciseId && matchingExercises.some((item) => item.id === exercise.catalogExerciseId);
+  if (exercise.name && !catalogHasCurrent) {
+    options.unshift({ value: `saved:${exercise.id}`, label: `${exercise.name} · guardado en el plan` });
+  }
+  return options;
 }

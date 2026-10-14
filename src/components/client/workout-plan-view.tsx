@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { CalendarDays, Save } from "lucide-react";
+import { CalendarDays, ExternalLink, Save } from "lucide-react";
 import { saveWorkoutSetLogsAction } from "@/app/actions/client";
 import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -233,6 +233,11 @@ function WorkoutSessionForm({
                 <h5 id={`exercise-heading-${exercise.id}`} className="mt-1 font-black">
                   {exerciseIndex + 1}. {exercise.name}
                 </h5>
+                {exercise.referenceUrl ? (
+                  <a className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-xs font-bold text-primary hover:underline" href={exercise.referenceUrl} target="_blank" rel="noreferrer">
+                    Ver técnica del ejercicio <ExternalLink aria-hidden="true" className="size-3.5" />
+                  </a>
+                ) : null}
               </div>
               {exercise.method ? <Badge tone="neutral">{exercise.method}</Badge> : null}
             </div>

@@ -1,5 +1,14 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-catalogo-ejercicios-excel`
+
+- `202610140005_exercise_catalog.sql` crea `exercise_catalog`, su índice, trigger, RLS administrativa y una carga idempotente de 339 registros extraídos de `EXERCISE DATA BASE`; los nombres duplicados se conservan como filas independientes por su origen y claves distintas.
+- `WorkoutPlanBuilder` recibe el catálogo ordenado, encadena dos `SearchableSelect` accesibles y copia `catalogExerciseId`, grupo, nombre, enlace y claves al documento. Los valores por defecto mantienen compatibles los planes históricos.
+- `/admin/entrenamientos/ejercicios`, `ExerciseCatalogManager` y las Server Actions autorizadas implementan búsqueda, filtro y CRUD; la auditoría omite las claves y los planes almacenan una instantánea sin clave foránea.
+- La vista previa y el área cliente enlazan la demostración técnica cuando existe. Las pruebas cubren búsqueda sin tildes, teclado, filtro muscular y autocompletado.
+- El ensayo remoto propuso únicamente `202610140005_exercise_catalog.sql`; se aplicó en el proyecto enlazado y `supabase migration list --linked` confirmó paridad local/remota hasta `202610140005`.
+- `impeccable detect`, `pnpm lint`, `pnpm typecheck`, 149 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-entrenamientos-centralizados-y-demo`
 
 - `/admin/entrenamientos` carga y valida `plan_data`, limita el selector a clientes activos y entrega un documento inicial a `AssignmentsManager`; la ficha `/admin/clientes/[id]` retira el constructor y conserva el histórico reciente con enlace al editor central.

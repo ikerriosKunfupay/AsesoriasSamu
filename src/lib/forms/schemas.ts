@@ -236,6 +236,21 @@ export const structuredWorkoutUpdateSchema = structuredWorkoutAssignmentSchema.e
   assignmentId: z.string().uuid("Entrenamiento no válido."),
 });
 
+export const exerciseCatalogSchema = z.object({
+  exerciseId: z.union([z.literal(""), z.string().uuid("Ejercicio no válido.")]).default(""),
+  muscleGroup: requiredText("El grupo muscular").max(80),
+  name: requiredText("El ejercicio").max(160),
+  referenceUrl: z.union([
+    z.literal(""),
+    z.string().trim().url("El enlace no es válido.").max(500, "El enlace es demasiado largo."),
+  ]).default(""),
+  cues: z.string().trim().max(4000, "Las claves son demasiado largas.").default(""),
+});
+
+export const exerciseCatalogDeleteSchema = z.object({
+  exerciseId: z.string().uuid("Ejercicio no válido."),
+});
+
 export const checkInSchema = z.object({
   weightKg: z.union([z.coerce.number().min(35).max(300), z.literal("")]).optional(),
   energyLevel: z.coerce.number().int().min(1).max(5),
