@@ -224,6 +224,14 @@ export const assignmentTemplateDeleteSchema = z.object({
   kind: z.enum(["workout", "nutrition"]),
 });
 
+export const structuredWorkoutAssignmentSchema = z.object({
+  clientId: z.string().uuid("Cliente no válido."),
+  title: requiredText("El título").max(160),
+  startsOn: z.string().date().optional().or(z.literal("")),
+  status: z.enum(["draft", "published"]),
+  planData: z.string().min(1, "El plan está vacío.").max(900_000, "El plan es demasiado grande."),
+});
+
 export const checkInSchema = z.object({
   weightKg: z.union([z.coerce.number().min(35).max(300), z.literal("")]).optional(),
   energyLevel: z.coerce.number().int().min(1).max(5),

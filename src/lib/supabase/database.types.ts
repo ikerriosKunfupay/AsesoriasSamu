@@ -3,6 +3,14 @@ export type ProfileStatus = "invited" | "active" | "suspended" | "archived";
 export type BillingCycle = "monthly" | "semiannual" | "annual" | "custom";
 export type ServiceModality = "in_person" | "online";
 
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export type Database = {
   public: {
     Tables: {
@@ -229,6 +237,7 @@ export type Database = {
           client_id: string;
           title: string;
           content: string;
+          plan_data: Json | null;
           status: string;
           version: number;
           starts_on: string | null;
@@ -240,6 +249,7 @@ export type Database = {
           client_id: string;
           title: string;
           content: string;
+          plan_data?: Json | null;
           status?: string;
           version?: number;
           starts_on?: string | null;
@@ -313,6 +323,36 @@ export type Database = {
           notes?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["workout_logs"]["Insert"]>;
+        Relationships: [];
+      };
+      workout_set_logs: {
+        Row: {
+          id: string;
+          client_id: string;
+          assignment_id: string;
+          exercise_id: string;
+          week_number: number;
+          session_number: number;
+          set_number: number;
+          load_kg: number | null;
+          reps: number | null;
+          rir: number | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          client_id: string;
+          assignment_id: string;
+          exercise_id: string;
+          week_number: number;
+          session_number: number;
+          set_number: number;
+          load_kg?: number | null;
+          reps?: number | null;
+          rir?: number | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["workout_set_logs"]["Insert"]>;
         Relationships: [];
       };
       check_ins: {

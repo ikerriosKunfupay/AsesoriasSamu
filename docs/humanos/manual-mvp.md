@@ -10,7 +10,7 @@ La cuenta administradora entra por `/login` y se redirige a `/admin`. Desde el m
 
 - **Resumen:** cinco indicadores compactos y un panel filtrable con ingresos, previsión, objetivos y composición de la cartera.
 - **Interesados:** datos de contacto y objetivo enviados desde la landing.
-- **Asesorías:** agrupa Clientes, Entrenamientos, Nutrición y Seguimientos. Incluye cuentas registradas o invitadas, alta o baja, condiciones, notas, cuestionarios, planes y revisiones.
+- **Asesorías:** agrupa Clientes, Entrenamientos, Nutrición y Seguimientos. Incluye cuentas registradas o invitadas, alta o baja, condiciones, notas, cuestionarios, planes y revisiones; los entrenamientos se preparan con una estructura equivalente a la hoja de cálculo de trabajo.
 - **Pagos:** agrupa Tarifas y Cuotas para separar los precios habituales del registro manual de pendiente, pagada o exenta.
 
 El nombre de la cuenta y la opción **Cerrar sesión** permanecen visibles al pie del menú lateral aunque la página sea larga. La identidad de **Samuel Ortega** incluye el distintivo de cuenta verificada y funciona como acceso a **Perfil de administrador**, donde puede cambiar el nombre, el teléfono y su foto. La misma entrada está disponible dentro del menú móvil. En escritorio, una barra compacta sobre el contenido mantiene siempre en el mismo lugar la acción **Ocultar menú** o **Mostrar menú**, sin tapar el logo ni mezclarse con los enlaces; la elección se recuerda en ese navegador. Los encabezados **Asesorías** y **Pagos** permiten recoger o desplegar sus enlaces tanto en escritorio como en móvil y recuerdan la elección en ese navegador. Si el grupo de la página actual está recogido, su encabezado permanece remarcado para conservar el contexto. La sección actual queda remarcada tanto en el lateral como en el desplegable móvil y conserva ese contexto dentro de sus fichas o páginas internas. El menú lateral cambia también con el selector de tema: claro presenta fondo blanco y texto oscuro, mientras que oscuro recupera el fondo negro y el texto claro. En móvil, el cierre de sesión está dentro del menú superior y se mantiene la misma navegación agrupada.
@@ -53,6 +53,12 @@ La ficha adapta su botón **Volver** al lugar desde el que se abrió: regresa a 
 
 En ambos casos la cuenta se crea siempre con rol de cliente. El formulario público no permite solicitar ni escoger el rol de administrador.
 
+### Planificación de entrenamientos
+
+Desde la ficha de cada cliente, el entrenador crea un bloque de hasta 16 semanas. Cada semana admite hasta 8 sesiones y cada sesión hasta 20 ejercicios. Para cada ejercicio se indican grupo muscular, nombre, método, series, rango de repeticiones, RIR objetivo por serie, descanso y observaciones de ejecución. Una semana se puede duplicar para conservar la base y ajustar únicamente la progresión.
+
+El plan puede guardarse como borrador o publicarse. Cada nueva revisión crea una asignación independiente para conservar el histórico; los planes de texto anteriores siguen siendo legibles. El resumen del bloque muestra semanas, sesiones, ejercicios, series, RIR medio y distribución por grupo muscular. La estructura necesaria está aplicada en el entorno productivo mediante `202610140004_structured_workouts.sql`.
+
 ## Experiencia del cliente
 
 El cliente ve únicamente sus datos. Antes de consultar el resto del área personal debe completar el cuestionario inicial. Mientras esté pendiente, cualquier acceso a Inicio, Entrenamiento, Nutrición o Seguimiento muestra un aviso y mantiene al cliente en el cuestionario. Al guardarlo correctamente, toda la navegación queda desbloqueada.
@@ -75,6 +81,8 @@ Después puede:
 - consultar la última pauta nutricional publicada;
 - enviar una revisión con peso opcional, energía, adherencia y comentarios;
 - recuperar o cambiar su contraseña mediante correo.
+
+Cuando el entrenamiento publicado usa el formato estructurado, el cliente abre primero el resumen y después cada semana en su propia pestaña. Dentro de cada sesión ve las indicaciones planificadas y registra por serie la carga, las repeticiones realizadas y el RIR real. Puede guardar una sesión varias veces: los valores existentes se actualizan y dejar los tres campos de una serie vacíos elimina únicamente ese resultado, sin cambiar el plan preparado por el entrenador.
 
 En el acceso se puede mostrar u ocultar la contraseña mediante el icono del propio campo.
 

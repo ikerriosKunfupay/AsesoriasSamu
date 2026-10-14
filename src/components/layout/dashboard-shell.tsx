@@ -273,7 +273,7 @@ export function DashboardShell({
             </button>
             <ThemeToggle />
         </div>
-        <main className="px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8 xl:px-12">{children}</main>
+        <main className="min-w-0 w-full max-w-full px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8 xl:px-12">{children}</main>
       </div>
       {showOnboardingNotice ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-5 py-8" role="presentation" onMouseDown={(event) => {

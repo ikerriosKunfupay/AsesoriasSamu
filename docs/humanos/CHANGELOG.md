@@ -1,5 +1,14 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-entrenamientos-estructurados`
+
+- El entrenador puede preparar cada plan como un bloque de hasta 16 semanas, con sesiones, ejercicios, series, repeticiones, RIR, descansos y observaciones, manteniendo el flujo de la hoja de cálculo de referencia.
+- Una semana se puede duplicar para acelerar la progresión y el plan admite borrador o publicación sin eliminar el histórico anterior.
+- El cliente dispone de resumen del bloque, distribución por grupo muscular y una pestaña por semana; en cada sesión puede guardar carga, repeticiones y RIR reales por serie.
+- Los entrenamientos antiguos de texto siguen mostrándose con normalidad.
+- La interfaz se verificó sin desbordamiento en 375×667, 390×844, tablet y escritorio; la versión integrada completó análisis de código, tipos, 143 pruebas y build Webpack.
+- La migración `202610140004_structured_workouts.sql` se aplicó al Supabase productivo de Team Ortega y el historial remoto quedó sincronizado antes de publicar la aplicación desde `main`.
+
 ## 2026-10-14 — `2026-10-14-centro-notificaciones`
 
 - La cabecera administrativa incorpora una campana con contador de avisos sin leer y un panel adaptado a móvil y escritorio.

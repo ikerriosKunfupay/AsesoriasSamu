@@ -26,7 +26,7 @@ Proveedor SMTP → correos de Auth de Supabase
 - Supabase Auth sin registro público. Solo un administrador autenticado invita clientes.
 - `SUPABASE_SERVICE_ROLE_KEY` se usa únicamente en el servidor y solo después de verificar el rol administrador.
 - PostgreSQL aplica RLS; las redirecciones de la interfaz no se consideran autorización.
-- Los planes se almacenan como texto con versión, estado y fecha de inicio.
+- Las pautas nutricionales y los entrenamientos históricos conservan contenido de texto; los entrenamientos nuevos añaden un `plan_data` JSON versionado por semanas, sesiones, ejercicios y series, además de resultados por serie aislados mediante RLS.
 - Las cuotas son apuntes manuales; no existe flujo de pago.
 
 ## Despliegue actual y restricción de Vercel Hobby

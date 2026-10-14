@@ -1,5 +1,16 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-entrenamientos-estructurados`
+
+- `workout_assignments.plan_data` almacena un documento JSON versionado y validado con Zod; `content` conserva un resumen para compatibilidad con planes históricos.
+- `WorkoutPlanBuilder` modela bloque, 16 semanas, 8 sesiones por semana, 20 ejercicios por sesión y hasta 5 series, con duplicado seguro que regenera UUID de semana, sesión y ejercicio.
+- `WorkoutPlanView` ofrece resumen y registro responsive por serie; `workoutPlanStats` calcula conteos, RIR objetivo medio y distribución muscular sin replicar las fórmulas rotas del Excel.
+- `202610140004_structured_workouts.sql` crea `workout_set_logs`, restricciones, índice, trigger, privilegios y RLS explícita; la escritura cliente exige una asignación propia publicada.
+- `saveWorkoutPlanAction` autoriza al administrador y verifica el perfil cliente; `saveWorkoutSetLogsAction` autoriza al cliente, vuelve a leer el plan publicado y valida pertenencia y límites antes de cada escritura. La auditoría omite contenido libre.
+- Se conserva `PlanView` para filas antiguas sin `plan_data`; `DashboardShell` contiene el ancho del contenido denso en tablet.
+- `impeccable detect` no devolvió hallazgos. Tras integrar los 14 commits remotos, `pnpm lint`, `pnpm typecheck`, 143 pruebas, `pnpm build` y `git diff --check` finalizaron correctamente; la revisión visual previa cubrió 375×667, 390×844, 768×1024 y escritorio sin overflow y con controles táctiles de al menos 44 px.
+- El ensayo de `supabase db push --linked --dry-run` propuso únicamente `202610140004_structured_workouts.sql`; la ejecución posterior la aplicó al proyecto `grlntqiviyehnpibaijk` y `supabase migration list --linked` confirmó paridad local/remota hasta `202610140004` antes del despliegue desde `main`.
+
 ## 2026-10-14 — `2026-10-14-centro-notificaciones`
 
 - `202610140003_admin_notifications.sql` crea una bandeja por administrador, claves de evento únicas, índices de actividad reciente/no leída y triggers para leads, perfiles cliente, onboarding, check-ins y registros de entrenamiento.

@@ -22,10 +22,17 @@ import {
   formValues,
   inviteSchema,
   pricingPlanSchema,
+  structuredWorkoutAssignmentSchema,
 } from "@/lib/forms/schemas";
 import { requireAdmin } from "@/lib/auth/current-user";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { billingCycleMonths } from "@/lib/admin/commercial-terms";
+import type { Json } from "@/lib/supabase/database.types";
+import {
+  parseWorkoutPlan,
+  workoutPlanFallbackContent,
+  workoutPlanStats,
+} from "@/lib/workouts/plan";
 
 export async function inviteClientAction(
   _previous: ActionState,
@@ -108,6 +115,70 @@ export async function saveAssignmentAction(
   revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
   revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
   return { status: "success", message: "Plan guardado correctamente." };
+}
+
+export async function saveWorkoutPlanAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = structuredWorkoutAssignmentSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa los datos generales del entrenamiento.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const plan = parseWorkoutPlan(parsed.data.planData);
+  if (!plan) {
+    return {
+      status: "error",
+      message: "Revisa las semanas, sesiones y ejercicios del entrenamiento.",
+      fieldErrors: { planData: ["El plan contiene datos incompletos o no válidos."] },
+    };
+  }
+
+  const admin = createAdminClient();
+  const { data: client } = await admin
+    .from("profiles")
+    .select("id")
+    .eq("id", parsed.data.clientId)
+    .eq("role", "client")
+    .maybeSingle();
+  if (!client) return { status: "error", message: "El cliente seleccionado no es válido." };
+
+  const { data: assignment, error } = await admin
+    .from("workout_assignments")
+    .insert({
+      client_id: client.id,
+      title: parsed.data.title,
+      content: workoutPlanFallbackContent(plan),
+      plan_data: JSON.parse(JSON.stringify(plan)) as Json,
+      starts_on: parsed.data.startsOn || null,
+      status: parsed.data.status,
+      created_by: adminUser.id,
+    })
+    .select("id")
+    .single();
+
+  if (error || !assignment) return { status: "error", message: "No se pudo guardar el entrenamiento." };
+
+  const stats = workoutPlanStats(plan);
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "workout.created",
+    entity_type: "workout_assignments",
+    entity_id: assignment.id,
+    metadata: {
+      client_id: client.id,
+      status: parsed.data.status,
+      weeks: stats.weeks,
+      sessions: stats.sessions,
+      exercises: stats.exercises,
+    },
+  });
+  revalidatePath(`/admin/clientes/${client.id}`);
+  revalidatePath("/admin/entrenamientos");
+  revalidatePath("/app/entrenamiento");
+  return { status: "success", message: "Entrenamiento guardado correctamente." };
 }
 
 export async function updateAssignmentAction(

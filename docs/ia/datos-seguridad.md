@@ -13,6 +13,7 @@
 | `nutrition_assignments` | pautas nutricionales | lectura propia publicada |
 | `assignment_templates` | plantillas reutilizables de entrenamiento y nutrición | ninguno |
 | `workout_logs` | futuro registro de sesiones | lectura/inserción propia |
+| `workout_set_logs` | carga, repeticiones y RIR realizados por serie | lectura y escritura propia sobre un plan publicado |
 | `check_ins` | revisiones periódicas | lectura/inserción propia |
 | `manual_fee_records` | control interno sin cobro | ninguno |
 | `pricing_plans` | catálogo interno de tarifas, modalidad, días, duración y precio habitual | ninguno |
@@ -34,6 +35,8 @@ La migración activa RLS en todas las tablas. `is_admin()` es `security definer`
 Tarifas, condiciones comerciales y plantillas de planes solo admiten operaciones de administradores activos. Cada plantilla conserva `created_by = auth.uid()` en sus políticas, por lo que tampoco se comparte entre posibles administradores. Las acciones de edición y borrado repiten esa comprobación de propietario antes de mutar con service role. Los objetivos del resumen aplican el mismo aislamiento. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago. Las auditorías de planes, plantillas y cuotas registran identificadores y tipo de cambio, pero nunca copian el contenido del plan ni la nota interna.
 
 Las notificaciones se crean mediante funciones `security definer` invocadas solo por triggers de tablas internas. El rol autenticado no puede insertar ni borrar avisos y únicamente recibe `SELECT` y `UPDATE(read_at)` sobre los avisos cuyo `recipient_id` coincide con `auth.uid()` y cuya sesión sigue siendo administradora activa. Los mensajes incluyen el nombre necesario para identificar la actividad, pero nunca copian respuestas de salud, objetivos, notas ni otros campos libres. La API limita además a cincuenta UUID cualquier petición de marcado selectivo.
+
+`workout_set_logs` tiene RLS explícita y no concede acceso a `anon`. Un cliente solo puede leer y borrar filas cuyo `client_id` sea su propio `auth.uid()`; la inserción y actualización exigen además que la asignación referida sea propia y continúe publicada. La Server Action no acepta el plan enviado por el navegador: vuelve a leer `workout_assignments.plan_data` sujeto a RLS y valida cada UUID y número de serie contra ese documento. Los administradores activos disponen de la política de gestión necesaria para soporte, y `service_role` conserva permisos únicamente en servidor.
 
 ## Avatares
 
@@ -57,3 +60,4 @@ Lesiones y alergias se almacenan únicamente en `onboarding_submissions`, detrá
 4. Un registro o una invitación nunca puede crear un administrador.
 5. El bundle del navegador no contiene la service role.
 6. Un usuario no puede sustituir el avatar de otra cuenta; el administrador puede visualizar avatares mediante URL firmada y solo modificar el propio.
+7. Un cliente no puede registrar series en un entrenamiento ajeno, en un borrador ni para un ejercicio inexistente dentro de su plan publicado.
