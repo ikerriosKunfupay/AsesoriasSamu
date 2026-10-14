@@ -7,6 +7,7 @@
 - Entrenamientos y Nutrición incorporan filtros por cada campo, ordenación de tres estados, lectura completa, edición, eliminación, calendario interno y plantillas reutilizables. Se eliminan la versión visible y los textos auxiliares indicados.
 - Clientes, Interesados, Entrenamientos, Nutrición, Tarifas y Cuotas permiten alternar entre tabla, lista y galería conservando sus acciones.
 - Cuotas separa los filtros de cliente y nota, permite ordenar todas sus columnas y editar la nota interna directamente desde cualquier vista; se retira la explicación bajo el título.
+- El bloque de fotografía del perfil administrativo deja de repetir el distintivo «Cuenta verificada»; la identificación verificada se conserva en los accesos generales del panel.
 - Los indicadores superiores del resumen reducen progresivamente sus columnas en anchos intermedios y parten textos largos dentro de cada tarjeta, sin invadir la siguiente ni provocar desplazamiento lateral.
 - Los días semanales de una tarifa pasan a ser opcionales. La nueva estructura de plantillas conserva el aislamiento administrativo en la base de datos.
 - La migración de plantillas y días opcionales se aplicó en Supabase y se verificó que las ocho migraciones locales y remotas coinciden.

@@ -1,10 +1,9 @@
 "use client";
 
-import { BadgeCheck, KeyRound, Mail } from "lucide-react";
+import { KeyRound, Mail } from "lucide-react";
 import { useActionState, useMemo, useState } from "react";
 import { requestAccountChangeAction } from "@/app/actions/account-security";
 import { updateAdminProfileAction, updateProfileAction } from "@/app/actions/profile";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -49,11 +48,6 @@ export function ProfileSettingsForm({
         <div className="flex flex-col gap-5 rounded-[var(--radius-lg)] bg-surface-muted p-5 sm:flex-row sm:items-center">
           <ProfileAvatar name={initial.fullName} src={avatarUrl} className="size-24 text-2xl" />
           <div className="grid min-w-0 flex-1 gap-3">
-            {variant === "admin" ? (
-              <Badge tone="brand" className="w-fit gap-1.5">
-                <BadgeCheck className="size-4" aria-hidden="true" /> Cuenta verificada
-              </Badge>
-            ) : null}
             <Field
               label="Foto de perfil"
               htmlFor="avatar"

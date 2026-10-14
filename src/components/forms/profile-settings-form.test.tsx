@@ -15,7 +15,7 @@ import { ProfileSettingsForm } from "./profile-settings-form";
 afterEach(cleanup);
 
 describe("ProfileSettingsForm", () => {
-  it("permite al administrador editar sus datos y su foto como cuenta verificada", () => {
+  it("permite al administrador editar sus datos y su foto sin repetir el distintivo verificado", () => {
     render(
       <ProfileSettingsForm
         variant="admin"
@@ -24,7 +24,7 @@ describe("ProfileSettingsForm", () => {
       />,
     );
 
-    expect(screen.getByText("Cuenta verificada")).toBeInTheDocument();
+    expect(screen.queryByText("Cuenta verificada")).not.toBeInTheDocument();
     expect(screen.getByRole("textbox", { name: /Nombre y apellidos/ })).toHaveValue("Samuel Ortega");
     expect(screen.getByLabelText("Foto de perfil")).toHaveAttribute("accept", "image/jpeg,image/png,image/webp");
     expect(screen.getByRole("button", { name: "Quitar foto" })).toBeInTheDocument();

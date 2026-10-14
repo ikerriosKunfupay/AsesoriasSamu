@@ -9,6 +9,7 @@
 - `supabase db push --linked` aplicó `202610140002` y una segunda lectura de `migration list --linked` confirmó paridad de las ocho migraciones.
 - `FeesManager` separa cliente y nota, ordena todas las columnas, usa las tres vistas y expone `FeeNoteInput` con autoguardado; `saveFeeNoteAction` no incorpora la nota a auditoría. La cabecera de Cuotas deja de mostrar la descripción retirada.
 - `DataViewToggle` unifica Tabla/Lista/Galería y persiste una clave por Clientes, Interesados, Entrenamientos, Nutrición y Cuotas; Tarifas conserva su selector equivalente existente.
+- `ProfileSettingsForm` elimina el `BadgeCheck` duplicado de su variante administrativa; el estado verificado continúa representándose en `PageHeading` y `DashboardShell`.
 - `DashboardKpis` reserva las cinco columnas para `2xl`, usa tres en `xl` y fuerza `min-width: 0`, recorte y corte de palabra en cada tarjeta para soportar zoom y viewports intermedios.
 - La consulta analítica continúa siendo una única lectura acotada a doce meses, sobre el índice de `manual_fee_records.period` y con solo las columnas representadas; cambiar filtros no genera nuevas peticiones.
 - `pnpm lint`, `pnpm typecheck`, 135 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
