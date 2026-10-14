@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildDashboardAnalytics,
   monthlyEquivalent,
+  resolveAnalyticsDateRange,
   type AnalyticsClient,
 } from "./dashboard-analytics";
 
@@ -92,5 +93,35 @@ describe("analítica del panel", () => {
     expect(monthly.revenueSeries).toHaveLength(12);
     expect(monthly.currentCollected).toBe(360);
     expect(monthly.recurringRevenue).toBe(110);
+  });
+
+  it("resuelve rangos rápidos y personalizados dentro de un máximo de doce meses", () => {
+    const base = { granularity: "day" as const, modality: "all" as const, pricingPlanId: "all" as const };
+
+    expect(resolveAnalyticsDateRange({ ...base, range: "yesterday" }, "2026-10-14")).toEqual({ start: "2026-10-13", end: "2026-10-13" });
+    expect(resolveAnalyticsDateRange({ ...base, range: "last_week" }, "2026-10-14")).toEqual({ start: "2026-10-05", end: "2026-10-11" });
+    expect(resolveAnalyticsDateRange({ ...base, range: "last_3_months" }, "2026-10-14")).toEqual({ start: "2026-08-01", end: "2026-10-14" });
+    expect(resolveAnalyticsDateRange({ ...base, range: "custom", customStart: "2020-01-01", customEnd: "2026-10-10" }, "2026-10-14")).toEqual({ start: "2025-10-14", end: "2026-10-10" });
+  });
+
+  it("aplica ayer y semana pasada a todas las series temporales", () => {
+    const base = {
+      clients,
+      fees: [
+        { id: "f1", clientId: "1", period: "2026-10", amountEur: 60, status: "paid", updatedAt: "2026-10-13T08:00:00.000Z" },
+        { id: "f2", clientId: "2", period: "2026-10", amountEur: 300, status: "paid", updatedAt: "2026-10-05T08:00:00.000Z" },
+      ],
+      referenceDate: "2026-10-14",
+      goals: { monthlyRevenueGoalEur: 520, activeClientsGoal: 2 },
+    };
+    const yesterday = buildDashboardAnalytics({ ...base, filters: { granularity: "day", modality: "all", pricingPlanId: "all", range: "yesterday" } });
+    const lastWeek = buildDashboardAnalytics({ ...base, filters: { granularity: "week", modality: "all", pricingPlanId: "all", range: "last_week" } });
+
+    expect(yesterday.revenueSeries).toHaveLength(1);
+    expect(yesterday.currentCollected).toBe(60);
+    expect(yesterday.clientGrowth).toHaveLength(1);
+    expect(lastWeek.revenueSeries).toHaveLength(1);
+    expect(lastWeek.currentCollected).toBe(300);
+    expect(lastWeek.rangeDescription).toBe("la semana pasada");
   });
 });

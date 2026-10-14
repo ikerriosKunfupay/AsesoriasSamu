@@ -273,6 +273,30 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["nutrition_assignments"]["Insert"]>;
         Relationships: [];
       };
+      assignment_templates: {
+        Row: {
+          id: string;
+          kind: "workout" | "nutrition";
+          name: string;
+          title: string;
+          content: string;
+          created_by: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          kind: "workout" | "nutrition";
+          name: string;
+          title: string;
+          content: string;
+          created_by: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["assignment_templates"]["Insert"]>;
+        Relationships: [];
+      };
       workout_logs: {
         Row: {
           id: string;

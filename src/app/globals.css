@@ -434,21 +434,34 @@ textarea {
     grid-row: 3;
   }
 
-  .assignments-table__plan,
+  .fees-table__notes {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  .assignments-table__plan {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
   .assignments-table__client {
     grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .assignments-table__start {
     grid-column: 1;
+    grid-row: 3;
   }
 
-  .assignments-table__version {
-    grid-column: 2;
+  .assignments-table__actions {
+    grid-column: 1 / -1;
+    grid-row: 4;
   }
 
   .assignments-table__status {
-    grid-column: 1 / -1;
+    grid-column: 2;
+    grid-row: 3;
   }
 
   .clients-table-scroll {

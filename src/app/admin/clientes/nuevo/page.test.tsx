@@ -3,8 +3,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import InviteClientPage from "./page";
 
 vi.mock("@/app/actions/admin", () => ({
+  deleteAssignmentAction: vi.fn(),
   inviteClientAction: vi.fn(),
   saveAssignmentAction: vi.fn(),
+  updateAssignmentAction: vi.fn(),
   saveClientAdminNoteAction: vi.fn(),
   saveFeeAction: vi.fn(),
   setClientStatusAction: vi.fn(),

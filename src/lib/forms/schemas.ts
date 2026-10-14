@@ -104,11 +104,16 @@ const euroAmount = z.preprocess(
   z.number({ error: "Introduce un importe válido." }).min(0).max(100000),
 );
 
+const optionalDaysPerWeek = z.preprocess(
+  (value) => value === "" || value === undefined ? null : value,
+  z.coerce.number({ error: "Indica un número de días válido." }).int().min(1).max(7).nullable(),
+);
+
 export const pricingPlanSchema = z.object({
   pricingPlanId: z.union([z.string().uuid("Tarifa no válida."), z.literal("")]).optional(),
   name: requiredText("El nombre").max(80),
   serviceModality: z.enum(["in_person", "online"], { error: "Selecciona la modalidad." }),
-  daysPerWeek: z.coerce.number({ error: "Indica los días por semana." }).int().min(1).max(7),
+  daysPerWeek: optionalDaysPerWeek,
   billingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]),
   durationMonths: z.coerce.number().int().min(1).max(120).optional(),
   amountEur: euroAmount,
@@ -131,7 +136,7 @@ export const clientCommercialTermsSchema = z
     newPlanName: z.string().trim().max(80).optional(),
     newBillingCycle: z.enum(["monthly", "semiannual", "annual", "custom"]).optional(),
     newDurationMonths: z.coerce.number().int().min(1).max(120).optional(),
-    newPlanDaysPerWeek: z.coerce.number().int().min(1).max(7).optional(),
+    newPlanDaysPerWeek: optionalDaysPerWeek,
   })
   .superRefine((value, context) => {
     if (value.pricingPlanId !== "new") return;
@@ -147,13 +152,6 @@ export const clientCommercialTermsSchema = z
         code: "custom",
         path: ["newBillingCycle"],
         message: "Selecciona la periodicidad.",
-      });
-    }
-    if (!value.newPlanDaysPerWeek) {
-      context.addIssue({
-        code: "custom",
-        path: ["newPlanDaysPerWeek"],
-        message: "Indica los días por semana.",
       });
     }
     if (value.newBillingCycle === "custom" && !value.newDurationMonths) {
@@ -201,6 +199,16 @@ export const assignmentSchema = z.object({
   content: requiredText("El contenido", 20),
   startsOn: z.string().date().optional().or(z.literal("")),
   status: z.enum(["draft", "published"]),
+  saveAsTemplate: z.literal("on").optional(),
+});
+
+export const assignmentUpdateSchema = assignmentSchema.extend({
+  assignmentId: z.string().uuid("Plan no válido."),
+});
+
+export const assignmentDeleteSchema = z.object({
+  assignmentId: z.string().uuid("Plan no válido."),
+  kind: z.enum(["workout", "nutrition"]),
 });
 
 export const checkInSchema = z.object({
@@ -224,6 +232,11 @@ export const feeUpdateSchema = feeSchema.extend({
 
 export const feeDeleteSchema = z.object({
   feeId: z.string().uuid("Cuota no válida."),
+});
+
+export const feeNoteSchema = z.object({
+  feeId: z.string().uuid("Cuota no válida."),
+  notes: z.string().trim().max(500, "La nota no puede superar los 500 caracteres."),
 });
 
 export function formValues(formData: FormData) {

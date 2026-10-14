@@ -39,7 +39,6 @@ export default async function FeesPage() {
       <PageHeading
         eyebrow="Control interno"
         title="Cuotas"
-        description="Registro manual del estado de las cuotas. No hay pagos ni datos bancarios dentro de la aplicación."
       />
       <FeesManager clients={clientOptions} fees={feeRecords} />
     </div>

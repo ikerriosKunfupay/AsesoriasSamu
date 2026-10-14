@@ -34,7 +34,9 @@ import { FormMessage } from "@/components/forms/form-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Card } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
+import { ContextHelp } from "@/components/ui/context-help";
 import { Input } from "@/components/ui/input";
+import { InternalDatePicker } from "@/components/ui/internal-date-picker";
 import { InternalSelect } from "@/components/ui/internal-select";
 import {
   buildDashboardAnalytics,
@@ -44,6 +46,7 @@ import {
   type AnalyticsFee,
   type AnalyticsFilters,
   type AnalyticsGranularity,
+  type AnalyticsRangePreset,
   type DashboardGoals,
 } from "@/lib/admin/dashboard-analytics";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
@@ -60,6 +63,19 @@ const periodOptions = [
   { value: "month", label: "Por mes" },
   { value: "week", label: "Por semana" },
   { value: "day", label: "Por día" },
+] as const;
+const rangeOptions = [
+  { value: "today", label: "Hoy" },
+  { value: "yesterday", label: "Ayer" },
+  { value: "this_week", label: "Esta semana" },
+  { value: "last_week", label: "Semana pasada" },
+  { value: "this_month", label: "Este mes" },
+  { value: "last_14_days", label: "Últimos 14 días" },
+  { value: "last_12_weeks", label: "Últimas 12 semanas" },
+  { value: "last_3_months", label: "Últimos 3 meses" },
+  { value: "last_6_months", label: "Últimos 6 meses" },
+  { value: "last_12_months", label: "Últimos 12 meses" },
+  { value: "custom", label: "Periodo personalizado" },
 ] as const;
 const modalityOptions = [
   { value: "all", label: "Todas las modalidades" },
@@ -152,6 +168,12 @@ function compactMoney(value: number) {
   }).format(value);
 }
 
+function offsetDate(dateKey: string, days: number) {
+  const date = new Date(`${dateKey}T12:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
 function modalityLabel(modality: AnalyticsClient["modality"]) {
   if (modality === "in_person") return "Presencial";
   if (modality === "online") return "Virtual";
@@ -204,11 +226,29 @@ function MetricCard({
   );
 }
 
-function GoalProgress({ label, value, target, progress }: { label: string; value: string; target: string; progress: number }) {
+function GoalProgress({
+  label,
+  value,
+  target,
+  progress,
+  help,
+}: {
+  label: string;
+  value: string;
+  target: string;
+  progress: number;
+  help: string;
+}) {
   return (
     <div>
       <div className="mb-2 flex items-end justify-between gap-4 text-sm">
-        <div><p className="font-black">{label}</p><p className="text-muted">{value} de {target}</p></div>
+        <div>
+          <div className="flex items-center gap-1">
+            <p className="font-black">{label}</p>
+            <ContextHelp label={label} description={help} />
+          </div>
+          <p className="text-muted">{value} de {target}</p>
+        </div>
         <b>{Math.round(progress)}%</b>
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-surface-muted" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100}>
@@ -223,9 +263,16 @@ function DashboardGoalsForm({ goals }: { goals: DashboardGoals }) {
   return (
     <form action={action} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-2 text-sm font-black">
-          Objetivo mensual de ingresos (€)
+        <div className="grid gap-2">
+          <div className="flex items-center gap-1 text-sm font-black">
+            <label htmlFor="dashboard-revenue-goal">Objetivo mensual de ingresos (€)</label>
+            <ContextHelp
+              label="Objetivo mensual de ingresos"
+              description="Es la cantidad que quieres cobrar en un mes. En las vistas diaria y semanal se convierte automáticamente a su parte proporcional."
+            />
+          </div>
           <Input
+            id="dashboard-revenue-goal"
             name="monthlyRevenueGoalEur"
             type="text"
             inputMode="decimal"
@@ -236,10 +283,17 @@ function DashboardGoalsForm({ goals }: { goals: DashboardGoals }) {
             aria-invalid={Boolean(state.fieldErrors?.monthlyRevenueGoalEur)}
           />
           {state.fieldErrors?.monthlyRevenueGoalEur?.[0] ? <span className="text-xs text-danger">{state.fieldErrors.monthlyRevenueGoalEur[0]}</span> : null}
-        </label>
-        <label className="grid gap-2 text-sm font-black">
-          Objetivo de clientes activos
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center gap-1 text-sm font-black">
+            <label htmlFor="dashboard-client-goal">Objetivo de clientes activos</label>
+            <ContextHelp
+              label="Objetivo de clientes activos"
+              description="Indica cuántos clientes en alta quieres mantener. El porcentaje compara esta cifra con los clientes activos que cumplen los filtros actuales."
+            />
+          </div>
           <Input
+            id="dashboard-client-goal"
             name="activeClientsGoal"
             type="text"
             inputMode="numeric"
@@ -250,7 +304,7 @@ function DashboardGoalsForm({ goals }: { goals: DashboardGoals }) {
             aria-invalid={Boolean(state.fieldErrors?.activeClientsGoal)}
           />
           {state.fieldErrors?.activeClientsGoal?.[0] ? <span className="text-xs text-danger">{state.fieldErrors.activeClientsGoal[0]}</span> : null}
-        </label>
+        </div>
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <SubmitButton pendingLabel="Guardando…">Guardar objetivos</SubmitButton>
@@ -272,7 +326,14 @@ export function DashboardAnalytics({
   goals: DashboardGoals;
   referenceDate: string;
 }) {
-  const [filters, setFilters] = useState<AnalyticsFilters>({ granularity: "month", modality: "all", pricingPlanId: "all" });
+  const [filters, setFilters] = useState<AnalyticsFilters>({
+    granularity: "month",
+    modality: "all",
+    pricingPlanId: "all",
+    range: "last_12_months",
+    customStart: offsetDate(referenceDate, -29),
+    customEnd: referenceDate,
+  });
   const [activeMetricKey, setActiveMetricKey] = useState<AnalyticsMetricKey | null>(null);
   const dialogTitleId = useId();
   const dialogDescriptionId = useId();
@@ -282,7 +343,17 @@ export function DashboardAnalytics({
     () => buildDashboardAnalytics({ clients, fees, filters, referenceDate, goals }),
     [clients, fees, filters, goals, referenceDate],
   );
-  const timeCopy = granularityCopy[filters.granularity];
+  const timeCopy = useMemo(() => {
+    const defaultCopy = granularityCopy[filters.granularity];
+    if (filters.range === "yesterday" && filters.granularity === "day") {
+      return { ...defaultCopy, collected: "Cobrado ayer", pending: "Pendiente ayer", forecast: "Previsión hoy" };
+    }
+    if (filters.range === "last_week" && filters.granularity === "week") {
+      return { ...defaultCopy, collected: "Cobrado semana pasada", pending: "Pendiente semana pasada", forecast: "Previsión esta semana" };
+    }
+    return defaultCopy;
+  }, [filters.granularity, filters.range]);
+  const earliestAnalyticsDate = useMemo(() => offsetDate(referenceDate, -365), [referenceDate]);
   const pricingPlans = useMemo(() => (
     Array.from(new Map(clients.filter((client) => client.pricingPlanId).map((client) => [
       client.pricingPlanId!,
@@ -359,7 +430,7 @@ export function DashboardAnalytics({
       : filters.pricingPlanId === "unassigned"
         ? "clientes sin tarifa"
         : pricingPlans.find(([id]) => id === filters.pricingPlanId)?.[1] ?? "tarifa seleccionada";
-    const filterSummary = `Filtro actual: por ${timeCopy.filter}, ${modality} y ${selectedPlan}.`;
+    const filterSummary = `Filtro actual: ${analytics.rangeDescription}, agrupado por ${timeCopy.filter}, ${modality} y ${selectedPlan}.`;
 
     return [
       {
@@ -386,7 +457,7 @@ export function DashboardAnalytics({
         key: "forecast",
         label: timeCopy.forecast,
         value: formatMoney(analytics.nextPeriodForecast),
-        description: `Estimación basada en la cartera contratada y hasta seis periodos completos de cobros dentro de los ${analytics.rangeDescription}. ${filterSummary}`,
+        description: `Estimación basada en la cartera contratada y hasta seis periodos completos de cobros dentro del rango ${analytics.rangeDescription}. ${filterSummary}`,
         emptyMessage: "Todavía no hay periodos completos con cobros; la previsión se apoya en la cartera contratada.",
         items: historicalItems,
         totalItems: historicalItems.length,
@@ -451,6 +522,17 @@ export function DashboardAnalytics({
     setActiveMetricKey(key);
   }
 
+  function changeRange(nextRange: AnalyticsRangePreset) {
+    const granularity = nextRange === "today" || nextRange === "yesterday" || nextRange === "last_14_days"
+      ? "day"
+      : nextRange === "this_week" || nextRange === "last_week" || nextRange === "last_12_weeks"
+        ? "week"
+        : nextRange === "custom"
+          ? filters.granularity
+          : "month";
+    setFilters((current) => ({ ...current, range: nextRange, granularity }));
+  }
+
   return (
     <section className="mt-8" aria-labelledby="business-intelligence-heading">
       <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
@@ -458,17 +540,29 @@ export function DashboardAnalytics({
           <p className="text-xs font-black uppercase tracking-[0.22em] text-primary">Inteligencia del negocio</p>
           <h2 id="business-intelligence-heading" className="mt-2 text-3xl font-black">Valor de las asesorías</h2>
         </div>
-        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-3 xl:w-auto xl:shrink-0 xl:grid-cols-[11.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
+        <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:w-auto xl:shrink-0 xl:grid-cols-[13rem_11.5rem_14rem_12rem]" aria-label="Filtros de estadísticas">
+          <InternalSelect
+            id="analytics-range"
+            options={rangeOptions}
+            className={analyticsSelectClassName}
+            ariaLabel="Filtrar estadísticas por periodo"
+            value={filters.range ?? "last_12_months"}
+            onValueChange={(value) => changeRange(value as AnalyticsRangePreset)}
+          />
           <InternalSelect
             id="analytics-period"
             options={periodOptions}
             className={analyticsSelectClassName}
             ariaLabel="Agrupar estadísticas por"
             value={filters.granularity}
-            onValueChange={(value) => setFilters((current) => ({
-              ...current,
-              granularity: value as AnalyticsGranularity,
-            }))}
+            onValueChange={(value) => {
+              const granularity = value as AnalyticsGranularity;
+              setFilters((current) => ({
+                ...current,
+                granularity,
+                range: granularity === "day" ? "last_14_days" : granularity === "week" ? "last_12_weeks" : "last_12_months",
+              }));
+            }}
           />
           <InternalSelect
             id="analytics-modality"
@@ -493,6 +587,20 @@ export function DashboardAnalytics({
         </div>
       </div>
 
+      {filters.range === "custom" ? (
+        <div className="mb-5 grid gap-3 rounded-[var(--radius-md)] border border-border bg-surface p-4 sm:grid-cols-2" aria-label="Periodo personalizado">
+          <div className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+            Desde
+            <InternalDatePicker id="analytics-range-start" ariaLabel="Fecha inicial de estadísticas" value={filters.customStart} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customStart: value }))} />
+          </div>
+          <div className="grid gap-1.5 text-xs font-black uppercase tracking-wide text-muted">
+            Hasta
+            <InternalDatePicker id="analytics-range-end" ariaLabel="Fecha final de estadísticas" value={filters.customEnd} minValue={earliestAnalyticsDate} maxValue={referenceDate} onValueChange={(value) => setFilters((current) => ({ ...current, customEnd: value }))} />
+          </div>
+          <p className="text-xs normal-case tracking-normal text-muted sm:col-span-2">El histórico está limitado a los últimos doce meses para mantener rápidas las consultas y las gráficas.</p>
+        </div>
+      ) : null}
+
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         <MetricCard metricKey="collected" icon={Banknote} label={timeCopy.collected} value={formatMoney(analytics.currentCollected)} detail="Pulsa para ver quién ha pagado." expanded={activeMetricKey === "collected"} onOpen={openMetric} />
         <MetricCard metricKey="recurring" icon={CircleDollarSign} label={timeCopy.recurring} value={formatMoney(analytics.recurringRevenue)} detail={timeCopy.recurringDetail} expanded={activeMetricKey === "recurring"} onOpen={openMetric} />
@@ -505,8 +613,14 @@ export function DashboardAnalytics({
       <div className="mt-6 grid gap-6 2xl:grid-cols-[1.65fr_1fr]">
         <Card>
           <div className="mb-5">
-            <h3 className="text-xl font-black">Ingresos, cartera y objetivo</h3>
-            <p className="text-sm text-muted">Vista de los {analytics.rangeDescription}; cartera y objetivo se prorratean a valor de {timeCopy.filter}.</p>
+            <div className="flex items-center gap-1">
+              <h3 className="text-xl font-black">Ingresos, cartera y objetivo</h3>
+              <ContextHelp
+                label="Ingresos, cartera y objetivo"
+                description="Compara por periodo las cuotas marcadas como pagadas, el valor equivalente de las tarifas activas y el objetivo que has configurado."
+              />
+            </div>
+            <p className="text-sm text-muted">Periodo: {analytics.rangeDescription}; cartera y objetivo se prorratean a valor de {timeCopy.filter}.</p>
           </div>
           <div className="h-80 min-w-0" role="img" aria-label={`Gráfica de evolución de ingresos cobrados, ${timeCopy.recurringSeries.toLowerCase()} y objetivo`}>
             <ResponsiveContainer width="100%" height="100%">
@@ -525,12 +639,42 @@ export function DashboardAnalytics({
         </Card>
 
         <Card>
-          <div className="mb-6 flex items-center gap-3"><Goal className="text-primary" /><div><h3 className="text-xl font-black">Objetivos</h3><p className="text-sm text-muted">Progreso por {timeCopy.filter} y de la cartera actual.</p></div></div>
+          <div className="mb-6 flex items-start gap-3">
+            <Goal className="mt-1 text-primary" />
+            <div>
+              <div className="flex items-center gap-1">
+                <h3 className="text-xl font-black">Objetivos</h3>
+                <ContextHelp
+                  label="Objetivos"
+                  description="Resume cuánto has avanzado hacia las metas de ingresos y clientes. Los ingresos siguen el periodo elegido; los clientes reflejan la cartera activa filtrada."
+                />
+              </div>
+              <p className="text-sm text-muted">Progreso por {timeCopy.filter} y de la cartera actual.</p>
+            </div>
+          </div>
           <div className="grid gap-6">
-            <GoalProgress label={`Ingresos cobrados por ${timeCopy.filter}`} value={formatMoney(analytics.currentCollected)} target={formatMoney(analytics.currentRevenueGoal)} progress={analytics.revenueGoalProgress} />
-            <GoalProgress label="Clientes activos" value={String(analytics.activeClients)} target={String(goals.activeClientsGoal)} progress={analytics.clientGoalProgress} />
-            <details className="rounded-[var(--radius-md)] border border-border p-4">
-              <summary className="cursor-pointer font-black">Modificar objetivos</summary>
+            <GoalProgress
+              label={`Ingresos cobrados por ${timeCopy.filter}`}
+              value={formatMoney(analytics.currentCollected)}
+              target={formatMoney(analytics.currentRevenueGoal)}
+              progress={analytics.revenueGoalProgress}
+              help="Suma solo las cuotas marcadas como pagadas dentro del periodo actual y las compara con la parte equivalente de tu objetivo mensual."
+            />
+            <GoalProgress
+              label="Clientes activos"
+              value={String(analytics.activeClients)}
+              target={String(goals.activeClientsGoal)}
+              progress={analytics.clientGoalProgress}
+              help="Cuenta los clientes que están dados de alta y cumplen los filtros de modalidad y tarifa, y los compara con tu objetivo de clientes."
+            />
+            <details className="relative rounded-[var(--radius-md)] border border-border p-4">
+              <summary className="cursor-pointer pr-10 font-black">Modificar objetivos</summary>
+              <ContextHelp
+                label="Modificar objetivos"
+                description="Permite definir tus metas privadas de ingresos mensuales y clientes activos. No crea cuotas, no cambia precios y no realiza cobros."
+                align="right"
+                className="absolute top-2.5 right-3"
+              />
               <div className="mt-4"><DashboardGoalsForm goals={goals} /></div>
             </details>
           </div>
@@ -539,7 +683,13 @@ export function DashboardAnalytics({
 
       <div className="mt-6 grid gap-6 xl:grid-cols-3">
         <Card>
-          <h3 className="text-xl font-black">Valor por tarifa</h3>
+          <div className="flex items-center gap-1">
+            <h3 className="text-xl font-black">Valor por tarifa</h3>
+            <ContextHelp
+              label="Valor por tarifa"
+              description={`Agrupa los clientes activos por su tarifa y reparte el precio acordado según los meses que cubre para mostrar su valor equivalente por ${timeCopy.filter}.`}
+            />
+          </div>
           <p className="mb-4 text-sm text-muted">Ingreso equivalente por {timeCopy.filter} de clientes activos.</p>
           <div className="h-72 min-w-0" role="img" aria-label={`Gráfica del ${timeCopy.valueByPlan.toLowerCase()} por tarifa`}>
             <ResponsiveContainer width="100%" height="100%">
@@ -555,7 +705,13 @@ export function DashboardAnalytics({
         </Card>
 
         <Card>
-          <h3 className="text-xl font-black">Modalidad de servicio</h3>
+          <div className="flex items-center gap-1">
+            <h3 className="text-xl font-black">Modalidad de servicio</h3>
+            <ContextHelp
+              label="Modalidad de servicio"
+              description="Distribuye los clientes activos entre Presencial, Virtual y Sin asignar. Respeta los filtros seleccionados en la parte superior."
+            />
+          </div>
           <p className="mb-4 text-sm text-muted">Distribución de los clientes activos filtrados.</p>
           <div className="h-72 min-w-0" role="img" aria-label="Gráfica de clientes por modalidad de servicio">
             <ResponsiveContainer width="100%" height="100%">
@@ -571,7 +727,13 @@ export function DashboardAnalytics({
         </Card>
 
         <Card>
-          <h3 className="text-xl font-black">{timeCopy.growth}</h3>
+          <div className="flex items-center gap-1">
+            <h3 className="text-xl font-black">{timeCopy.growth}</h3>
+            <ContextHelp
+              label={timeCopy.growth}
+              description={`Cuenta las cuentas de cliente creadas en cada ${timeCopy.filter} del intervalo visible. Representa nuevas altas registradas, no pagos ni reactivaciones.`}
+            />
+          </div>
           <p className="mb-4 text-sm text-muted">Nuevos registros dentro del periodo seleccionado.</p>
           <div className="h-72 min-w-0" role="img" aria-label={`Gráfica de ${timeCopy.growth.toLowerCase()}`}>
             <ResponsiveContainer width="100%" height="100%">

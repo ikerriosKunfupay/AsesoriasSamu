@@ -89,7 +89,7 @@ describe("DashboardAnalytics", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /clientes activos/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^clientes activos/i }));
 
     expect(screen.getByRole("link", { name: /iker ríos navarro/i })).toHaveAttribute(
       "href",
@@ -100,7 +100,7 @@ describe("DashboardAnalytics", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("usa selectores internos para los tres filtros de estadísticas", () => {
+  it("usa selectores internos para periodo, agrupación, modalidad y tarifa", () => {
     const { container } = render(
       <DashboardAnalytics
         clients={clients}
@@ -111,10 +111,11 @@ describe("DashboardAnalytics", () => {
     );
 
     expect(container.querySelector("select")).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" })).toHaveTextContent("Últimos 12 meses");
     expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por mes");
     expect(screen.getByRole("combobox", { name: "Filtrar por modalidad" })).toHaveTextContent("Todas las modalidades");
     expect(screen.getByRole("combobox", { name: "Filtrar por tarifa" })).toHaveTextContent("Todas las tarifas");
-    expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[11.5rem_14rem_12rem]");
+    expect(container.querySelector('[aria-label="Filtros de estadísticas"]')).toHaveClass("xl:grid-cols-[13rem_11.5rem_14rem_12rem]");
 
     fireEvent.click(screen.getByRole("combobox", { name: "Filtrar por modalidad" }));
     fireEvent.click(screen.getByRole("option", { name: "Presencial" }));
@@ -125,8 +126,19 @@ describe("DashboardAnalytics", () => {
     fireEvent.click(screen.getByRole("option", { name: "Por día" }));
 
     expect(screen.getByRole("combobox", { name: "Agrupar estadísticas por" })).toHaveTextContent("Por día");
+    expect(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" })).toHaveTextContent("Últimos 14 días");
     expect(screen.getByRole("button", { name: /cobrado hoy/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /previsión mañana/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" }));
+    fireEvent.click(screen.getByRole("option", { name: "Ayer" }));
+    expect(screen.getByRole("button", { name: /cobrado ayer/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Filtrar estadísticas por periodo" }));
+    fireEvent.click(screen.getByRole("option", { name: "Periodo personalizado" }));
+    expect(screen.getByRole("button", { name: "Fecha inicial de estadísticas" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Fecha final de estadísticas" })).toBeInTheDocument();
+    expect(screen.getByText(/limitado a los últimos doce meses/i)).toBeInTheDocument();
   });
 
   it("muestra los clientes activos sin cuota mensual dentro de pendientes", () => {
@@ -166,5 +178,37 @@ describe("DashboardAnalytics", () => {
     expect(revenueGoal).toHaveValue("250,50");
     expect(clientsGoal).toHaveValue("12");
     expect(screen.queryByText(/las cifras son internas y orientativas/i)).not.toBeInTheDocument();
+  });
+
+  it("explica todos los conceptos de objetivos y gráficas con ayudas contextuales", () => {
+    render(
+      <DashboardAnalytics
+        clients={clients}
+        fees={fees}
+        goals={{ monthlyRevenueGoalEur: 500, activeClientsGoal: 10 }}
+        referenceDate="2026-10-14"
+      />,
+    );
+
+    [
+      "Ingresos, cartera y objetivo",
+      "Objetivos",
+      "Ingresos cobrados por mes",
+      "Clientes activos",
+      "Modificar objetivos",
+      "Valor por tarifa",
+      "Modalidad de servicio",
+      "Altas por mes",
+    ].forEach((label) => {
+      expect(screen.getByRole("button", { name: `Más información sobre ${label}` })).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("Modificar objetivos"));
+    expect(screen.getByRole("button", { name: "Más información sobre Objetivo mensual de ingresos" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Más información sobre Objetivo de clientes activos" })).toBeInTheDocument();
+
+    const chartHelp = screen.getByRole("button", { name: "Más información sobre Valor por tarifa" });
+    fireEvent.mouseEnter(chartHelp.parentElement!);
+    expect(screen.getByRole("tooltip")).toHaveTextContent(/reparte el precio acordado/i);
   });
 });

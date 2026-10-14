@@ -11,6 +11,7 @@
 | `consent_acceptances` | evidencia de consentimiento | lectura e inserción propia |
 | `workout_assignments` | planes de entrenamiento | lectura propia publicada |
 | `nutrition_assignments` | pautas nutricionales | lectura propia publicada |
+| `assignment_templates` | plantillas reutilizables de entrenamiento y nutrición | ninguno |
 | `workout_logs` | futuro registro de sesiones | lectura/inserción propia |
 | `check_ins` | revisiones periódicas | lectura/inserción propia |
 | `manual_fee_records` | control interno sin cobro | ninguno |
@@ -29,7 +30,7 @@ La migración activa RLS en todas las tablas. `is_admin()` es `security definer`
 
 `anon` no recibe permisos de tabla. Los leads se insertan mediante una Server Action con service role. El service role se reserva para administración validada y nunca se construye en un Client Component. Un usuario autenticado solo tiene `UPDATE` de columna sobre `full_name`, `phone` y `avatar_path` en su propia fila; no puede editar `role`, `status` ni `onboarding_complete` aunque actúe directamente contra la API. `updateAdminProfileAction` exige además `requireAdmin()` y deriva el UUID de la sesión.
 
-Tarifas y condiciones comerciales solo admiten operaciones de administradores activos. Los objetivos del resumen añaden además `admin_id = auth.uid()`, de modo que una cuenta administrativa no puede leer ni cambiar los objetivos personales de otra. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago.
+Tarifas, condiciones comerciales y plantillas de planes solo admiten operaciones de administradores activos. Cada plantilla conserva `admin_id = auth.uid()` en sus políticas, por lo que tampoco se comparte entre posibles administradores. Los objetivos del resumen aplican el mismo aislamiento. Los importes son datos operativos internos: no incluyen tarjeta, cuenta bancaria ni credenciales de pago. Las auditorías de planes y cuotas registran identificadores y tipo de cambio, pero nunca copian el contenido del plan ni la nota interna.
 
 ## Avatares
 

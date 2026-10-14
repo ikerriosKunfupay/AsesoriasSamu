@@ -81,4 +81,15 @@ describe("ClientsTable", () => {
     expect(screen.getByRole("menu").parentElement).toBe(document.body);
     expect(screen.getByRole("menuitem", { name: /ajustar precio o crear tarifa/i })).toBeInTheDocument();
   });
+
+  it("permite alternar la presentación entre tabla, lista y galería", () => {
+    render(<ClientsTable clients={[clients[0]]} pricingPlans={pricingPlans} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Lista" }));
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Iker Ríos" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Galería" }));
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Tarifa de Iker Ríos" })).toBeInTheDocument();
+  });
 });

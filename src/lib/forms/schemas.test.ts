@@ -191,11 +191,10 @@ describe("validación de formularios", () => {
       ...base,
       newPlanName: "Anual",
       newBillingCycle: "annual",
-      newPlanDaysPerWeek: "5",
     }).success).toBe(true);
   });
 
-  it("exige modalidad, entre uno y siete días y rechaza importes negativos", () => {
+  it("exige modalidad, admite días sin definir y rechaza rangos o importes inválidos", () => {
     const base = {
       pricingPlanId: "",
       name: "Mensual",
@@ -204,6 +203,7 @@ describe("validación de formularios", () => {
     };
 
     expect(pricingPlanSchema.safeParse(base).success).toBe(false);
+    expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "in_person", daysPerWeek: "" }).success).toBe(true);
     expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "in_person", daysPerWeek: "0" }).success).toBe(false);
     expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "online", daysPerWeek: "8" }).success).toBe(false);
     expect(pricingPlanSchema.safeParse({ ...base, serviceModality: "online", daysPerWeek: "3", amountEur: "-60" }).success).toBe(false);

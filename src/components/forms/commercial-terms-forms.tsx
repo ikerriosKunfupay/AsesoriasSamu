@@ -150,7 +150,6 @@ export function ClientCommercialTermsForm({
           <Field
             label="Días por semana"
             htmlFor={`${formId}-new-days`}
-            required
             error={state.fieldErrors?.newPlanDaysPerWeek?.[0]}
           >
             <Input
@@ -213,7 +212,7 @@ export function PricingPlanForm({ plan }: { plan?: PricingPlanOption }) {
           invalid={Boolean(state.fieldErrors?.serviceModality?.[0])}
         />
       </Field>
-      <Field label="Días/semana" htmlFor={`${formId}-days`} required error={state.fieldErrors?.daysPerWeek?.[0]}>
+      <Field label="Días/semana" htmlFor={`${formId}-days`} error={state.fieldErrors?.daysPerWeek?.[0]}>
         <Input
           id={`${formId}-days`}
           name="daysPerWeek"

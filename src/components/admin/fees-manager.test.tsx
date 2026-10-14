@@ -6,6 +6,7 @@ import { FeesManager } from "./fees-manager";
 vi.mock("@/app/actions/admin", () => ({
   deleteFeeAction: vi.fn(),
   saveFeeAction: vi.fn(),
+  saveFeeNoteAction: vi.fn(),
   updateFeeAction: vi.fn(),
 }));
 
@@ -49,10 +50,22 @@ describe("FeesManager", () => {
     expect(screen.getByText("Cliente 11")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Filtros" }));
-    fireEvent.change(screen.getByRole("textbox", { name: "Filtrar por cliente o nota" }), { target: { value: "Cliente 2" } });
+    fireEvent.change(screen.getByRole("textbox", { name: "Filtrar por cliente" }), { target: { value: "Cliente 2" } });
     expect(screen.getByText("1 cuota")).toBeInTheDocument();
     expect(screen.getByText("Cliente 2")).toBeInTheDocument();
     expect(screen.queryByText("1 de 2")).not.toBeInTheDocument();
+  });
+
+  it("alterna entre tabla, lista y galería y muestra la nota editable", () => {
+    render(<FeesManager clients={clients} fees={[fees[0]]} />);
+
+    expect(screen.getByRole("textbox", { name: "Nota interna de Cliente 1, 2026-10" })).toHaveValue("Transferencia");
+    fireEvent.click(screen.getByRole("button", { name: "Lista" }));
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByText("Cliente 1")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Galería" }));
+    expect(screen.queryByRole("table")).not.toBeInTheDocument();
+    expect(screen.getByText(/50,00/)).toBeInTheDocument();
   });
 
   it("abre la edición y exige confirmación antes de eliminar", () => {

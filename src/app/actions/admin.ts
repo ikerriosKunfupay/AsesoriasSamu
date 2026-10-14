@@ -4,13 +4,16 @@ import { revalidatePath } from "next/cache";
 import type { ActionState } from "@/lib/forms/action-state";
 import {
   archivePricingPlanSchema,
+  assignmentDeleteSchema,
   assignmentSchema,
+  assignmentUpdateSchema,
   clientAdminNoteSchema,
   clientCommercialTermsSchema,
   clientCommercialQuickUpdateSchema,
   clientStatusSchema,
   dashboardGoalsSchema,
   feeDeleteSchema,
+  feeNoteSchema,
   feeSchema,
   feeUpdateSchema,
   fieldErrors,
@@ -74,6 +77,16 @@ export async function saveAssignmentAction(
 
   const admin = createAdminClient();
   const table = parsed.data.kind === "workout" ? "workout_assignments" : "nutrition_assignments";
+  if (parsed.data.saveAsTemplate) {
+    const { error: templateError } = await admin.from("assignment_templates").upsert({
+      kind: parsed.data.kind,
+      name: parsed.data.title,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      created_by: adminUser.id,
+    }, { onConflict: "created_by,kind,name" });
+    if (templateError) return { status: "error", message: "No se pudo guardar la plantilla." };
+  }
   const { error } = await admin.from(table).insert({
     client_id: parsed.data.clientId,
     title: parsed.data.title,
@@ -82,7 +95,6 @@ export async function saveAssignmentAction(
     status: parsed.data.status,
     created_by: adminUser.id,
   });
-
   if (error) return { status: "error", message: "No se pudo guardar el plan." };
   await admin.from("audit_events").insert({
     actor_id: adminUser.id,
@@ -94,6 +106,94 @@ export async function saveAssignmentAction(
   revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
   revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
   return { status: "success", message: "Plan guardado correctamente." };
+}
+
+export async function updateAssignmentAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = assignmentUpdateSchema.safeParse(formValues(formData));
+  if (!parsed.success) {
+    return { status: "error", message: "Revisa el plan.", fieldErrors: fieldErrors(parsed.error) };
+  }
+
+  const admin = createAdminClient();
+  const table = parsed.data.kind === "workout" ? "workout_assignments" : "nutrition_assignments";
+  if (parsed.data.saveAsTemplate) {
+    const { error: templateError } = await admin.from("assignment_templates").upsert({
+      kind: parsed.data.kind,
+      name: parsed.data.title,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      created_by: adminUser.id,
+    }, { onConflict: "created_by,kind,name" });
+    if (templateError) return { status: "error", message: "No se pudo guardar la plantilla." };
+  }
+  const { data: previous } = await admin
+    .from(table)
+    .select("client_id")
+    .eq("id", parsed.data.assignmentId)
+    .maybeSingle();
+  const { data, error } = await admin
+    .from(table)
+    .update({
+      client_id: parsed.data.clientId,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      starts_on: parsed.data.startsOn || null,
+      status: parsed.data.status,
+    })
+    .eq("id", parsed.data.assignmentId)
+    .select("id, client_id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo actualizar el plan." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: `${parsed.data.kind}.updated`,
+    entity_type: table,
+    entity_id: data.id,
+    metadata: { client_id: data.client_id, status: parsed.data.status },
+  });
+  if (previous?.client_id) revalidatePath(`/admin/clientes/${previous.client_id}`);
+  revalidatePath(`/admin/clientes/${data.client_id}`);
+  revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
+  revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
+  return { status: "success", message: "Plan actualizado correctamente." };
+}
+
+export async function deleteAssignmentAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = assignmentDeleteSchema.safeParse(formValues(formData));
+  if (!parsed.success) return { status: "error", message: "Plan no válido." };
+
+  const admin = createAdminClient();
+  const table = parsed.data.kind === "workout" ? "workout_assignments" : "nutrition_assignments";
+  const { data, error } = await admin
+    .from(table)
+    .delete()
+    .eq("id", parsed.data.assignmentId)
+    .select("id, client_id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo eliminar el plan." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: `${parsed.data.kind}.deleted`,
+    entity_type: table,
+    entity_id: data.id,
+    metadata: { client_id: data.client_id },
+  });
+  revalidatePath(`/admin/clientes/${data.client_id}`);
+  revalidatePath(parsed.data.kind === "workout" ? "/admin/entrenamientos" : "/admin/nutricion");
+  revalidatePath(parsed.data.kind === "workout" ? "/app/entrenamiento" : "/app/nutricion");
+  return { status: "success", message: "Plan eliminado." };
 }
 
 export async function saveFeeAction(
@@ -197,6 +297,34 @@ export async function deleteFeeAction(
   revalidatePath("/admin");
   revalidatePath("/admin/cuotas");
   return { status: "success", message: "Cuota eliminada." };
+}
+
+export async function saveFeeNoteAction(
+  _previous: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const adminUser = await requireAdmin();
+  const parsed = feeNoteSchema.safeParse(formValues(formData));
+  if (!parsed.success) return { status: "error", message: "Revisa la nota.", fieldErrors: fieldErrors(parsed.error) };
+
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("manual_fee_records")
+    .update({ notes: parsed.data.notes || null, recorded_by: adminUser.id })
+    .eq("id", parsed.data.feeId)
+    .select("id")
+    .maybeSingle();
+
+  if (error || !data) return { status: "error", message: "No se pudo guardar la nota." };
+
+  await admin.from("audit_events").insert({
+    actor_id: adminUser.id,
+    action: "fee.note_updated",
+    entity_type: "manual_fee_record",
+    entity_id: data.id,
+  });
+  revalidatePath("/admin/cuotas");
+  return { status: "success", message: "Nota guardada." };
 }
 
 export async function saveClientAdminNoteAction(
@@ -395,7 +523,7 @@ export async function saveClientCommercialTermsAction(
       .insert({
         name: parsed.data.newPlanName!,
         service_modality: parsed.data.modality,
-        days_per_week: parsed.data.newPlanDaysPerWeek!,
+        days_per_week: parsed.data.newPlanDaysPerWeek,
         billing_cycle: parsed.data.newBillingCycle!,
         duration_months: billingCycleMonths(parsed.data.newBillingCycle!, parsed.data.newDurationMonths),
         default_amount_eur: parsed.data.amountEur,

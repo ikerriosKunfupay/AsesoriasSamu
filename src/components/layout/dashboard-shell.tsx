@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent } from "react";
-import { type LucideIcon, AlertCircle, BadgeCheck, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
+import { type LucideIcon, AlertCircle, BadgeCheck, ChevronDown, Dumbbell, Home, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Salad, Settings, Tags, TrendingUp, UserRound, UsersRound, WalletCards, X } from "lucide-react";
 import { BrandLogo } from "@/components/brand/logo";
 import { logoutAction } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,8 @@ import { ProfileAvatar } from "@/components/ui/profile-avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type NavItem = { href: string; label: string; icon: LucideIcon };
-type NavGroup = { label?: string; items: NavItem[] };
+type CollapsibleGroupId = "advisories" | "payments";
+type NavGroup = { id?: CollapsibleGroupId; label?: string; items: NavItem[] };
 
 const adminGroups: NavGroup[] = [
   {
@@ -21,6 +22,7 @@ const adminGroups: NavGroup[] = [
     ],
   },
   {
+    id: "advisories",
     label: "Asesorías",
     items: [
       { href: "/admin/clientes", label: "Clientes", icon: UsersRound },
@@ -30,6 +32,7 @@ const adminGroups: NavGroup[] = [
     ],
   },
   {
+    id: "payments",
     label: "Pagos",
     items: [
       { href: "/admin/tarifas", label: "Tarifas", icon: Tags },
@@ -50,6 +53,7 @@ const clientGroups: NavGroup[] = [{
 }];
 
 const SIDEBAR_STORAGE_KEY = "team-ortega:sidebar-open";
+const SIDEBAR_GROUPS_STORAGE_KEY = "team-ortega:sidebar-groups";
 
 function isCurrentNavItem(pathname: string, href: string) {
   return pathname === href || (href !== "/admin" && pathname.startsWith(`${href}/`));
@@ -72,11 +76,26 @@ export function DashboardShell({
   const groups = mode === "admin" ? adminGroups : clientGroups;
   const [showOnboardingNotice, setShowOnboardingNotice] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<CollapsibleGroupId, boolean>>({
+    advisories: false,
+    payments: false,
+  });
   const navigationLocked = mode === "client" && !onboardingComplete;
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       setIsDesktopSidebarOpen(window.localStorage.getItem(SIDEBAR_STORAGE_KEY) !== "false");
+      const savedGroups = window.localStorage.getItem(SIDEBAR_GROUPS_STORAGE_KEY);
+      if (!savedGroups) return;
+      try {
+        const parsed = JSON.parse(savedGroups) as Partial<Record<CollapsibleGroupId, boolean>>;
+        setCollapsedGroups({
+          advisories: parsed.advisories === true,
+          payments: parsed.payments === true,
+        });
+      } catch {
+        window.localStorage.removeItem(SIDEBAR_GROUPS_STORAGE_KEY);
+      }
     });
     return () => window.cancelAnimationFrame(frame);
   }, []);
@@ -101,13 +120,38 @@ export function DashboardShell({
     window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open));
   }
 
+  function toggleNavigationGroup(groupId: CollapsibleGroupId) {
+    setCollapsedGroups((current) => {
+      const next = { ...current, [groupId]: !current[groupId] };
+      window.localStorage.setItem(SIDEBAR_GROUPS_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
   function navigationGroups(surface: "sidebar" | "mobile") {
-    return groups.map((group, index) => (
+    return groups.map((group, index) => {
+      const isCollapsed = group.id ? collapsedGroups[group.id] : false;
+      const containsCurrentPage = group.items.some((item) => isCurrentNavItem(pathname, item.href));
+      const groupItemsId = group.id ? `${surface}-${group.id}-navigation` : undefined;
+
+      return (
       <div key={group.label ?? group.items[0]?.href} className={index > 0 ? "mt-4" : ""}>
-        {group.label ? (
+        {group.label && group.id ? (
+          <button
+            type="button"
+            aria-label={`${isCollapsed ? "Mostrar" : "Ocultar"} ${group.label}`}
+            aria-expanded={!isCollapsed}
+            aria-controls={groupItemsId}
+            onClick={() => toggleNavigationGroup(group.id!)}
+            className={`mb-1 flex min-h-9 w-full items-center justify-between rounded-[var(--radius-sm)] px-3 text-[0.65rem] font-black uppercase tracking-[0.2em] text-primary transition-colors ${surface === "sidebar" ? "hover:bg-sidebar-hover" : "hover:bg-surface-muted"} ${containsCurrentPage ? (surface === "sidebar" ? "bg-sidebar-hover" : "bg-surface-muted") : ""}`}
+          >
+            <span>{group.label}</span>
+            <ChevronDown className={`size-4 transition-transform ${isCollapsed ? "-rotate-90" : ""}`} aria-hidden="true" />
+          </button>
+        ) : group.label ? (
           <p className="mb-1 px-3 text-[0.65rem] font-black uppercase tracking-[0.2em] text-primary">{group.label}</p>
         ) : null}
-        <div className="grid gap-1">
+        <div id={groupItemsId} hidden={isCollapsed} className="grid gap-1">
           {group.items.map(({ href, label, icon: Icon }) => {
             const active = isCurrentNavItem(pathname, href);
             const activeClass = surface === "sidebar"
@@ -131,7 +175,8 @@ export function DashboardShell({
           })}
         </div>
       </div>
-    ));
+      );
+    });
   }
 
   function adminProfileIdentity(surface: "sidebar" | "mobile") {

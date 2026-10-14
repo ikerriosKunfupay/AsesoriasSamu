@@ -131,6 +131,29 @@ describe("DashboardShell", () => {
     expect(navigation).toHaveTextContent(/Tarifas\s*Cuotas/);
   });
 
+  it("permite plegar asesorías y pagos y recuerda la elección", () => {
+    render(
+      <DashboardShell mode="admin" userName="Administración">
+        <p>Resumen</p>
+      </DashboardShell>,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Ocultar Asesorías" })[0]);
+    expect(screen.getAllByRole("button", { name: "Mostrar Asesorías" })).toHaveLength(2);
+    expect(screen.queryByRole("link", { name: "Clientes" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Ocultar Pagos" })[0]);
+    expect(screen.getAllByRole("button", { name: "Mostrar Pagos" })).toHaveLength(2);
+    expect(screen.queryByRole("link", { name: "Tarifas" })).not.toBeInTheDocument();
+    expect(JSON.parse(window.localStorage.getItem("team-ortega:sidebar-groups") ?? "{}")).toEqual({
+      advisories: true,
+      payments: true,
+    });
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Mostrar Asesorías" })[0]);
+    expect(screen.getAllByRole("link", { name: "Clientes" })).toHaveLength(2);
+  });
+
   it("abre el perfil verificado del administrador desde su identidad", () => {
     navigationMocks.pathname = "/admin/perfil";
 

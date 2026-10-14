@@ -1,5 +1,17 @@
 # Registro de cambios técnico
 
+## 2026-10-14 — `2026-10-14-gestion-operativa-y-vistas`
+
+- `ContextHelp` añade tooltips accesibles por hover, foco o pulsación a objetivos y gráficas. `DashboardAnalytics` separa rango y granularidad, resuelve presets y fechas personalizadas con un máximo móvil de 365 días y aplica el mismo conjunto de periodos a KPI, desgloses y series.
+- `DashboardShell` convierte Asesorías y Pagos en acordeones persistidos mediante `team-ortega:sidebar-groups`, compartidos entre escritorio y móvil y conscientes de la ruta activa.
+- `AssignmentsManager` incorpora filtros independientes, orden estable `asc/desc/null`, paginación, lectura de contenido, edición, eliminación y las vistas persistentes tabla/lista/galería; `AssignmentForm` usa `InternalDatePicker` y puede aplicar o guardar plantillas.
+- `202610140002_assignment_templates.sql` crea `assignment_templates` con RLS administrativa y actualiza el índice de variantes de tarifa para aceptar `days_per_week IS NULL`; los tipos y Server Actions cubren CRUD y auditoría sin contenido libre.
+- `supabase db push --linked` aplicó `202610140002` y una segunda lectura de `migration list --linked` confirmó paridad de las ocho migraciones.
+- `FeesManager` separa cliente y nota, ordena todas las columnas, usa las tres vistas y expone `FeeNoteInput` con autoguardado; `saveFeeNoteAction` no incorpora la nota a auditoría. La cabecera de Cuotas deja de mostrar la descripción retirada.
+- `DataViewToggle` unifica Tabla/Lista/Galería y persiste una clave por Clientes, Interesados, Entrenamientos, Nutrición y Cuotas; Tarifas conserva su selector equivalente existente.
+- La consulta analítica continúa siendo una única lectura acotada a doce meses, sobre el índice de `manual_fee_records.period` y con solo las columnas representadas; cambiar filtros no genera nuevas peticiones.
+- `pnpm lint`, `pnpm typecheck`, 134 pruebas, `pnpm build` y `git diff --check` terminaron correctamente.
+
 ## 2026-10-14 — `2026-10-14-perfil-admin-y-ajustes-resumen`
 
 - Añadida `/admin/perfil` detrás de `requireAdmin()`, con `ProfileSettingsForm` en variante administrativa y `updateAdminProfileAction` compartiendo la actualización propia sin aceptar UUID externos.

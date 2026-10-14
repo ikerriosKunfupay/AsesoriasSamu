@@ -12,6 +12,7 @@ import {
 } from "@/components/forms/admin-forms";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DataViewToggle, usePersistedDataView, type DataView } from "@/components/ui/data-view-toggle";
 import { Input } from "@/components/ui/input";
 import { InternalSelect } from "@/components/ui/internal-select";
 import { getClientDetailHref } from "@/lib/admin/client-navigation";
@@ -222,6 +223,67 @@ function ClientRowActions({
   );
 }
 
+function ClientsAlternativeView({
+  clients,
+  pricingPlans,
+  view,
+}: {
+  clients: ClientTableItem[];
+  pricingPlans: PricingPlanOption[];
+  view: Exclude<DataView, "table">;
+}) {
+  return (
+    <div className={view === "gallery" ? "grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3" : "grid gap-3 p-4"}>
+      {clients.map((client) => {
+        const detailHref = getClientDetailHref(client.id, "/admin/clientes");
+        return (
+          <article key={client.id} className={`rounded-[var(--radius-md)] border border-border p-4 ${view === "gallery" ? "flex min-h-96 flex-col" : "grid gap-4 xl:grid-cols-[minmax(0,1fr)_auto]"}`}>
+            <div className="min-w-0">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <Link className="block truncate text-lg font-black hover:text-primary" href={detailHref}>{client.name}</Link>
+                  <p className="mt-1 text-sm text-muted">Cuestionario: {client.onboardingComplete ? "Completado" : "Pendiente"}</p>
+                </div>
+                <ClientStatusSwitch clientId={client.id} clientName={client.name} status={client.status} />
+              </div>
+              <div className={`mt-4 grid gap-3 ${view === "list" ? "sm:grid-cols-3" : ""}`}>
+                <label className="grid gap-1 text-xs font-black uppercase tracking-wide text-muted">Modalidad
+                  <QuickCommercialSelect
+                    key={`alt-modality-${client.modality ?? "unassigned"}`}
+                    clientId={client.id}
+                    field="modality"
+                    value={client.modality ?? ""}
+                    label={`Modalidad de ${client.name}`}
+                    className="w-full"
+                    options={client.modality ? serviceModalityOptions : [{ value: "", label: "Sin asignar" }, ...serviceModalityOptions]}
+                  />
+                </label>
+                <label className="grid gap-1 text-xs font-black uppercase tracking-wide text-muted">Tarifa
+                  <QuickCommercialSelect
+                    key={`alt-pricing-${client.pricingPlanId ?? "unassigned"}`}
+                    clientId={client.id}
+                    field="pricingPlanId"
+                    value={client.pricingPlanId ?? ""}
+                    label={`Tarifa de ${client.name}`}
+                    className="w-full"
+                    options={[
+                      { value: "", label: "Sin asignar" },
+                      ...pricingPlans.filter((plan) => plan.active || plan.id === client.pricingPlanId).map((plan) => ({ value: plan.id, label: `${plan.name} · ${pricingPlanDetailsLabel(plan)} · ${billingCycleLabel(plan.billingCycle)}` })),
+                    ]}
+                  />
+                </label>
+                <div><p className="text-xs font-black uppercase tracking-wide text-muted">Precio</p><p className="mt-2 font-black">{client.agreedAmountEur == null ? "—" : formatMoney(client.agreedAmountEur)}</p></div>
+              </div>
+              <div className="mt-4"><ClientAdminNotesForm clientId={client.id} initialNotes={client.notes} compact /></div>
+            </div>
+            <div className={`flex justify-end ${view === "gallery" ? "mt-auto pt-5" : "items-start"}`}><ClientRowActions client={client} pricingPlans={pricingPlans} detailHref={detailHref} /></div>
+          </article>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ClientsTable({
   clients,
   pricingPlans,
@@ -232,6 +294,7 @@ export function ClientsTable({
   const [filters, setFilters] = useState<ClientTableFilters>({ ...emptyClientTableFilters });
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sort, setSort] = useState<ClientTableSort>(null);
+  const [view, setView] = usePersistedDataView("team-ortega:clients-view");
   const visibleClients = useMemo(
     () => filterAndSortClients(clients, filters, sort),
     [clients, filters, sort],
@@ -255,6 +318,7 @@ export function ClientsTable({
     <Card className="p-0">
       <div className="border-b border-border p-4">
         <div className="flex flex-wrap items-center gap-3">
+          <DataViewToggle view={view} onChange={setView} label="Vista de clientes" />
           <Button type="button" variant="outline" onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen} aria-controls="client-table-filters">
             <Filter aria-hidden="true" className="size-4" />
             Filtros
@@ -350,7 +414,7 @@ export function ClientsTable({
           </div>
         ) : null}
       </div>
-      <div className="clients-table-scroll overflow-x-auto">
+      {view === "table" ? <div className="clients-table-scroll overflow-x-auto">
         <table className="data-table clients-table">
           <thead>
             <tr>
@@ -431,7 +495,9 @@ export function ClientsTable({
             )}
           </tbody>
         </table>
-      </div>
+      </div> : null}
+      {view !== "table" && visibleClients.length ? <ClientsAlternativeView clients={visibleClients} pricingPlans={pricingPlans} view={view} /> : null}
+      {view !== "table" && !visibleClients.length ? <p className="px-5 py-10 text-center text-muted">No hay clientes que coincidan con el filtro.</p> : null}
     </Card>
   );
 }

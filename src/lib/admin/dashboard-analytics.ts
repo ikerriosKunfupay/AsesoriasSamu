@@ -27,11 +27,15 @@ export type AnalyticsFee = {
 };
 
 export type AnalyticsGranularity = "day" | "week" | "month";
+export type AnalyticsRangePreset = "today" | "yesterday" | "this_week" | "last_week" | "this_month" | "last_14_days" | "last_12_weeks" | "last_3_months" | "last_6_months" | "last_12_months" | "custom";
 
 export type AnalyticsFilters = {
   granularity: AnalyticsGranularity;
   modality: "all" | ServiceModality;
   pricingPlanId: "all" | "unassigned" | string;
+  range?: AnalyticsRangePreset;
+  customStart?: string;
+  customEnd?: string;
 };
 
 export type DashboardGoals = {
@@ -117,16 +121,50 @@ function longPeriodLabel(period: string, granularity: AnalyticsGranularity) {
   }).format(dateFromKey(period));
 }
 
-function buildPeriods(referenceDate: string, granularity: AnalyticsGranularity) {
-  if (granularity === "day") {
-    return Array.from({ length: 14 }, (_value, index) => addDays(referenceDate, index - 13));
+function clampDate(value: string, minimum: string, maximum: string) {
+  if (value < minimum) return minimum;
+  if (value > maximum) return maximum;
+  return value;
+}
+
+export function resolveAnalyticsDateRange(filters: AnalyticsFilters, referenceDate: string) {
+  const preset = filters.range ?? (filters.granularity === "day" ? "last_14_days" : filters.granularity === "week" ? "last_12_weeks" : "last_12_months");
+  const minimum = addDays(referenceDate, -365);
+  if (preset === "today") return { start: referenceDate, end: referenceDate };
+  if (preset === "yesterday") {
+    const yesterday = addDays(referenceDate, -1);
+    return { start: yesterday, end: yesterday };
   }
-  if (granularity === "week") {
-    const currentWeek = startOfWeek(referenceDate);
-    return Array.from({ length: 12 }, (_value, index) => addDays(currentWeek, (index - 11) * 7));
+  if (preset === "this_week") return { start: startOfWeek(referenceDate), end: referenceDate };
+  if (preset === "last_week") {
+    const start = addDays(startOfWeek(referenceDate), -7);
+    return { start, end: addDays(start, 6) };
   }
-  const referenceMonth = referenceDate.slice(0, 7);
-  return Array.from({ length: 12 }, (_value, index) => addMonths(referenceMonth, index - 11));
+  if (preset === "this_month") return { start: `${referenceDate.slice(0, 7)}-01`, end: referenceDate };
+  if (preset === "last_14_days") return { start: addDays(referenceDate, -13), end: referenceDate };
+  if (preset === "last_12_weeks") return { start: addDays(startOfWeek(referenceDate), -77), end: referenceDate };
+  if (preset === "last_3_months") return { start: `${addMonths(referenceDate.slice(0, 7), -2)}-01`, end: referenceDate };
+  if (preset === "last_6_months") return { start: `${addMonths(referenceDate.slice(0, 7), -5)}-01`, end: referenceDate };
+  if (preset === "custom") {
+    const requestedStart = clampDate(filters.customStart || referenceDate, minimum, referenceDate);
+    const requestedEnd = clampDate(filters.customEnd || referenceDate, minimum, referenceDate);
+    return requestedStart <= requestedEnd
+      ? { start: requestedStart, end: requestedEnd }
+      : { start: requestedEnd, end: requestedStart };
+  }
+  return { start: `${addMonths(referenceDate.slice(0, 7), -11)}-01`, end: referenceDate };
+}
+
+function buildPeriods(start: string, end: string, granularity: AnalyticsGranularity) {
+  const first = granularity === "month" ? start.slice(0, 7) : granularity === "week" ? startOfWeek(start) : start;
+  const last = granularity === "month" ? end.slice(0, 7) : granularity === "week" ? startOfWeek(end) : end;
+  const periods: string[] = [];
+  let current = first;
+  while (current <= last && periods.length < 366) {
+    periods.push(current);
+    current = granularity === "month" ? addMonths(current, 1) : addDays(current, granularity === "week" ? 7 : 1);
+  }
+  return periods;
 }
 
 function periodEquivalent(monthlyAmount: number, granularity: AnalyticsGranularity) {
@@ -147,10 +185,19 @@ function clientPeriod(createdAt: string, granularity: AnalyticsGranularity) {
   return granularity === "week" ? startOfWeek(createdDate) : createdDate;
 }
 
-function rangeDescription(granularity: AnalyticsGranularity) {
-  if (granularity === "day") return "últimos 14 días";
-  if (granularity === "week") return "últimas 12 semanas";
-  return "últimos 12 meses";
+function rangeDescription(filters: AnalyticsFilters, start: string, end: string) {
+  const preset = filters.range ?? (filters.granularity === "day" ? "last_14_days" : filters.granularity === "week" ? "last_12_weeks" : "last_12_months");
+  if (preset === "today") return "hoy";
+  if (preset === "yesterday") return "ayer";
+  if (preset === "this_week") return "esta semana";
+  if (preset === "last_week") return "la semana pasada";
+  if (preset === "this_month") return "este mes";
+  if (preset === "last_14_days") return "los últimos 14 días";
+  if (preset === "last_12_weeks") return "las últimas 12 semanas";
+  if (preset === "last_3_months") return "los últimos 3 meses";
+  if (preset === "last_6_months") return "los últimos 6 meses";
+  if (preset === "last_12_months") return "los últimos 12 meses";
+  return `${shortDateLabel(start)}–${shortDateLabel(end)}`;
 }
 
 export function monthlyEquivalent(amount: number | null, durationMonths: number | null) {
@@ -204,7 +251,8 @@ export function buildDashboardAnalytics({
   const recurringRevenue = periodEquivalent(monthlyRecurringRevenue, filters.granularity);
   const contractedClients = activeClients.filter((client) => client.agreedAmountEur != null);
   const relevantFees = fees.filter((fee) => clientIds.has(fee.clientId));
-  const periods = buildPeriods(referenceDate, filters.granularity);
+  const range = resolveAnalyticsDateRange(filters, referenceDate);
+  const periods = buildPeriods(range.start, range.end, filters.granularity);
   const revenueSeries = periods.map((period) => ({
     period,
     label: periodLabel(period, filters.granularity),
@@ -267,7 +315,9 @@ export function buildDashboardAnalytics({
     currentPeriod,
     currentPeriodLabel: longPeriodLabel(currentPeriod, filters.granularity),
     currentFeeIds,
-    rangeDescription: rangeDescription(filters.granularity),
+    rangeStart: range.start,
+    rangeEnd: range.end,
+    rangeDescription: rangeDescription(filters, range.start, range.end),
     revenueGoalProgress: currentRevenueGoal > 0
       ? Math.min(100, (current.collected / currentRevenueGoal) * 100)
       : 0,

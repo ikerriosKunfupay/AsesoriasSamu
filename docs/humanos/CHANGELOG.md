@@ -1,5 +1,16 @@
 # Registro de cambios humano
 
+## 2026-10-14 — `2026-10-14-gestion-operativa-y-vistas`
+
+- El resumen añade ayudas `?` accesibles a objetivos, progresos y gráficas. El periodo admite Hoy, Ayer, Esta semana, Semana pasada, Este mes, rangos de 14 días, 12 semanas, 3/6/12 meses y fechas personalizadas; la agrupación por día, semana o mes se aplica a todas las cifras y gráficas.
+- **Asesorías** y **Pagos** se pueden recoger y desplegar desde sus encabezados; la elección se conserva en el navegador y se comparte entre el menú lateral y el menú móvil.
+- Entrenamientos y Nutrición incorporan filtros por cada campo, ordenación de tres estados, lectura completa, edición, eliminación, calendario interno y plantillas reutilizables. Se eliminan la versión visible y los textos auxiliares indicados.
+- Clientes, Interesados, Entrenamientos, Nutrición, Tarifas y Cuotas permiten alternar entre tabla, lista y galería conservando sus acciones.
+- Cuotas separa los filtros de cliente y nota, permite ordenar todas sus columnas y editar la nota interna directamente desde cualquier vista; se retira la explicación bajo el título.
+- Los días semanales de una tarifa pasan a ser opcionales. La nueva estructura de plantillas conserva el aislamiento administrativo en la base de datos.
+- La migración de plantillas y días opcionales se aplicó en Supabase y se verificó que las ocho migraciones locales y remotas coinciden.
+- La validación final completó análisis de código, tipos, 134 pruebas, compilación de producción y comprobación de diferencias.
+
 ## 2026-10-14 — `2026-10-14-perfil-admin-y-ajustes-resumen`
 
 - La identidad de Samuel Ortega en el menú muestra el distintivo de cuenta verificada y abre su perfil tanto en escritorio como en móvil.
