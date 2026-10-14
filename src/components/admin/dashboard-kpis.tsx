@@ -76,7 +76,7 @@ export function DashboardKpis({ kpis }: { kpis: DashboardKpi[] }) {
 
   return (
     <>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {kpis.map((kpi) => {
           const Icon = icons[kpi.key];
           return (
@@ -86,14 +86,14 @@ export function DashboardKpis({ kpis }: { kpis: DashboardKpi[] }) {
               aria-haspopup="dialog"
               aria-expanded={activeKey === kpi.key}
               onClick={(event) => openKpi(kpi, event.currentTarget)}
-              className="group relative flex min-h-28 w-full items-center gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className="group relative flex min-h-28 min-w-0 w-full items-center gap-3 overflow-hidden rounded-[var(--radius-lg)] border border-border bg-surface p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
               <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
                 <Icon className="size-5" aria-hidden="true" />
               </span>
-              <span className="min-w-0">
+              <span className="min-w-0 flex-1">
                 <span className="block text-2xl font-black leading-none">{kpi.value}</span>
-                <span className="mt-2 block text-sm font-bold leading-tight text-muted">{kpi.label}</span>
+                <span className="mt-2 block break-words text-sm font-bold leading-tight text-muted [overflow-wrap:anywhere]">{kpi.label}</span>
               </span>
               <ChevronRight className="absolute right-3 top-3 size-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
             </button>

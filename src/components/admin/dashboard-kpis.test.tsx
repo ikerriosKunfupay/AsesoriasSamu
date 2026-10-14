@@ -32,6 +32,14 @@ const kpis: DashboardKpi[] = [
 ];
 
 describe("DashboardKpis", () => {
+  it("adapta la cuadrícula antes de forzar cinco columnas y contiene textos largos", () => {
+    const { container } = render(<DashboardKpis kpis={kpis} />);
+
+    expect(container.firstElementChild).toHaveClass("xl:grid-cols-3", "2xl:grid-cols-5");
+    expect(screen.getByText("Clientes registrados")).toHaveClass("break-words", "[overflow-wrap:anywhere]");
+    expect(screen.getByRole("button", { name: /clientes registrados/i })).toHaveClass("min-w-0", "overflow-hidden");
+  });
+
   it("muestra los últimos diez registros y sus destinos", () => {
     render(<DashboardKpis kpis={kpis} />);
 
